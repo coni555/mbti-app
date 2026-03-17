@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔍 MBTI 情报局 · 你的专属留学情报</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #040812 0%, #0c1628 50%, #040812 100%);
+    font-family: 'Noto Serif SC', Georgia, serif;
+    color: #e8d5a3;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 20px 16px 40px;
+    position: relative; overflow-x: hidden;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(212,168,67,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(212,168,67,0.04) 1px, transparent 1px);
+    background-size: 40px 40px; pointer-events: none; z-index: 0;
+  }
+  .header { text-align: center; margin-bottom: 32px; position: relative; z-index: 1; }
+  .header-label { font-size: 11px; letter-spacing: 6px; color: #d4a843; margin-bottom: 8px; opacity: 0.7; font-family: 'Noto Sans SC', sans-serif; }
+  h1 { font-size: clamp(26px,5vw,36px); font-weight: 700; background: linear-gradient(135deg,#d4a843,#f5e09a,#d4a843); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 2px; }
+  .header-sub { font-size: 13px; color: #8a9bb5; margin-top: 6px; letter-spacing: 1px; font-family: 'Noto Sans SC', sans-serif; }
+  .card { width: 100%; max-width: 600px; background: rgba(12,22,40,0.85); border: 1px solid rgba(212,168,67,0.25); border-radius: 16px; backdrop-filter: blur(20px); padding: 28px 24px; position: relative; z-index: 1; box-shadow: 0 0 60px rgba(212,168,67,0.06), 0 20px 60px rgba(0,0,0,0.5); }
+  .step { display: none; }
+  .step.active { display: block; }
+  .btn-primary { background: linear-gradient(135deg,#d4a843,#b8892e); border: none; color: #040812; padding: 14px 40px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; letter-spacing: 1px; width: 100%; font-family: 'Noto Serif SC', serif; transition: opacity 0.2s; }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-primary:disabled { background: rgba(255,255,255,0.05); color: #555; cursor: not-allowed; }
+  .btn-secondary { background: transparent; border: 1px solid rgba(212,168,67,0.2); color: #8a9bb5; padding: 12px; border-radius: 8px; font-size: 13px; cursor: pointer; flex: 1; font-family: 'Noto Sans SC', sans-serif; transition: all 0.2s; }
+  .btn-secondary:hover { border-color: rgba(212,168,67,0.5); color: #d4a843; }
+
+  /* Intro */
+  .intro-center { text-align: center; }
+  .intro-icon { font-size: 52px; margin-bottom: 16px; }
+  .intro-title { color: #f0d88a; font-size: 21px; margin-bottom: 14px; }
+  .intro-desc { color: #8a9bb5; line-height: 1.9; font-size: 14px; margin-bottom: 28px; font-family: 'Noto Sans SC', sans-serif; }
+  .intro-desc strong { color: #d4a843; }
+  .intro-promise {
+    background: rgba(212,168,67,0.06); border: 1px solid rgba(212,168,67,0.15);
+    border-radius: 10px; padding: 14px 16px; margin-bottom: 28px;
+    font-size: 13px; color: #a89060; line-height: 1.8; font-family: 'Noto Sans SC', sans-serif;
+    text-align: left;
+  }
+  .intro-promise span { color: #d4a843; }
+  .steps-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px; }
+  .step-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #8a9bb5; font-family: 'Noto Sans SC', sans-serif; }
+  .step-num { width: 22px; height: 22px; border-radius: 50%; background: rgba(212,168,67,0.15); border: 1px solid rgba(212,168,67,0.4); display: flex; align-items: center; justify-content: center; font-size: 11px; color: #d4a843; font-weight: bold; flex-shrink: 0; }
+  .step-arrow { color: #333; margin-left: 4px; }
+
+  /* Info */
+  .section-title { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+  .title-bar { width: 6px; height: 24px; background: #d4a843; border-radius: 3px; flex-shrink: 0; }
+  .section-title h2 { color: #f0d88a; font-size: 17px; }
+  .field-label { font-size: 13px; color: #8a9bb5; display: block; margin-bottom: 8px; font-family: 'Noto Sans SC', sans-serif; }
+  .field-group { margin-bottom: 18px; }
+  input[type="text"] { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(212,168,67,0.2); border-radius: 8px; padding: 12px 14px; color: #e8d5a3; font-size: 14px; outline: none; font-family: 'Noto Sans SC', sans-serif; transition: border-color 0.2s; }
+  input[type="text"]:focus { border-color: rgba(212,168,67,0.5); }
+  .chip-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { padding: 9px 18px; border-radius: 6px; font-size: 13px; cursor: pointer; border: 1px solid rgba(212,168,67,0.2); background: transparent; color: #8a9bb5; font-family: 'Noto Sans SC', sans-serif; transition: all 0.15s; }
+  .chip:hover { border-color: rgba(212,168,67,0.5); color: #d4a843; }
+  .chip.selected { border: 1px solid #d4a843; background: rgba(212,168,67,0.15); color: #d4a843; }
+  .chip-sm { padding: 9px 14px; font-size: 12px; }
+
+  /* Test */
+  .progress-header { display: flex; justify-content: space-between; font-size: 12px; color: #8a9bb5; margin-bottom: 8px; font-family: 'Noto Sans SC', sans-serif; }
+  .progress-count { color: #d4a843; }
+  .progress-track { height: 4px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; margin-bottom: 20px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg,#d4a843,#f5e09a); border-radius: 2px; transition: width 0.3s ease; }
+  .dots-row { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 20px; }
+  .dot { width: 20px; height: 4px; border-radius: 2px; cursor: pointer; background: rgba(255,255,255,0.1); transition: background 0.2s; }
+  .dot.answered { background: #d4a843; }
+  .dot.current { background: rgba(212,168,67,0.5); }
+  .question-box { background: rgba(212,168,67,0.04); border: 1px solid rgba(212,168,67,0.12); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+  .question-num { font-size: 11px; color: #d4a843; margin-bottom: 10px; letter-spacing: 1px; font-family: 'Noto Sans SC', sans-serif; }
+  .question-text { font-size: 15px; line-height: 1.8; color: #e8d5a3; }
+  .scale-labels { display: flex; justify-content: space-between; font-size: 11px; color: #555; margin-bottom: 10px; font-family: 'Noto Sans SC', sans-serif; }
+  .scale-row { display: flex; gap: 8px; margin-bottom: 6px; }
+  .scale-btn { flex: 1; padding: 14px 0; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.15s; border: 1px solid rgba(212,168,67,0.2); background: rgba(255,255,255,0.03); color: #8a9bb5; font-family: 'Noto Serif SC', serif; }
+  .scale-btn:hover { border-color: rgba(212,168,67,0.5); color: #d4a843; }
+  .scale-btn.selected { border: 2px solid #d4a843; background: rgba(212,168,67,0.2); color: #d4a843; }
+  .scale-sub { display: flex; justify-content: space-between; }
+  .scale-sub-item { font-size: 10px; color: #444; text-align: center; flex: 1; font-family: 'Noto Sans SC', sans-serif; }
+  .nav-row { display: flex; gap: 10px; }
+
+  /* Generating */
+  .generating-center { text-align: center; padding: 40px 0; }
+  .spin-icon { font-size: 48px; margin-bottom: 20px; display: inline-block; animation: spin 3s linear infinite; }
+  .gen-title { color: #d4a843; margin-bottom: 12px; font-size: 18px; }
+  .gen-desc { color: #8a9bb5; font-size: 13px; line-height: 1.8; font-family: 'Noto Sans SC', sans-serif; }
+  .scan-track { height: 2px; background: rgba(255,255,255,0.05); border-radius: 1px; overflow: hidden; width: 200px; margin: 24px auto 0; }
+  .scan-bar { height: 100%; width: 60%; background: linear-gradient(90deg,transparent,#d4a843,transparent); animation: scan 1.5s ease-in-out infinite; }
+
+  /* Result */
+  .result-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .result-header-left { display: flex; align-items: center; gap: 10px; }
+  .result-header-left h2 { color: #f0d88a; font-size: 17px; }
+  .result-name-tag { font-size: 11px; color: #555; font-family: 'Noto Sans SC', sans-serif; }
+  .mbti-badge { display: inline-block; background: linear-gradient(135deg,#d4a843,#b8892e); color: #040812; padding: 5px 16px; border-radius: 20px; font-size: 15px; font-weight: bold; letter-spacing: 2px; margin-bottom: 16px; }
+
+  /* 结果内容区 */
+  .card-box { background: rgba(0,0,0,0.3); border: 1px solid rgba(212,168,67,0.2); border-radius: 10px; padding: 18px; margin-bottom: 14px; }
+  .card-label { font-size: 11px; color: #d4a843; letter-spacing: 2px; margin-bottom: 12px; font-family: 'Noto Sans SC', sans-serif; }
+  .card-content { font-size: 14px; line-height: 2.1; color: #d0c0a0; font-family: 'Noto Sans SC', sans-serif; white-space: pre-wrap; }
+
+  /* CTA咨询区域 */
+  .cta-box {
+    background: linear-gradient(135deg, rgba(212,168,67,0.08), rgba(212,168,67,0.04));
+    border: 1px solid rgba(212,168,67,0.25); border-radius: 12px;
+    padding: 22px 18px; margin-bottom: 14px; text-align: center;
+  }
+  .cta-title { font-size: 15px; color: #f0d88a; margin-bottom: 8px; }
+  .cta-desc { font-size: 13px; color: #8a9bb5; line-height: 1.8; font-family: 'Noto Sans SC', sans-serif; margin-bottom: 16px; }
+  .cta-input-row { display: flex; gap: 10px; margin-bottom: 12px; }
+  .cta-input { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(212,168,67,0.25); border-radius: 8px; padding: 11px 14px; color: #e8d5a3; font-size: 13px; outline: none; font-family: 'Noto Sans SC', sans-serif; }
+  .cta-input:focus { border-color: rgba(212,168,67,0.5); }
+  .cta-submit { background: linear-gradient(135deg,#d4a843,#b8892e); border: none; color: #040812; padding: 11px 24px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; font-family: 'Noto Sans SC', sans-serif; letter-spacing: 1px; white-space: nowrap; transition: opacity 0.2s; }
+  .cta-submit:hover { opacity: 0.9; }
+  .cta-submitted { font-size: 13px; color: #d4a843; padding: 8px 0; }
+  .cta-note { font-size: 11px; color: #555; margin-top: 4px; font-family: 'Noto Sans SC', sans-serif; }
+
+  .action-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .btn-copy { flex: 1; padding: 13px; border-radius: 8px; font-size: 13px; font-weight: bold; background: linear-gradient(135deg,#d4a843,#b8892e); border: none; color: #040812; cursor: pointer; font-family: 'Noto Sans SC', sans-serif; transition: opacity 0.2s; }
+  .btn-copy:hover { opacity: 0.9; }
+  .btn-copy-all { padding: 13px 16px; border-radius: 8px; font-size: 12px; background: transparent; border: 1px solid rgba(212,168,67,0.3); color: #d4a843; cursor: pointer; font-family: 'Noto Sans SC', sans-serif; transition: all 0.2s; }
+  .btn-copy-all:hover { background: rgba(212,168,67,0.1); }
+  .tip-box { background: rgba(212,168,67,0.05); border: 1px solid rgba(212,168,67,0.1); border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 12px; color: #8a9bb5; line-height: 1.7; font-family: 'Noto Sans SC', sans-serif; }
+  .tip-box strong { color: #d4a843; }
+  .btn-restart { width: 100%; padding: 12px; border-radius: 8px; font-size: 13px; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #555; cursor: pointer; font-family: 'Noto Sans SC', sans-serif; transition: all 0.2s; }
+  .btn-restart:hover { color: #8a9bb5; border-color: rgba(255,255,255,0.2); }
+  .footer { margin-top: 20px; font-size: 11px; color: #333; letter-spacing: 2px; z-index: 1; font-family: 'Noto Sans SC', sans-serif; }
+
+  /* Report Hero */
+  .report-hero { text-align: center; padding: 16px 0 22px; border-bottom: 1px solid rgba(212,168,67,0.15); margin-bottom: 16px; }
+  .hero-mbti { display: inline-block; background: linear-gradient(135deg,#d4a843,#b8892e); color: #040812; padding: 6px 22px; border-radius: 20px; font-size: 18px; font-weight: bold; letter-spacing: 3px; margin-bottom: 10px; }
+  .hero-name { font-size: 22px; color: #f0d88a; margin-bottom: 4px; }
+  .hero-sub { font-size: 13px; color: #8a9bb5; font-family: 'Noto Sans SC', sans-serif; margin-bottom: 8px; line-height: 1.6; }
+  .hero-user { font-size: 11px; color: #555; font-family: 'Noto Sans SC', sans-serif; }
+  .report-section { background: rgba(0,0,0,0.2); border: 1px solid rgba(212,168,67,0.12); border-radius: 12px; padding: 18px 16px; margin-bottom: 12px; }
+  .sec-title { font-size: 15px; color: #f0d88a; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .sec-title span { font-size: 16px; }
+  .sub-label { font-size: 12px; color: #d4a843; margin-top: 14px; margin-bottom: 8px; font-family: 'Noto Sans SC', sans-serif; letter-spacing: 1px; }
+  .sec-body { font-size: 14px; line-height: 2; color: #c0b090; font-family: 'Noto Sans SC', sans-serif; }
+  .radar-wrap { display: flex; justify-content: center; padding: 8px 0; }
+  #radar-canvas { max-width: 100%; }
+  .tag-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tag-item { padding: 8px 16px; border-radius: 20px; font-size: 12px; font-family: 'Noto Sans SC', sans-serif; border: 1px solid rgba(212,168,67,0.25); color: #d4a843; background: rgba(212,168,67,0.06); }
+  .fun-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .fun-card { background: rgba(212,168,67,0.04); border: 1px solid rgba(212,168,67,0.12); border-radius: 10px; padding: 14px 12px; }
+  .fun-icon { font-size: 20px; margin-bottom: 6px; }
+  .fun-label { font-size: 11px; color: #d4a843; margin-bottom: 6px; font-family: 'Noto Sans SC', sans-serif; letter-spacing: 1px; }
+  .fun-text { font-size: 12px; color: #a09080; line-height: 1.7; font-family: 'Noto Sans SC', sans-serif; }
+  .fun-match { display: inline-block; background: rgba(212,168,67,0.12); padding: 2px 8px; border-radius: 4px; font-size: 11px; color: #d4a843; margin-bottom: 4px; font-family: 'Noto Sans SC', sans-serif; }
+  .case-section { background: rgba(212,168,67,0.04); border: 1px dashed rgba(212,168,67,0.2); }
+  .case-section .sec-body { font-size: 13px; color: #a09070; line-height: 1.9; }
+
+  @keyframes scan { 0%{transform:translateX(-100%)} 100%{transform:translateX(300%)} }
+  @keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">▸ CLASSIFIED INTELLIGENCE ◂</div>
+  <h1>🔍 MBTI 情报局</h1>
+  <div class="header-sub">测出你的性格密码，解锁你的专属留学路径</div>
+</div>
+
+<div class="card">
+
+  <!-- STEP 0: INTRO -->
+  <div class="step active" id="step-0">
+    <div class="intro-center">
+      <div class="intro-icon">🛡️</div>
+      <h2 class="intro-title">你的留学情报，3分钟解锁</h2>
+      <p class="intro-desc">
+        很多同学留学路上最大的问题不是"努力不够"，<br>
+        而是<strong>选错了方向</strong>——选了不适合自己性格的专业、国家、学习方式。<br><br>
+        这份测评会告诉你：<strong>你真正适合什么路径</strong>。
+      </p>
+      <div class="intro-promise">
+        <span>✦ 测评说明</span><br>
+        共15道题，每题选1-5分，没有对错<br>
+        结果根据你的真实回答生成，不是通用模板<br>
+        填写越真实，分析越准确
+      </div>
+      <div class="steps-row">
+        <div class="step-item"><div class="step-num">1</div>填写基本信息<span class="step-arrow">→</span></div>
+        <div class="step-item"><div class="step-num">2</div>完成性格测评<span class="step-arrow">→</span></div>
+        <div class="step-item"><div class="step-num">3</div>解锁你的专属情报</div>
+      </div>
+      <button class="btn-primary" onclick="goStep(1)">开始测评 →</button>
+    </div>
+  </div>
+
+  <!-- STEP 1: INFO -->
+  <div class="step" id="step-1">
+    <div class="section-title"><div class="title-bar"></div><h2>先告诉我一些基本情况</h2></div>
+    <div class="field-group">
+      <label class="field-label">你叫什么？*</label>
+      <input type="text" id="input-name" placeholder="姓名或昵称都可以" oninput="checkInfo()">
+    </div>
+    <div class="field-group">
+      <label class="field-label">微信号（可选，用于接收完整报告）</label>
+      <input type="text" id="input-wechat" placeholder="选填，不影响测评结果">
+    </div>
+    <div class="field-group">
+      <label class="field-label">现在大几？*</label>
+      <div class="chip-row" id="grade-chips">
+        <button class="chip" onclick="selectChip('grade',this,'大一')">大一</button>
+        <button class="chip" onclick="selectChip('grade',this,'大二')">大二</button>
+        <button class="chip" onclick="selectChip('grade',this,'大三')">大三</button>
+        <button class="chip" onclick="selectChip('grade',this,'大四')">大四</button>
+      </div>
+    </div>
+    <div class="field-group" style="margin-bottom:28px">
+      <label class="field-label">最感兴趣的留学目的地？*</label>
+      <div class="chip-row" id="target-chips">
+        <button class="chip chip-sm" onclick="selectChip('target',this,'美国')">美国</button>
+        <button class="chip chip-sm" onclick="selectChip('target',this,'英国')">英国</button>
+        <button class="chip chip-sm" onclick="selectChip('target',this,'澳大利亚')">澳大利亚</button>
+        <button class="chip chip-sm" onclick="selectChip('target',this,'加拿大')">加拿大</button>
+        <button class="chip chip-sm" onclick="selectChip('target',this,'欧洲')">欧洲</button>
+        <button class="chip chip-sm" onclick="selectChip('target',this,'香港/新加坡')">香港/新加坡</button>
+        <button class="chip chip-sm" onclick="selectChip('target',this,'还没想好')">还没想好</button>
+      </div>
+    </div>
+    <button class="btn-primary" id="btn-info-next" disabled onclick="goStep(2)">开始测评 →</button>
+  </div>
+
+  <!-- STEP 2: TEST -->
+  <div class="step" id="step-2">
+    <div class="progress-header">
+      <span>性格测评进行中</span>
+      <span class="progress-count" id="progress-count">0 / 15</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="dots-row" id="dots-row"></div>
+    <div class="question-box">
+      <div class="question-num" id="question-num">第 1 题 / 共 15 题</div>
+      <p class="question-text" id="question-text"></p>
+    </div>
+    <div style="margin-bottom:24px">
+      <div class="scale-labels"><span>完全不符合</span><span>完全符合</span></div>
+      <div class="scale-row" id="scale-row"></div>
+      <div class="scale-sub">
+        <div class="scale-sub-item">完全不符合</div><div class="scale-sub-item">较不符合</div>
+        <div class="scale-sub-item">中立</div><div class="scale-sub-item">较符合</div>
+        <div class="scale-sub-item">完全符合</div>
+      </div>
+    </div>
+    <div class="nav-row" id="nav-row"></div>
+  </div>
+
+  <!-- STEP 3: GENERATING -->
+  <div class="step" id="step-3">
+    <div class="generating-center">
+      <div class="spin-icon">🔍</div>
+      <h3 class="gen-title" id="gen-title">正在解析你的情报档案.</h3>
+      <p class="gen-desc" id="gen-desc">分析你的15项性格维度<br>匹配最适合你的留学路径<br>生成专属情报卡</p>
+      <div class="scan-track"><div class="scan-bar"></div></div>
+    </div>
+  </div>
+
+  <!-- STEP 4: RESULT -->
+  <div class="step" id="step-4">
+    <div class="report-hero">
+      <div class="hero-mbti" id="hero-mbti"></div>
+      <div class="hero-name" id="hero-name"></div>
+      <div class="hero-sub" id="hero-sub"></div>
+      <div class="hero-user" id="hero-user"></div>
+    </div>
+    <div class="report-section">
+      <div class="sec-title"><span>📊</span> 维度分析</div>
+      <div class="radar-wrap"><canvas id="radar-canvas" width="280" height="280"></canvas></div>
+    </div>
+    <div class="report-section" id="sec-personality">
+      <div class="sec-title"><span>📋</span> 性格解密</div>
+      <div class="sec-body" id="sec-personality-body"></div>
+    </div>
+    <div class="report-section" id="sec-path">
+      <div class="sec-title"><span>🎯</span> 最适合你的留学路径</div>
+      <div class="sec-body" id="sec-path-body"></div>
+      <div class="sub-label">推荐专业方向</div>
+      <div class="tag-grid" id="major-tags"></div>
+    </div>
+    <div class="report-section">
+      <div class="sec-title"><span>💼</span> 适配职业方向</div>
+      <div class="tag-grid" id="career-tags"></div>
+    </div>
+    <div class="report-section" id="sec-strengths">
+      <div class="sec-title"><span>⚡</span> 你的申请核心优势</div>
+      <div class="sec-body" id="sec-strengths-body"></div>
+    </div>
+    <div class="report-section fun-section">
+      <div class="sec-title"><span>🎭</span> 你的留学人设</div>
+      <div class="fun-grid" id="fun-grid"></div>
+    </div>
+    <div class="report-section" id="sec-country">
+      <div class="sec-title"><span>🌍</span> 目的地分析</div>
+      <div class="sec-body" id="sec-country-body"></div>
+    </div>
+    <div class="report-section" id="sec-timeline">
+      <div class="sec-title"><span>⏳</span> 你的时间窗口</div>
+      <div class="sec-body" id="sec-timeline-body"></div>
+    </div>
+    <div class="report-section case-section" id="sec-case">
+      <div class="sec-body" id="sec-case-body"></div>
+    </div>
+    <div class="cta-box" id="cta-box">
+      <div class="cta-title">想要更详细的背景评估和选校方案？</div>
+      <div class="cta-desc">留下微信号，资深顾问会在 24 小时内联系你，提供一次免费的 1v1 背景诊断（约15分钟），帮你理清方向，不推销课程。</div>
+      <div id="cta-form">
+        <div class="cta-input-row">
+          <input class="cta-input" type="text" id="cta-wechat" placeholder="你的微信号">
+          <button class="cta-submit" onclick="submitCTA()">预约咨询</button>
+        </div>
+        <div class="cta-note">* 完全自愿，不填也不影响你查看完整报告</div>
+      </div>
+    </div>
+    <div class="action-row">
+      <button class="btn-copy" id="btn-copy-card" onclick="copyCard()">📋 复制我的档案</button>
+      <button class="btn-copy-all" onclick="shareResult()">分享给朋友</button>
+    </div>
+    <button class="btn-restart" onclick="restart()">重新测评</button>
+  </div>
+
+</div>
+
+<div class="footer">MBTI情报局 · V3.0</div>
+
+<script>
+const questions = [
+  "我更愿意选择能真实帮助他人、服务社会的领域，而不只是高薪的方向。",
+  "我在意这条路能否获得家人或重要朋友的支持与认可。",
+  "我在规则清晰、评价标准明确的环境里表现更好。",
+  "有固定的学习小组、团队合作和课堂互动，会让我更有动力。",
+  "我能接受短期辛苦，前提是目标清晰、努力有回报。",
+  "如果一个方向赚钱但价值观让我不舒服，我很难长期坚持。",
+  "长期独自做研究或写作会让我感到明显疲惫和消耗。",
+  "比起听讲和读书，我更适合通过做项目、实习、案例来学习。",
+  "我对孤独和陌生环境比较敏感，需要一定的支持系统才能状态好。",
+  "我愿意主动认识新朋友，但我需要对方有回应，而不是单向付出。",
+  "如果留学费用压力很大，我会持续焦虑并影响整体状态。",
+  "我有把责任全揽到自己身上的倾向，压力大时这点会更明显。",
+  "我希望留学经历能转化为明确的岗位技能或职业方向。",
+  "我愿意持续维护人际关系网络（校友、实习、导师），并把它变成资源。",
+  "我选择留学，更希望进入一个有归属感、能建立稳定关系的环境。",
+];
+
+// ============ 时间线辅助函数 ============
+function getTimeline(grade) {
+  const map = {
+    '大一': '你现在大一，距离主申请季还有约2-3年，这是最好的布局时机',
+    '大二': '你现在大二，距离主申请季还有约12-18个月，时间刚好够系统准备',
+    '大三': '你现在大三，距离申请窗口只剩6-10个月，需要尽快明确方向',
+    '大四': '你现在大四，申请时间窗口非常紧迫，每一步都需要精准推进'
+  };
+  return map[grade] || '现在开始准备正当时';
+}
+
+function getUrgency(grade) {
+  const map = {
+    '大一': '你现在大一，时间是你最大的优势，早布局意味着有更多容错空间',
+    '大二': `大二是"黄金启动期"——既不太早（方向还能调整），也不太晚（还有足够时间备考和积累）`,
+    '大三': '大三再不动，到大四就只能仓促应战了——现在每拖一个月，都是在压缩自己的选择空间',
+    '大四': '大四的你已经没有"等等再说"的余地——需要立刻确定方向、启动材料准备'
+  };
+  return map[grade] || '现在开始还来得及，但不能再等了';
+}
+
+// ============ 国家建议 ============
+function countryAdvice(type, country) {
+  const isF = type[2]==='F';
+  const isN = type[1]==='N';
+  const isJ = type[3]==='J';
+  const advice = {
+    '美国': isN
+      ? `美国非常适合你——它的跨学科选课制度让你不必过早锁死方向，很多项目鼓励"边探索边找答案"。推荐关注有灵活专业方向的综合性大学。`
+      : `美国的实践导向和强就业资源对你很有利。OPT政策让你毕业后还有时间在当地试水，建议优先关注有Co-op项目或强大校招资源的学校。`,
+    '英国': isJ
+      ? `英国一年制硕士的节奏和你的性格非常匹配——目标明确、高效学完、快速进入职场。Russell Group院校的品牌在国内认可度高，性价比突出。`
+      : `英国学制紧凑，一年时间很快，需要你提前想清楚方向。好处是成本相对低、出来就能求职。适合你的前提是：出发前方向已经基本确定。`,
+    '澳大利亚': isF
+      ? `澳大利亚的生活节奏和社区文化对你很友好——这里不是那种"卷到极致"的环境，你有更多空间去适应和建立真实的人际关系。八大高校加上2-4年的PSW签证，是稳健路线。`
+      : `澳大利亚适合对生活质量有要求、或有考虑长期留居的同学。如果目标是回国发展，需要提前确认目标学校在国内的认可度和行业背书情况。`,
+    '加拿大': `加拿大的多元文化让外来学生适应成本很低，移民政策友好，是"留学+未来保留选择权"的稳健路线。UBC、多大、麦吉尔在国内认知度高，整体是风险最小的英语留学选项之一。`,
+    '欧洲': isN
+      ? `欧洲（尤其荷兰、德国、北欧）的教学非常强调批判性思维和独立探索，和你的思维方式很契合。部分顶尖项目学费极低甚至全奖，性价比远超英美。`
+      : `欧洲英语授课项目近年发展很快，但要注意在国内的认可度。建议优先选QS前100的项目，并提前确认该专业方向在你目标行业里的实际认可情况。`,
+    '香港/新加坡': `港新是综合性价比最高的路线之一：距离近、文化熟悉、顶尖学校（港大/NUS/NTU等）在国内认可度极高，金融和科技的就业生态也非常成熟。如果对欧美有顾虑，这是风险最低的顶尖选项。`,
+    '还没想好': `方向还没确定其实没关系——说明你还没被固定思维框住。建议先从"我想做什么行业"入手，再反推最匹配的地区和学校，这样选出来的方向会更有说服力，申请文书也更好写。`
+  };
+  return advice[country] || advice['还没想好'];
+}
+
+// ============ 同类型案例 ============
+const CASES = {
+  INFJ: `💬 上个月有个和你同类型的大二同学，一开始也觉得"不知道自己适合什么方向"。聊了一次之后锁定了教育政策方向，现在文书已经在写了。`,
+  INFP: `💬 有个INFP的大三女生，之前觉得自己"成绩不够好、方向不清晰"，不敢想好学校。仔细分析后发现她的跨专业经历反而是亮点，最后拿到了传媒类项目的offer。`,
+  INTJ: `💬 有个和你一样的INTJ，大二开始准备，把目标锁在3所学校，两年后全部拿到offer，最终去了其中最顶尖的一所。`,
+  INTP: `💬 有个INTP的男生，一开始完全不知道怎么"包装"自己的研究经历，聊了一次后发现他在某个领域的积累远超同龄人，文书写出来非常有说服力。`,
+  ENFJ: `💬 有个ENFJ的学生干部，社团经历丰富但觉得"不够硬核"，后来发现她的领导力素材恰好是目标项目最稀缺的，面试时直接被问到了。`,
+  ENFP: `💬 有个ENFP的同学，经历很多元但"散"，我们帮她找到了贯穿所有经历的主线，文书写完之后她自己都说：原来我一直都在做同一件事。`,
+  ENTJ: `💬 有个ENTJ男生，最开始只想申3所Top学校，后来发现自己的背景比预期更有竞争力，加了2所冲刺校，其中一所最后给了他offer。`,
+  ENTP: `💬 有个ENTP的同学，想法特别多但材料很散，聊了一次找到核心叙事逻辑，把"什么都想做"变成了"我在解决同一个问题"，文书质量提升非常明显。`,
+  ISFJ: `💬 有个ISFJ的女生一直在等家人同意才敢开始准备，结果错过了最佳备考期。后来的学员里，提前动手的都比等待的多拿了至少一所好学校。`,
+  ISFP: `💬 有个ISFP的艺术生，觉得自己"不会写文书"，但聊完发现她脑子里的东西比文书里丰富太多了——只是缺少一个帮她"翻译"出来的人。`,
+  ISTJ: `💬 有个ISTJ的理工科同学，执行力极强，按我们给的时间线一步步推进，备考、实习、文书全部准时完成，最后收到offer的时候说"我就知道按计划走肯定没问题"。`,
+  ISTP: `💬 有个ISTP男生，项目经历非常扎实，但推荐信一直没管——最后差点因为推荐信质量问题影响申请结果。早知道早处理就好了。`,
+  ESFJ: `💬 有个ESFJ的同学，因为家人意见不统一迟迟没动，后来等到大三下才开始，时间上非常被动。和她同期的另一个学员因为早了6个月启动，选择余地多了很多。`,
+  ESFP: `💬 有个ESFP的同学，面试准备了3天就拿到了本来觉得很难的项目——因为她本来的状态就是面试最好的状态，只是需要有人告诉她"你就做自己就行"。`,
+  ESTJ: `💬 有个ESTJ男生，背景评估完发现自己冲刺线可以比预期高一档，加了两所原本觉得"不敢想"的学校，最后其中一所给了offer。`,
+  ESTP: `💬 有个ESTP的同学，实战经历很丰富，但文书写出来特别"口语化"——找人打磨了一版之后，同样的经历读起来完全是另一个层次。`
+};
+
+// ============ 16种MBTI模板 ============
+const TEMPLATES = {
+  INFJ: {
+    internal: (name, grade, target) => `【MBTI推测】INFJ — 提倡者
+判断依据：价值观驱动强（Q1/Q6高分），对孤独有敏感性（Q9高），追求系统路径（Q3/Q5高），典型理想主义+结构感组合。
+
+【核心留学动机】
+寻找与自身价值观契合的学术环境，不只是"镀金"，更想找到"自己应该在的地方"。
+
+【最可能的顾虑点】
+① 担心选错方向、浪费时间  ② 家人不理解  ③ 陌生环境能否融入
+
+【建议跟进话术】
+→ 强调"找到适合你的环境"而非"所有人都适合留学"
+→ 问：你有没有想过，什么样的学习氛围会让你感觉"终于到家了"？`,
+
+    card: (name, grade, target) => `🔍 ${name}，你的专属留学情报档案来了
+
+📋 性格解密
+你是一个有强烈内在价值驱动的人——选方向时，"有没有意义"比"赚不赚钱"更重要。你不喜欢随大流，但需要确认这条路是"对的"才会全力投入。很多同学申请时稀里糊涂，而你会认真思考——这在文书里会非常有说服力。
+
+🎯 最适合你的留学路径
+【价值导向型 · 教育/社会政策/公共健康/可持续发展方向】
+推荐优先考虑有明确社会议题导向的项目，能把你的价值观和专业能力自然绑定，申请文书也会特别有力量。
+
+⚡ 你的申请核心优势
+① 文书爆发力强：你对"为什么选这个方向"有真实的内在答案，这是招生官最想看到的东西
+② 目标感清晰：你不会"因为别人去留学"，这种坚定在面试和文书里很加分
+
+🌍 关于${target}
+${countryAdvice('INFJ', target)}
+
+⏳ 你现在的时间窗口
+${getTimeline(grade)}。INFJ最大的申请风险是"想太久、动太晚"——你的完美主义会让你反复权衡，但申请这件事，方向对了就要动起来。
+
+${CASES['INFJ']}
+
+📌 下一步
+我已经看完你的测评结果了。回复"好的"，我来帮你梳理一下你的情况，约15分钟，不谈课程，只帮你理清思路。`
+  },
+
+  INFP: {
+    internal: (name, grade, target) => `【MBTI推测】INFP — 调停者
+判断依据：高度价值观驱动（Q1/Q6高），对认可有需求但更重视自身感受（Q2中），不适应独自长期工作（Q7高），归属感需求强（Q15高），路径感偏弱（Q5低）。
+
+【核心留学动机】
+渴望找到真正适合自己的"土壤"，希望留学是一段自我发现的旅程。
+
+【最可能的顾虑点】
+① 不确定自己"够不够好"  ② 担心出去后适应不了  ③ 不知道真正想要什么
+
+【建议跟进话术】
+→ 先建立信心："你的想法比你想象的更有价值"
+→ 用案例激发：推送一个INFP找到方向的真实故事`,
+
+    card: (name, grade, target) => `🔍 ${name}，你的专属留学情报档案来了
+
+📋 性格解密
+你有非常细腻的内在世界，选择方向时会反复问自己"这真的是我想要的吗"。这不是优柔寡断，而是你对自我认知有更高要求。很多同学申请时跟风选专业，而你会认真思考——这种真实性在申请文书里是稀缺的。
+
+🎯 最适合你的留学路径
+【探索发现型 · 传播/设计/教育/人文/跨学科方向】
+推荐选择自由度较高、鼓励个人表达的项目。硬框架太强的专业可能会让你感到压抑，而开放式的学术环境往往能让你爆发出意想不到的能量。
+
+⚡ 你的申请核心优势
+① 文书真实感强：你写出来的动机不是"模板感"，有自己的味道，招生官能感受到
+② 跨界申请底气足：你对"新的可能性"保持开放，跨专业申请比大多数人更有说服力
+
+🌍 关于${target}
+${countryAdvice('INFP', target)}
+
+⏳ 你现在的时间窗口
+${getTimeline(grade)}。INFP最容易陷入"再想想"的循环——给自己设一个截止日期，这个月内确定1个主攻方向，哪怕不完美，先动起来再优化。
+
+${CASES['INFP']}
+
+📌 下一步
+我已经看完你的测评结果了。回复"好的"，我们来聊聊你的方向，约15分钟，帮你梳理思路，不推销任何东西。`
+  },
+
+  INTJ: {
+    internal: (name, grade, target) => `【MBTI推测】INTJ — 建筑师
+判断依据：路径清晰偏好强（Q3/Q5高），长期独立研究不消耗（Q7低），不太依赖团队（Q4低），战略型网络意识（Q14高），价值观坚定（Q6高）。
+
+【核心留学动机】
+留学是实现长期战略目标的工具，要建立难以复制的竞争优势。
+
+【最可能的顾虑点】
+① ROI不明确  ② 担心浪费时间  ③ 对专业建议是否够格有质疑
+
+【建议跟进话术】
+→ 先展示专业度，用数据和案例说话，不要急着推销
+→ 问：你目前对申请最大的信息盲区是什么？`,
+
+    card: (name, grade, target) => `🔍 ${name}，你的专属留学情报档案来了
+
+📋 性格解密
+你是典型的长线思考者——不会被"大家都去留学"带跑，但一旦想清楚了，执行力极强。你对信息质量要求高，讨厌模糊答案——这在申请准备阶段是巨大优势，能帮你避开很多坑。
+
+🎯 最适合你的留学路径
+【战略精英型 · 商科/工程/研究型项目方向】
+推荐精准打入1-2个最匹配的目标，不追求广撒网。你的申请材料一旦聚焦，会非常有说服力，远比"广投20所"效果好。
+
+⚡ 你的申请核心优势
+① 目标叙事完整：你能清晰说明"为什么是这所学校、这个项目、这个时间点"，这种逻辑性让招生官印象深刻
+② 独立研究能力：适合有论文/研究要求的顶尖项目，这类项目很多人望而却步，你恰恰擅长
+
+🌍 关于${target}
+${countryAdvice('INTJ', target)}
+
+⏳ 你现在的时间窗口
+${getTimeline(grade)}。INTJ最大的风险是"计划过于完美，启动过晚"——顶尖项目的背景积累需要至少12个月，现在就要开始。
+
+${CASES['INTJ']}
+
+📌 下一步
+我已经看完你的测评结果了。回复"好的"，我帮你做一个背景匹配分析，看看你现在的条件能冲到哪个层次，约15分钟。`
+  },
+
+  INTP: {
+    internal: (name, grade, target) => `【MBTI推测】INTP — 逻辑学家
+判断依据：价值观驱动中等、更重视智识满足（Q1中），独立工作不消耗（Q7低），不太在乎外部认可（Q2低），灵活学习偏好（Q8高），规划感不强（Q5低）。
+
+【核心留学动机】
+追求智识突破和自由探索，想找一个"允许深度思考"的学术环境。
+
+【最可能的顾虑点】
+① 不知道学了有什么用  ② 对申请流程觉得繁琐  ③ 担心"不擅长社交"
+
+【建议跟进话术】
+→ 从学术/研究角度切入，问他对哪个领域有深度兴趣
+→ 弱化"人脉圈子"叙述，强调"你会遇到一群同样有深度的人"`,
+
+    card: (name, grade, target) => `🔍 ${name}，你的专属留学情报档案来了
+
+📋 性格解密
+你有非常强的独立思考能力，不满足于表面答案，喜欢刨根问底。在留学申请里，这种特质在研究背景和学术文书中会特别出彩——前提是你愿意把脑子里的东西写出来。
+
+🎯 最适合你的留学路径
+【研究深度型 · 理工/计算机/社科研究/数据方向】
+推荐有研究机会的项目（RA机会、研讨型课程、独立毕设）。你在有深度探索空间的环境里会超水平发挥，这类项目其他人竞争少，你的优势更容易被放大。
+
+⚡ 你的申请核心优势
+① 学术潜力突出：你对某个领域的深度理解，往往能在文书和推荐信里形成真正的差异化
+② Research-based项目优势：这类竞争相对小众，反而是你发力的好赛道
+
+🌍 关于${target}
+${countryAdvice('INTP', target)}
+
+⏳ 你现在的时间窗口
+${getTimeline(grade)}。INTP最容易忽略申请的"软性环节"——推荐信管理、简历格式、截止日期，这些不是你擅长的，需要有人帮你盯。
+
+${CASES['INTP']}
+
+📌 下一步
+我已经看完你的测评结果了。回复"好的"，我们来聊聊你的研究方向和背景，约15分钟，帮你找到真正适合你的申请路径。`
+  },
+
+  ENFJ: {
+    internal: (name, grade, target) => `【MBTI推测】ENFJ — 主人公
+判断依据：助人价值观强（Q1高），团队氛围驱动（Q4高），对认可有需求（Q2高），主动社交（Q10高），归属感导向（Q15高）。
+
+【核心留学动机】
+希望通过留学扩大影响力，有强烈的使命感和连接他人的驱动。
+
+【最可能的顾虑点】
+① 担心失去原有社交网络  ② 选专业时容易被别人期待左右
+
+【建议跟进话术】
+→ 强调留学校友网络的价值："你会成为这个网络里的关键节点"
+→ 帮他/她厘清：你现在想影响的人是谁？留学能让这个范围扩大多少倍？`,
+
+    card: (name, grade, target) => `🔍 ${name}，你的专属留学情报档案来了
+
+📋 性格解密
+你天生适合"站在人前"——不是为了出风头，而是你真的关心身边的人，也有能力带动氛围。这种特质在海外项目里很稀缺，你进去大概率会成为那个"大家都认识"的人，而不是在角落里适应环境的那一个。
+
+🎯 最适合你的留学路径
+【影响力驱动型 · 管理/教育/传播/公共政策方向】
+推荐有大量团队协作、社区参与、领导力培养机会的项目。你在这类环境里不只是学习，更是在建立未来10年的人脉底层结构。
+
+⚡ 你的申请核心优势
+① 领导力素材丰富：社团、团队项目都是你的申请亮点，系统整理出来会很有说服力
+② 面试表现强：你的表达能力和真实感，在面试中比纸面材料更有优势
+
+🌍 关于${target}
+${countryAdvice('ENFJ', target)}
+
+⏳ 你现在的时间窗口
+${getTimeline(grade)}。ENFJ容易因为顾虑太多而推迟自己的决定——申请这件事，你需要先为自己做一次"自私"的选择。
+
+${CASES['ENFJ']}
+
+📌 下一步
+我已经看完你的测评结果了。回复"好的"，约15分钟聊聊你的背景，帮你把那些"感觉有用但不知道怎么写"的经历转化成申请优势。`
+  },
+
+  ENFP: {
+    internal: (name, grade, target) => `【MBTI推测】ENFP — 竞选者
+判断依据：价值观驱动高（Q1/Q6高），不喜欢僵化结构（Q3低），社交活跃（Q4/Q10高），探索导向（Q8高），对长期规律工作有消耗感。
+
+【核心留学动机】
+追求全新体验，希望留学打开更大的世界，找到真正点燃自己的方向。
+
+【最可能的顾虑点】
+① 方向太多不知道选哪个  ② 担心自己坚持不下去  ③ 家人觉得不稳定
+
+【建议跟进话术】
+→ 先肯定探索欲，再引导"把热情变成申请优势"
+→ 问：如果只能选一个方向去深耕，你最不舍得放弃的是什么？`,
+
+    card: (name, grade, target) => `🔍 ${name}，你的专属留学情报档案来了
+
+📋 性格解密
+你的能量极具感染力，对新事物的敏锐度远超同龄人。很多人花2年才能发现"自己真正感兴趣的是什么"，你可能3个月就能找到——关键是怎么把这股能量转化成申请材料里看得见的东西。
+
+🎯 最适合你的留学路径
+【创业探索型 · 跨学科/创新/传媒/设计方向】
+推荐有项目制学习、强调创新思维的项目。很多顶尖学校现在非常稀缺"有想法又能执行"的申请者，你就是他们在找的人。
+
+⚡ 你的申请核心优势
+① 故事素材丰富：你做过的事情多元，关键是找到一条主线把它们串起来
+② 跨界申请底气强：别人只有一个专业背景，你的多元经历本身就是差异化
+
+🌍 关于${target}
+${countryAdvice('ENFP', target)}
+
+⏳ 你现在的时间窗口
+${getTimeline(grade)}。ENFP最大的风险是"想法很多但材料很散"——现在开始把过去的经历系统整理，找到那条能贯穿所有经历的主线故事。
+
+${CASES['ENFP']}
+
+📌 下一步
+我已经看完你的测评结果了。回复"好的"，我们来找找那条主线，约15分钟，帮你把"什么都做过"变成"我一直在做同一件事"。`
+  },
+
+  ENTJ: {
+    internal: (name, grade, target) => `【MBTI推测】ENTJ — 指挥官
+判断依据：目标导向极强（Q5/Q12高），重视职业转化（Q13高），战略性人脉意识（Q14高），能接受短期付出（Q5高），不太依赖情感认可（Q2低）。
+
+【核心留学动机】
+留学是进入顶尖职业赛道的战略跳板，目标明确：学历+人脉+品牌。
+
+【最可能的顾虑点】
+① 担心ROI不够高  ② 对顾问专业度要求高  ③ 选校策略是否足够激进
+
+【建议跟进话术】
+→ 用数据和就业案例说话，不要情感叙事
+→ 直接问：你的目标行业/公司是什么？帮你找最直接的路径`,
+
+    card: (name, grade, target) => `🔍 ${name}，你的专属留学情报档案来了
+
+📋 性格解密
+你是少数从一开始就想清楚"要去哪里、为什么去"的人。你不是在"考虑留学"，你在评估这条路是否值得——这种思维方式本身就是你申请材料里最大的优势，因为招生官能感受到你不是随便来的。
+
+🎯 最适合你的留学路径
+【精英跨越型 · 商科/金融/咨询/顶尖项目方向】
+推荐锁定品牌溢价最高、校友网络最强的项目。你的执行力和目标感，能把名校光环放大到最大值。
+
+⚡ 你的申请核心优势
+① 领导力叙事天然：你有真实的项目主导经历，这类素材现在最稀缺
+② 面试高手：你的逻辑性和自信度在面试里能拿到额外加分
+
+🌍 关于${target}
+${countryAdvice('ENTJ', target)}
+
+⏳ 你现在的时间窗口
+${getTimeline(grade)}。ENTJ容易只盯冲刺线、忽略保底——建议做一个3梯队目标院校列表，不要把所有赌注压在Top3上。
+
+${CASES['ENTJ']}
+
+📌 下一步
+我已经看完你的测评结果了。回复"好的"，我帮你做一个背景诊断，看看你现在的条件，冲刺线能定到哪里，约15分钟。`
+  },
+
+  ENTP: {
+    internal: (name, grade, target) => `【MBTI推测】ENTP — 辩论家
+判断依据：不喜欢固定规则（Q2低/Q3低），喜欢多元探索（Q8高），社交活跃（Q10高），战略性强（Q14高），价值观有但不僵化（Q6中）。
+
+【核心留学动机】
+渴望进入能"挑战既有框架"的环境，希望遇到同样聪明有挑战性的人。
+
+【最可能的顾虑点】
+① 觉得想法太超前、怕被误解  ② 不确定哪个领域最值得深入
+
+【建议跟进话术】
+→ 强调"你会遇到真正对手"，激发对顶尖环境的渴望
+→ 问：你现在最有争议性的一个想法，在海外能不能找到人认真讨论？`,
+
+    card: (name, grade, target) => `🔍 ${name}，你的专属留学情报档案来了
+
+📋 性格解密
+你是那种"永远有下一个想法"的人——和你聊天的人总会被刺激到思考。这种特质在国内标准化环境里不一定吃香，但在海外学术圈里恰恰是稀缺资源，很多项目就是在找你这样的人。
+
+🎯 最适合你的留学路径
+【跨界创新型 · 科技政策/创业/传播/法律方向】
+推荐鼓励辩论、重视批判性思维的项目。强调Case讨论的商学院和Policy项目会让你如鱼得水。
+
+⚡ 你的申请核心优势
+① 观点输出能力：你的文书能"有话说"，不是千篇一律的"我热爱这个领域"
+② 跨学科潜力：很多海外项目在招"能连接不同领域"的人，你天然符合
+
+🌍 关于${target}
+${countryAdvice('ENTP', target)}
+
+⏳ 你现在的时间窗口
+${getTimeline(grade)}。ENTP最大的风险是"点子很多，落地很少"——挑一件事做到底，哪怕只有一个项目，但要做出深度，比10件浅尝辄止的事更有说服力。
+
+${CASES['ENTP']}
+
+📌 下一步
+我已经看完你的测评结果了。回复"好的"，约15分钟聊聊你的想法，帮你找到那个值得深挖的核心方向。`
+  },
+
+  ISFJ: {
+    internal: (name, grade, target) => `【MBTI推测】ISFJ — 守卫者
+判断依据：重视家人认可（Q2高），价值导向（Q1高），规则清晰偏好（Q3高），对陌生环境敏感（Q9高），归属感需求强（Q15高）。
+
+【核心留学动机】
+希望留学让家人放心，同时找到稳定、有归属感的环境安心发展。
+
+【最可能的顾虑点】
+① 家人支持问题  ② 适应能力担忧  ③ 担心"选错了"难以调整
+
+【建议跟进话术】
+→ 先解决家人顾虑，帮他/她准备"向父母解释留学价值"的话术
+→ 强调"稳定+安全感"而非"挑战+冒险"`,
+
+    card: (name, grade, target) => `🔍 ${name}，你的专属留学情报档案来了
+
+📋 性格解密
+你做决定时会认真考虑身边人的感受，这让你比很多同龄人更成熟稳重。你不会轻率做选择——一旦决定了，执行也会非常认真。这种可靠感在海外生活里是非常重要的生存优势，很多人低估了它。
+
+🎯 最适合你的留学路径
+【稳健成长型 · 教育/医疗/管理/社会科学方向】
+推荐课程结构清晰、有明确职业路径的项目。你在有制度保障的环境里能发挥出最好的状态，不需要每天在混乱中摸索。
+
+⚡ 你的申请核心优势
+① 背景叙事一致性强：你的经历往往围绕几个核心主题，申请故事容易形成完整的逻辑线
+② 推荐信质量高：老师和导师通常对你评价很好，这是软性材料里的重要加分项
+
+🌍 关于${target}
+${countryAdvice('ISFJ', target)}
+
+⏳ 你现在的时间窗口
+${getTimeline(grade)}。ISFJ最容易犯的错是"过度准备、迟迟不出手"——设一个"够了就行动"的标准，不要等到所有条件都完美再动。
+
+${CASES['ISFJ']}
+
+📌 下一步
+我已经看完你的测评结果了。回复"好的"，我们来聊聊你的情况，也可以一起想想怎么和家人说这件事，约15分钟。`
+  },
+
+  ISFP: {
+    internal: (name, grade, target) => `【MBTI推测】ISFP — 探险家
+判断依据：价值观强烈（Q1/Q6高），不喜欢规则束缚（Q3低），灵活学习偏好（Q8高），对孤独敏感但需真实连接（Q9/Q15高），归属感大于社交广度。
+
+【核心留学动机】
+希望留学是真实生活体验的拓展，找到"真正是自己"的空间。
+
+【最可能的顾虑点】
+① 担心结构化环境里不自在  ② 说不清"我为什么要留学"
+
+【建议跟进话术】
+→ 不要问"你的职业规划是什么"，而是问"有没有一种生活方式是你一直向往的"
+→ 从体验和感受切入，而不是理性规划`,
+
+    card: (name, grade, target) => `🔍 ${name}，你的专属留学情报档案来了
+
+📋 性格解密
+你对"真实体验"有很高的感知力——什么是真实的，什么是表演出来的，你能感觉到。这让你在创意表达类的项目里有天然优势，因为你做出来的东西有个人风格，不是复制粘贴的。
+
+🎯 最适合你的留学路径
+【体验深耕型 · 艺术/设计/心理/传媒/人文方向】
+推荐强调个人创作、自主探索的项目。你需要一个能"做自己"的空间，而不是每天被排名和KPI压着跑的环境。
+
+⚡ 你的申请核心优势
+① 作品集呈现力强：你做出来的东西有真实的个人风格，在portfolio-based申请里会很突出
+② 文书情感真实：你不擅长"假大空"，写出来的文书往往是那种让招生官读完会记住的类型
+
+🌍 关于${target}
+${countryAdvice('ISFP', target)}
+
+⏳ 你现在的时间窗口
+${getTimeline(grade)}。ISFP最大的挑战是"把脑子里的东西转化成申请材料"——你的想法往往比写出来的更丰富，需要有人帮你把它"翻译"出来。
+
+${CASES['ISFP']}
+
+📌 下一步
+我已经看完你的测评结果了。回复"好的"，我们来聊聊你心里那个"向往的方向"，帮你看看怎么把它变成申请里的核心故事，约15分钟。`
+  },
+
+  ISTJ: {
+    internal: (name, grade, target) => `【MBTI推测】ISTJ — 检察官
+判断依据：规则和标准偏好强（Q3高），责任感重（Q12高），路径清晰需求高（Q5高），职业转化重视（Q13高），社交适度。
+
+【核心留学动机】
+留学是有明确预期回报的长期投资，要实际、可量化。
+
+【最可能的顾虑点】
+① 流程繁琐，担心哪步出错  ② 家庭经济压力的理性权衡  ③ 对不确定性天然抗拒
+
+【建议跟进话术】
+→ 给一份清晰的时间线和步骤清单，减少不确定感
+→ 用具体数字说话：就业率、平均薪资、录取率`,
+
+    card: (name, grade, target) => `🔍 ${name}，你的专属留学情报档案来了
+
+📋 性格解密
+你是那种"说到做到"的人——一旦决定，执行力极强。很多人申请时三天打鱼两天晒网，而你能按计划推进。这种特质在申请周期里价值巨大：标化备考需要长期坚持，文书打磨需要反复迭代，你都能做到。
+
+🎯 最适合你的留学路径
+【稳定精进型 · 工程/财务/数据/法律/运营方向】
+推荐行业认可度高、就业方向清晰的专业。你需要知道"这个学位拿到手能做什么"，而不是模糊的"提升视野"。
+
+⚡ 你的申请核心优势
+① GPA和标化通常有优势：你的自律性在学业成绩上会有体现
+② 背景逻辑强：你的经历不会乱，申请材料整理起来清晰有条理
+
+🌍 关于${target}
+${countryAdvice('ISTJ', target)}
+
+⏳ 你现在的时间窗口
+${getTimeline(grade)}。ISTJ最大的风险是"只选保险选项，错过冲刺机会"——你的执行力很可能比你预想的走得更远，建议加1-2所"有挑战性"的学校。
+
+${CASES['ISTJ']}
+
+📌 下一步
+我已经看完你的测评结果了。回复"好的"，我给你梳理一份详细的时间线和步骤清单，让整个申请流程看得见、摸得着，约15分钟。`
+  },
+
+  ISTP: {
+    internal: (name, grade, target) => `【MBTI推测】ISTP — 鉴赏家
+判断依据：实操型学习偏好（Q8高），独立性强（Q4低/Q7低），不依赖外部认可（Q2低），对情感归属需求低（Q15低），职业转化务实（Q13高）。
+
+【核心留学动机】
+希望学到能直接用的硬技能，对纯理论没兴趣，留学价值在于"做项目、积累实战经验"。
+
+【最可能的顾虑点】
+① 觉得很多课程没用  ② 担心环境太"社交"消耗自己
+
+【建议跟进话术】
+→ 聚焦在"你能做什么项目/实习"而不是"你会认识多少人"
+→ 问：你最想在毕业时拿到什么具体技能或作品？`,
+
+    card: (name, grade, target) => `🔍 ${name}，你的专属留学情报档案来了
+
+📋 性格解密
+你是那种"talk less, do more"的人——不爱说大道理，但动手能力极强。在以"作品"说话的申请体系里，你的实际项目经历比很多只会写简历的同学更有说服力，关键是要让它在材料里"被看见"。
+
+🎯 最适合你的留学路径
+【技能实战型 · 工程/数据科学/产品/UX/金融科技方向】
+推荐有实习嵌入、实验室机会或毕设项目的课程。你在动手做的环境里学得最快，也最容易产出拿得出手的成果。
+
+⚡ 你的申请核心优势
+① 项目经历有说服力：你做过的东西通常是真实的，不是"参与了"而是"主导了"
+② 技术类面试占优：你的逻辑性和实操思路在case/技术面试中天然有优势
+
+🌍 关于${target}
+${countryAdvice('ISTP', target)}
+
+⏳ 你现在的时间窗口
+${getTimeline(grade)}。ISTP容易在推荐信、文书这些"软性材料"上吃亏——这些不是你擅长的，建议现在就找人协助，别等到最后。
+
+${CASES['ISTP']}
+
+📌 下一步
+我已经看完你的测评结果了。回复"好的"，我帮你看看怎么把你做过的项目转化成申请里最有冲击力的素材，约15分钟。`
+  },
+
+  ESFJ: {
+    internal: (name, grade, target) => `【MBTI推测】ESFJ — 执政官
+判断依据：家人认可高度重视（Q2高），团队氛围驱动（Q4高），助人意愿强（Q1高），对孤独敏感（Q9高），归属感需求高（Q15高），责任感强（Q12高）。
+
+【核心留学动机】
+希望留学是家庭投资的"回报"，同时融入有归属感的圈子。
+
+【最可能的顾虑点】
+① 远离家人和朋友的适应问题  ② 家人意见不统一  ③ 担心"出去了变陌生人"
+
+【建议跟进话术】
+→ 强调留学后如何成为家庭资源的"放大器"
+→ 讲一个"出去后家庭关系更紧密"的真实案例`,
+
+    card: (name, grade, target) => `🔍 ${name}，你的专属留学情报档案来了
+
+📋 性格解密
+你有很强的"凝聚力"——走到哪里，身边容易自然形成一个小圈子。这种特质在海外反而是优势：你不会是那个一个人缩在宿舍的人，而是那个大家都认识的人，适应新环境的速度比你想象的快得多。
+
+🎯 最适合你的留学路径
+【人际驱动型 · 市场/人力资源/教育/公关/护理方向】
+推荐有强社区文化、鼓励合作的项目和学校。你的人际能量在这类环境里会被充分激活，而不是被压制。
+
+⚡ 你的申请核心优势
+① 软实力素材丰富：团队组织、活动策划类经历是你的素材库，这类贡献在申请里越来越被重视
+② 推荐信温度高：认识你的老师和导师通常愿意为你写"有感情"的推荐信，不是冷冰冰的模板
+
+🌍 关于${target}
+${countryAdvice('ESFJ', target)}
+
+⏳ 你现在的时间窗口
+${getTimeline(grade)}。ESFJ最容易因为"等家人同意"而错过时间窗口——建议把材料准备和家人沟通同步推进，两件事并行，不要互相等待。
+
+${CASES['ESFJ']}
+
+📌 下一步
+我已经看完你的测评结果了。回复"好的"，我们来聊聊你的情况，也可以帮你想想怎么和家人说这件事，约15分钟。`
+  },
+
+  ESFP: {
+    internal: (name, grade, target) => `【MBTI推测】ESFP — 表演者
+判断依据：社交活跃（Q4/Q10高），体验导向（Q8高），对规则束缚敏感（Q3低），归属感和当下体验更重要（Q15高）。
+
+【核心留学动机】
+留学是改变人生轨迹的体验，渴望走出去遇见不同的人和生活方式。
+
+【最可能的顾虑点】
+① 担心成绩不够好  ② 不知道自己能不能坚持  ③ 觉得申请流程太枯燥
+
+【建议跟进话术】
+→ 把申请流程"游戏化"，每完成一步给一个小反馈
+→ 强调留学体验本身，而不只是学历价值`,
+
+    card: (name, grade, target) => `🔍 ${name}，你的专属留学情报档案来了
+
+📋 性格解密
+你的存在感很强——不是抢镜，而是你真的很会让氛围变好。这种社交能量在海外生活里是非常宝贵的技能，你适应新环境的速度通常比大多数人快得多，这本身就已经赢了一大半人。
+
+🎯 最适合你的留学路径
+【体验拓展型 · 传播/旅游管理/活动策划/时尚/体育管理方向】
+推荐课程多元、课外生活丰富的学校。你需要一个"在生活里学习"的环境，而不是每天泡图书馆的氛围。
+
+⚡ 你的申请核心优势
+① 课外经历多元：你的活动经历通常比同龄人更丰富，整理出来都是申请的加分项
+② 面试状态自然：你的真实状态就是面试最好的状态，不需要刻意"表演"，放松就是你最大的竞争力
+
+🌍 关于${target}
+${countryAdvice('ESFP', target)}
+
+⏳ 你现在的时间窗口
+${getTimeline(grade)}。ESFP最大的挑战是标化备考的持续性——这是最需要枯燥重复的环节，建议找一个能督促你的人一起，效果会好很多。
+
+${CASES['ESFP']}
+
+📌 下一步
+我已经看完你的测评结果了。回复"好的"，约15分钟聊聊，帮你把那些"做过但不知道能不能用"的经历整理出来，你会发现自己的素材比想象的多很多。`
+  },
+
+  ESTJ: {
+    internal: (name, grade, target) => `【MBTI推测】ESTJ — 总经理
+判断依据：规则和评价标准偏好强（Q3高），职业转化重视（Q13高），责任感极强（Q12高），能接受短期付出（Q5高），整体偏务实理性。
+
+【核心留学动机】
+留学是职业晋升的战略工具，目标明确：顶尖学历+行业认可。
+
+【最可能的顾虑点】
+① 担心项目性价比不够高  ② 对建议的专业度有高要求
+
+【建议跟进话术】
+→ 用数据、就业率、校友案例说话
+→ 给出明确时间线和步骤，不要模糊表述`,
+
+    card: (name, grade, target) => `🔍 ${name}，你的专属留学情报档案来了
+
+📋 性格解密
+你对目标的清晰度和执行力是同龄人里罕见的。你不做"感觉差不多"的决定，一定要把逻辑想清楚再动手——这种特质在申请中能帮你避开很多坑，也让你的申请材料看起来格外有说服力。
+
+🎯 最适合你的留学路径
+【职业直通型 · 商科/供应链/工程管理/公共管理方向】
+推荐就业路径清晰、行业背书强的项目。你的目标感会让你在这类项目里走得比大多数人更顺，校友资源也能被你充分利用。
+
+⚡ 你的申请核心优势
+① 领导力经历充足：团队负责人、项目管理类经历是你的标配，整理出来很有说服力
+② 执行力有目共睹：老师和导师对你的评价通常偏正面，推荐信质量有保障
+
+🌍 关于${target}
+${countryAdvice('ESTJ', target)}
+
+⏳ 你现在的时间窗口
+${getTimeline(grade)}。ESTJ容易在选校上过于保守——你的背景可能比你自己评估的更有竞争力，冲刺线可以比你想的再高一档。
+
+${CASES['ESTJ']}
+
+📌 下一步
+我已经看完你的测评结果了。回复"好的"，我帮你做一个背景诊断和选校分析，看看你现在能冲到哪个层次，约15分钟。`
+  },
+
+  ESTP: {
+    internal: (name, grade, target) => `【MBTI推测】ESTP — 企业家
+判断依据：行动导向（Q8高/Q4高），不喜欢规则束缚（Q3低），战略性社交意识（Q14高），对即时反馈有需求（Q10高），务实而非情感驱动（Q1中/Q6低）。
+
+【核心留学动机】
+留学是拓展人脉、进入更大舞台的机会，对"体验"和"资源"的渴望并重。
+
+【最可能的顾虑点】
+① 担心留学期间错过国内机会  ② 对长期学术课程没耐心
+
+【建议跟进话术】
+→ 强调海外人脉和资源的不可替代性
+→ 推荐有大量实习/networking机会的项目，而非纯学术`,
+
+    card: (name, grade, target) => `🔍 ${name}，你的专属留学情报档案来了
+
+📋 性格解密
+你有天然的"局感"——进入一个新环境，能很快搞清楚谁是关键人物、什么是潜规则。这种能力在海外求职和人脉建设里，是别人花几年才能练出来的，而你是本能。
+
+🎯 最适合你的留学路径
+【资源整合型 · 金融/销售/创业/媒体/房地产方向】
+推荐实习机会多、行业连接强的项目和城市。你在"做中学"的环境里进步最快，理论课不是你的主战场，实习和人脉才是。
+
+⚡ 你的申请核心优势
+① 实战经历突出：你的实习通常是真实打过仗的，不是陪衬，这类素材在申请中冲击力很强
+② 面试反应快：压力面试或开放性问题里，你比多数人更能随机应变
+
+🌍 关于${target}
+${countryAdvice('ESTP', target)}
+
+⏳ 你现在的时间窗口
+${getTimeline(grade)}。ESTP最大的申请风险是"文书太口语化、太随意"——你的想法很好，但需要有人帮你"翻译"成申请语言，这件事越早开始越好。
+
+${CASES['ESTP']}
+
+📌 下一步
+我已经看完你的测评结果了。回复"好的"，我们来聊聊你的实战经历怎么转化成申请材料里最有冲击力的素材，约15分钟。`
+  }
+};
+
+// ============ 16类型元数据（趣味+专业+职业）============
+const META = {
+  INFJ: { name:'提倡者', sub:'理想主义的灯塔守护者', majors:['教育学','社会政策','公共健康','心理学','可持续发展','社会工作'], careers:['教育机构','NGO/国际组织','政策研究','咨询公司'], groupRole:'默默写完80%内容的隐形MVP，deadline前还帮大家检查格式', loveMatch:'ENFP「竞选者」', loveDesc:'一个能把你从脑内世界拉出来冒险的人', fashion:'学术文艺风 · 针织开衫+帆布包+随身一本书', life:'图书馆常驻VIP，偶尔出现在咖啡馆角落写日记' },
+  INFP: { name:'调停者', sub:'永远在寻找意义的梦想家', majors:['传播学','设计','教育学','人文学科','跨学科','创意写作'], careers:['创意行业','出版/媒体','教育','自由职业'], groupRole:'负责写intro和conclusion，只有你能把大家的内容串成故事', loveMatch:'ENTJ「指挥官」', loveDesc:'你负责做梦，对方负责把梦变成计划', fashion:'随性浪漫风 · 宽松毛衣+vintage配饰+塞满东西的包', life:'在异国街头迷路但觉得这就是旅行的意义' },
+  INTJ: { name:'建筑师', sub:'冷静精准的战略建筑师', majors:['商科','工程','计算机','金融','战略管理','数据科学'], careers:['战略咨询','科技公司','研究机构','投资'], groupRole:'第一天就建好了project timeline和分工表', loveMatch:'ENFP「竞选者」', loveDesc:'你需要一个能软化你棱角的人', fashion:'极简精英风 · 黑白灰+质感面料+永远很得体', life:'已经规划好了四年的课程表和实习路线' },
+  INTP: { name:'逻辑学家', sub:'在思维迷宫里乐此不疲的探索者', majors:['计算机','数学','物理','哲学','数据科学','社科研究'], careers:['研究机构','科技公司','数据分析','学术界'], groupRole:'被分到literature review，交了一篇比要求深3倍的分析', loveMatch:'ENTJ「指挥官」', loveDesc:'你想问题，对方推执行，完美互补', fashion:'随意舒适风 · 连帽衫+运动鞋+可能穿了三天的同一件外套', life:'凌晨3点在宿舍研究一个跟专业完全无关的兔子洞' },
+  ENFJ: { name:'主人公', sub:'天生自带聚光灯的引路人', majors:['管理学','教育学','传播学','公共政策','社会工作','心理学'], careers:['管理层','教育/培训','公关传播','NGO'], groupRole:'自然而然就成了组长，还负责调解组内矛盾', loveMatch:'INFP「调停者」', loveDesc:'一个能让你放下"照顾所有人"包袱的人', fashion:'温暖亲和风 · 好看但不浮夸+让人觉得很舒服', life:'同学聚会的发起者，所有人的情感树洞' },
+  ENFP: { name:'竞选者', sub:'全世界都是你的灵感来源', majors:['跨学科','创新管理','传媒','设计','创业','社会创新'], careers:['创业公司','广告传媒','设计','社会企业'], groupRole:'提了10个创意方向，每个都精彩，但需要别人帮忙选一个', loveMatch:'INTJ「建筑师」', loveDesc:'你负责点燃火花，对方负责搭建引擎', fashion:'混搭创意风 · 撞色+有趣配饰+每天像赶不同的时装周', life:'一学期加了8个社团，认识了全校一半的国际生' },
+  ENTJ: { name:'指挥官', sub:'目标锁定就绝不回头', majors:['商科','金融','咨询','工程管理','法律','经济学'], careers:['投行','咨询公司','管理层','创业'], groupRole:'开完第一次会就画好甘特图，谁没按时交催到交为止', loveMatch:'INFP「调停者」', loveDesc:'你需要一个能让你停下来感受生活的人', fashion:'职场精英风 · 西装外套+质感配饰+气场两米八', life:'大一就开始networking，毕业前已有3段核心实习' },
+  ENTP: { name:'辩论家', sub:'规则就是用来被你挑战的', majors:['科技政策','法律','创业','传播','商业分析','哲学'], careers:['科技公司','法律','创业','媒体/策略'], groupRole:'在讨论环节贡献了最有争议的观点，教授又爱又头疼', loveMatch:'INFJ「提倡者」', loveDesc:'一个能接住你所有奇思妙想还不会烦的人', fashion:'随性潮流风 · 不按常理出牌+一件让人记住的标志性单品', life:'课堂上永远第一个举手反驳教授的那个人' },
+  ISFJ: { name:'守卫者', sub:'温暖可靠的幕后守护者', majors:['教育学','护理','管理学','社会科学','会计','公共卫生'], careers:['教育机构','医疗健康','行政管理','公务员'], groupRole:'整理了所有人的meeting notes，还顺手做了参考文献', loveMatch:'ESTP「企业家」', loveDesc:'一个能带你跳出舒适区的冒险家', fashion:'温柔经典风 · 干净整洁+柔和色系+细节见用心', life:'室友生病第一个送药的人，宿舍里的妈妈角色' },
+  ISFP: { name:'探险家', sub:'用感受力丈量世界的艺术灵魂', majors:['艺术','设计','心理学','传媒','人文学科','音乐'], careers:['设计公司','艺术/文创','心理咨询','自由职业'], groupRole:'负责做PPT设计，交出来的视觉效果让全组惊艳', loveMatch:'ENTJ「指挥官」', loveDesc:'你的审美+对方的执行力=无敌组合', fashion:'艺术感性风 · 独特审美+vintage+总有一个手工配饰', life:'默默用照片记录了留学生活的每个角落' },
+  ISTJ: { name:'检察官', sub:'使命必达的执行担当', majors:['工程','财务','数据分析','法律','运营管理','会计'], careers:['四大','银行','工程公司','政府机构'], groupRole:'严格按rubric检查每项评分标准，确保不丢一分', loveMatch:'ESFP「表演者」', loveDesc:'你需要一个让你学会"不完美也没关系"的人', fashion:'稳重实用风 · 经典款+质量好+衣柜10件穿3年', life:'课表精确到分钟，考试周是别人来借笔记的时候' },
+  ISTP: { name:'鉴赏家', sub:'少说多做的硬核实干家', majors:['工程','数据科学','产品设计','UX','金融科技','机械'], careers:['工程师','产品经理','技术顾问','创客'], groupRole:'不怎么说话但coding/数据分析部分全是你做的', loveMatch:'ENFJ「主人公」', loveDesc:'一个能帮你打开社交世界的温暖向导', fashion:'机能实用风 · 工装裤+运动鞋+功能性优先', life:'周末在实验室/工作室里搞自己的项目' },
+  ESFJ: { name:'执政官', sub:'走到哪里都能成为圆心的人', majors:['市场营销','人力资源','教育','公关','护理','酒店管理'], careers:['HR/人力资源','公关传播','教育培训','市场营销'], groupRole:'建了群、定了会议时间、还带了零食来开会', loveMatch:'ISTP「鉴赏家」', loveDesc:'你的热情+对方的冷静=最稳的组合', fashion:'活力社交风 · 得体亮眼+适合拍照+永远很有精神', life:'留学第一周就和邻居混熟了，圣诞节被3家人邀请' },
+  ESFP: { name:'表演者', sub:'把生活过成一场精彩表演', majors:['传播','旅游管理','活动策划','时尚','体育管理','表演'], careers:['活动策划','传媒娱乐','时尚品牌','旅游/酒店'], groupRole:'presentation环节的王者，全组的PPT就靠你讲活了', loveMatch:'ISTJ「检察官」', loveDesc:'你需要一个能帮你把嗨落地的稳定力量', fashion:'时尚大胆风 · 潮牌+抓眼球+别人不敢穿的你穿出来很好看', life:'学校派对的灵魂人物，everyone knows you' },
+  ESTJ: { name:'总经理', sub:'天生的团队掌舵人', majors:['商科','供应链','工程管理','公共管理','金融','法律'], careers:['管理岗','金融机构','政府部门','咨询公司'], groupRole:'分工明确、进度管控、质量把关——你就是项目经理', loveMatch:'INFP「调停者」', loveDesc:'一个能让你看到效率之外还有美的人', fashion:'商务精英风 · 永远穿得像随时要去面试+手表是标配', life:'学生会主席/商赛队长/实习offer收割机' },
+  ESTP: { name:'企业家', sub:'先干再说的行动派', majors:['金融','市场营销','创业','媒体','房地产','体育管理'], careers:['销售/BD','金融交易','创业','房地产'], groupRole:'负责去找教授谈延期/加分/资源，社交能力全组最强', loveMatch:'ISFJ「守卫者」', loveDesc:'你在外面冲锋，需要一个稳固的大后方', fashion:'运动街头风 · 球鞋+轻奢配件+看起来轻松但其实很贵', life:'还没毕业就在做side hustle，人脉比学分积累得快' }
+};
+
+// ============ 雷达图 & 内容解析 ============
+function computeRadar(sc) {
+  return [
+    (sc[3] + sc[9]) / 2,                          // 社交能量
+    (sc[7] + (6 - sc[2])) / 2,                    // 探索直觉
+    (sc[0] + sc[5]) / 2,                           // 价值驱动
+    (sc[2] + sc[4] + sc[11]) / 3,                  // 规划执行
+    (sc[4] + (6 - sc[10]) + (6 - sc[8])) / 3      // 抗压韧性
+  ];
+}
+
+function drawRadar(canvasId, vals, labels) {
+  const canvas = document.getElementById(canvasId);
+  const dpr = window.devicePixelRatio || 1;
+  const size = Math.min(canvas.parentElement.clientWidth - 20, 280);
+  canvas.width = size * dpr; canvas.height = size * dpr;
+  canvas.style.width = size + 'px'; canvas.style.height = size + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  const cx = size / 2, cy = size / 2, r = size / 2 - 36, n = vals.length;
+  // Grid
+  for (let lv = 1; lv <= 5; lv++) {
+    ctx.beginPath();
+    for (let i = 0; i <= n; i++) {
+      const a = (Math.PI * 2 * (i % n) / n) - Math.PI / 2;
+      const x = cx + r * (lv / 5) * Math.cos(a), y = cy + r * (lv / 5) * Math.sin(a);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = 'rgba(212,168,67,' + (lv === 5 ? 0.25 : 0.1) + ')';
+    ctx.lineWidth = 1; ctx.stroke();
+  }
+  // Axes + labels
+  for (let i = 0; i < n; i++) {
+    const a = (Math.PI * 2 * i / n) - Math.PI / 2;
+    ctx.beginPath(); ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+    ctx.strokeStyle = 'rgba(212,168,67,0.15)'; ctx.stroke();
+    const lx = cx + (r + 22) * Math.cos(a), ly = cy + (r + 22) * Math.sin(a);
+    ctx.fillStyle = '#8a9bb5'; ctx.font = '11px "Noto Sans SC", sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(labels[i], lx, ly);
+  }
+  // Data polygon
+  ctx.beginPath();
+  for (let i = 0; i <= n; i++) {
+    const idx = i % n, a = (Math.PI * 2 * idx / n) - Math.PI / 2;
+    const x = cx + r * (vals[idx] / 5) * Math.cos(a), y = cy + r * (vals[idx] / 5) * Math.sin(a);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.fillStyle = 'rgba(212,168,67,0.15)'; ctx.fill();
+  ctx.strokeStyle = '#d4a843'; ctx.lineWidth = 2; ctx.stroke();
+  // Dots
+  for (let i = 0; i < n; i++) {
+    const a = (Math.PI * 2 * i / n) - Math.PI / 2;
+    const x = cx + r * (vals[i] / 5) * Math.cos(a), y = cy + r * (vals[i] / 5) * Math.sin(a);
+    ctx.beginPath(); ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#d4a843'; ctx.fill();
+  }
+}
+
+function parseCardSections(text) {
+  const lines = text.split('\n'), sections = {};
+  let cur = 'intro';
+  const keyMap = { '📋': 'personality', '🎯': 'path', '⚡': 'strengths', '🌍': 'country', '⏳': 'timeline', '💬': 'case' };
+  lines.forEach(line => {
+    const t = line.trim();
+    let matched = false;
+    for (const [emoji, key] of Object.entries(keyMap)) {
+      if (t.startsWith(emoji)) {
+        cur = key; matched = true;
+        // 💬案例是单行内容，其他emoji行只是标题，跳过标题文字
+        if (emoji === '💬') {
+          const rest = t.slice(emoji.length).trim();
+          if (rest) { sections[cur] = (sections[cur] || '') + rest + '\n'; }
+        }
+        break;
+      }
+    }
+    if (!matched) { sections[cur] = (sections[cur] || '') + line + '\n'; }
+  });
+  Object.keys(sections).forEach(k => { sections[k] = sections[k].trim(); });
+  return sections;
+}
+
+// ============ MBTI计算 ============
+function calcMBTI(scores) {
+  const eScore = (scores[3] + scores[6] + scores[9]) / 3;
+  const iScore = scores[8];
+  const isE = eScore >= iScore;
+  const sScore = (scores[2] + scores[4] + scores[12]) / 3;
+  const nScore = (scores[10] + scores[13]) / 2;
+  const isN = nScore >= sScore;
+  const fScore = (scores[0] + scores[1] + scores[5] + scores[14]) / 4;
+  const tScore = scores[12];
+  const isF = fScore >= tScore;
+  const jScore = (scores[2] + scores[4] + scores[11]) / 3;
+  const pScore = scores[7];
+  const isJ = jScore >= pScore;
+  return (isE?'E':'I') + (isN?'N':'S') + (isF?'F':'T') + (isJ?'J':'P');
+}
+
+// ============ UI状态 ============
+let currentStep = 0;
+let info = { name:'', grade:'', wechat:'', target:'' };
+let scores = new Array(15).fill(0);
+let currentQ = 0;
+let cardText = '';
+let dotsInterval = null;
+
+function goStep(n) {
+  document.getElementById('step-'+currentStep).classList.remove('active');
+  currentStep = n;
+  document.getElementById('step-'+n).classList.add('active');
+  if (n === 2) renderQuestion();
+  if (n === 3) { startDots(); setTimeout(generateReport, 1400); }
+  else stopDots();
+}
+
+function selectChip(type, el, val) {
+  const gid = type==='grade' ? 'grade-chips' : 'target-chips';
+  document.querySelectorAll('#'+gid+' .chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  info[type] = val;
+  checkInfo();
+}
+
+function checkInfo() {
+  info.name = document.getElementById('input-name').value.trim();
+  info.wechat = document.getElementById('input-wechat').value.trim();
+  document.getElementById('btn-info-next').disabled = !(info.name && info.grade && info.target);
+}
+
+function renderQuestion() {
+  document.getElementById('question-num').textContent = `第 ${currentQ+1} 题 / 共 ${questions.length} 题`;
+  document.getElementById('question-text').textContent = questions[currentQ];
+  const dotsRow = document.getElementById('dots-row');
+  dotsRow.innerHTML = '';
+  questions.forEach((_,i) => {
+    const d = document.createElement('div');
+    d.className = 'dot'+(scores[i]>0?' answered':'')+(i===currentQ?' current':'');
+    d.onclick = () => { currentQ=i; renderQuestion(); };
+    dotsRow.appendChild(d);
+  });
+  const scaleRow = document.getElementById('scale-row');
+  scaleRow.innerHTML = '';
+  [1,2,3,4,5].forEach(v => {
+    const b = document.createElement('button');
+    b.className = 'scale-btn'+(scores[currentQ]===v?' selected':'');
+    b.textContent = v;
+    b.onclick = () => handleScore(v);
+    scaleRow.appendChild(b);
+  });
+  const answered = scores.filter(s=>s>0).length;
+  document.getElementById('progress-count').textContent = `${answered} / ${questions.length}`;
+  document.getElementById('progress-fill').style.width = `${Math.round(answered/questions.length*100)}%`;
+  const navRow = document.getElementById('nav-row');
+  navRow.innerHTML = '';
+  if (currentQ > 0) {
+    const prev = document.createElement('button');
+    prev.className = 'btn-secondary';
+    prev.textContent = '← 上一题';
+    prev.onclick = () => { currentQ--; renderQuestion(); };
+    navRow.appendChild(prev);
+  }
+  if (currentQ < questions.length-1) {
+    const next = document.createElement('button');
+    next.className = 'btn-secondary';
+    next.style.color = scores[currentQ]>0 ? '#d4a843' : '#555';
+    next.textContent = '下一题 →';
+    next.onclick = () => { if(scores[currentQ]>0){ currentQ++; renderQuestion(); } };
+    navRow.appendChild(next);
+  } else {
+    const allDone = scores.every(s=>s>0);
+    const gen = document.createElement('button');
+    gen.className = 'btn-primary';
+    gen.style.cssText = 'width:auto;flex:1;padding:12px';
+    gen.textContent = '🔍 解锁我的情报档案';
+    gen.disabled = !allDone;
+    if(!allDone) gen.style.cssText += ';background:rgba(255,255,255,0.05);color:#555;cursor:not-allowed';
+    gen.onclick = () => { if(allDone) goStep(3); };
+    navRow.appendChild(gen);
+  }
+}
+
+function handleScore(val) {
+  scores[currentQ] = val;
+  renderQuestion();
+  if (currentQ < questions.length-1) setTimeout(() => { currentQ++; renderQuestion(); }, 200);
+}
+
+function startDots() {
+  let d = 1;
+  document.getElementById('gen-desc').innerHTML = `正在分析 ${info.name} 的性格维度<br>匹配最适合你的留学路径<br>生成专属情报档案`;
+  dotsInterval = setInterval(() => {
+    d = d>=4 ? 1 : d+1;
+    document.getElementById('gen-title').textContent = '正在解析你的情报档案'+ '.'.repeat(d);
+  }, 500);
+}
+function stopDots() {
+  if(dotsInterval){ clearInterval(dotsInterval); dotsInterval=null; }
+}
+
+function generateReport() {
+  const mbti = calcMBTI(scores);
+  const tpl = TEMPLATES[mbti];
+  const meta = META[mbti];
+  if (!tpl || !meta) { goStep(2); return; }
+
+  // 生成原始文本并去掉运营话术
+  cardText = tpl.card(info.name, info.grade, info.target);
+  cardText = cardText.replace(/\n*📌 下一步[\s\S]*$/, '');
+
+  // 解析文本为结构化分区
+  const sec = parseCardSections(cardText);
+
+  // ── Hero ──
+  document.getElementById('hero-mbti').textContent = mbti;
+  document.getElementById('hero-name').textContent = meta.name;
+  document.getElementById('hero-sub').textContent = meta.sub;
+  document.getElementById('hero-user').textContent = `${info.name} · ${info.grade} · ${info.target}`;
+
+  // ── 雷达图 ──
+  const radarVals = computeRadar(scores);
+  setTimeout(() => drawRadar('radar-canvas', radarVals, ['社交能量','探索直觉','价值驱动','规划执行','抗压韧性']), 100);
+
+  // ── 各文本模块 ──
+  document.getElementById('sec-personality-body').textContent = sec.personality || '';
+  document.getElementById('sec-path-body').textContent = sec.path || '';
+  document.getElementById('sec-strengths-body').textContent = sec.strengths || '';
+  document.getElementById('sec-country-body').textContent = sec.country || '';
+  document.getElementById('sec-timeline-body').textContent = sec.timeline || '';
+  document.getElementById('sec-case-body').textContent = sec.case || '';
+
+  // ── 专业标签 ──
+  document.getElementById('major-tags').innerHTML = meta.majors.map(m => `<span class="tag-item">${m}</span>`).join('');
+
+  // ── 职业标签 ──
+  document.getElementById('career-tags').innerHTML = meta.careers.map(c => `<span class="tag-item">${c}</span>`).join('');
+
+  // ── 趣味人设 ──
+  document.getElementById('fun-grid').innerHTML = `
+    <div class="fun-card"><div class="fun-icon">📝</div><div class="fun-label">小组作业人设</div><div class="fun-text">${meta.groupRole}</div></div>
+    <div class="fun-card"><div class="fun-icon">💕</div><div class="fun-label">恋爱最佳配对</div><div class="fun-match">${meta.loveMatch}</div><div class="fun-text">${meta.loveDesc}</div></div>
+    <div class="fun-card"><div class="fun-icon">👔</div><div class="fun-label">留学穿搭风格</div><div class="fun-text">${meta.fashion}</div></div>
+    <div class="fun-card"><div class="fun-icon">🏠</div><div class="fun-label">留学生活人设</div><div class="fun-text">${meta.life}</div></div>`;
+
+  // ── CTA 预填微信号 ──
+  if (info.wechat) document.getElementById('cta-wechat').value = info.wechat;
+
+  // ── 生成分享用纯文本 ──
+  const funText = `\n🎭 你的留学人设\n· 小组作业：${meta.groupRole}\n· 恋爱配对：${meta.loveMatch} — ${meta.loveDesc}\n· 穿搭风格：${meta.fashion}\n· 生活人设：${meta.life}`;
+  cardText = `🔍 MBTI情报局 · 我的留学人格档案\n【${mbti} · ${meta.name}】${meta.sub}\n\n${cardText}${funText}\n\n测测你的留学人格 →`;
+
+  goStep(4);
+  // 滚动到顶部
+  setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
+  // 通知飞书
+  sendToFeishu('report');
+}
+
+function copyCard() {
+  const doCopy = (text) => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(showCopied).catch(fallbackCopy);
+    } else { fallbackCopy(); }
+  };
+  const fallbackCopy = () => {
+    const ta = document.createElement('textarea');
+    ta.value = cardText; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta); showCopied();
+  };
+  const showCopied = () => {
+    const btn = document.getElementById('btn-copy-card');
+    btn.textContent = '✓ 已复制！'; setTimeout(() => { btn.textContent = '📋 复制我的档案'; }, 2500);
+  };
+  doCopy(cardText);
+}
+
+function shareResult() {
+  const text = cardText;
+  if (navigator.share) {
+    navigator.share({ title: 'MBTI情报局 · 我的留学档案', text }).catch(() => {});
+  } else {
+    // fallback: 复制到剪贴板
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    const btn = document.querySelector('.btn-copy-all');
+    btn.textContent = '✓ 已复制，去分享吧'; setTimeout(() => { btn.textContent = '分享给朋友'; }, 2500);
+  }
+}
+
+// ============ 飞书通知（sendBeacon 直连，无需服务端代理）============
+const FEISHU_WEBHOOK = 'https://open.feishu.cn/open-apis/bot/v2/hook/104820c9-2175-4482-b4e4-ea4620d7685e';
+function sendToFeishu(type, extra) {
+  const mbti = document.getElementById('hero-mbti')?.textContent || '';
+  const lines = [
+    `**姓名：** ${info.name}`,
+    `**年级：** ${info.grade}`,
+    `**目标国家：** ${info.target}`,
+    `**MBTI结果：** ${mbti} · ${META[mbti]?.name || ''}`,
+  ];
+  if (extra?.wechat) lines.push(`**微信号：** ${extra.wechat}`);
+  lines.push(`**时间：** ${new Date().toLocaleString('zh-CN')}`);
+  const payload = {
+    msg_type: 'interactive',
+    card: {
+      header: {
+        title: { tag: 'plain_text', content: type === 'cta' ? '📱 新咨询预约' : '🔍 新测评完成' },
+        template: type === 'cta' ? 'green' : 'gold'
+      },
+      elements: [{ tag: 'div', text: { tag: 'lark_md', content: lines.join('\n') } }]
+    }
+  };
+  // sendBeacon 绕过 CORS，适合 fire-and-forget 通知
+  try {
+    const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+    navigator.sendBeacon(FEISHU_WEBHOOK, blob);
+  } catch(e) {
+    // fallback: 普通 fetch（在支持 CORS 的环境下生效）
+    fetch(FEISHU_WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload), mode:'no-cors' }).catch(()=>{});
+  }
+}
+
+function submitCTA() {
+  const wechat = document.getElementById('cta-wechat').value.trim();
+  if (!wechat) { document.getElementById('cta-wechat').style.borderColor = '#e06c6c'; return; }
+  sendToFeishu('cta', { wechat });
+  document.getElementById('cta-form').innerHTML = '<div class="cta-submitted">✓ 已提交！顾问会在 24 小时内通过微信联系你</div>';
+}
+
+function restart() {
+  scores = new Array(15).fill(0); currentQ = 0;
+  info = { name:'', grade:'', wechat:'', target:'' };
+  cardText = '';
+  document.getElementById('input-name').value = '';
+  document.getElementById('input-wechat').value = '';
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  document.getElementById('btn-info-next').disabled = true;
+  goStep(0);
+}
+</script>
+</body>
+</html>
