@@ -1357,36 +1357,26 @@ function shareResult() {
   }
 }
 
-// ============ 飞书通知（sendBeacon 直连，无需服务端代理）============
-const FEISHU_WEBHOOK = 'https://open.feishu.cn/open-apis/bot/v2/hook/104820c9-2175-4482-b4e4-ea4620d7685e';
+// ============ 飞书数据沉淀（多维表格 + 群通知）============
+const BITABLE_API = 'https://mbti-app-three.vercel.app/api/bitable';
 function sendToFeishu(type, extra) {
   const mbti = document.getElementById('hero-mbti')?.textContent || '';
-  const lines = [
-    `**姓名：** ${info.name}`,
-    `**年级：** ${info.grade}`,
-    `**目标国家：** ${info.target}`,
-    `**MBTI结果：** ${mbti} · ${META[mbti]?.name || ''}`,
-  ];
-  if (extra?.wechat) lines.push(`**微信号：** ${extra.wechat}`);
-  lines.push(`**时间：** ${new Date().toLocaleString('zh-CN')}`);
-  const payload = {
-    msg_type: 'interactive',
-    card: {
-      header: {
-        title: { tag: 'plain_text', content: type === 'cta' ? '📱 新咨询预约' : '🔍 新测评完成' },
-        template: type === 'cta' ? 'green' : 'gold'
-      },
-      elements: [{ tag: 'div', text: { tag: 'lark_md', content: lines.join('\n') } }]
-    }
+  const fields = {
+    '姓名': info.name || '',
+    '年级': info.grade || '',
+    '目标国家': info.target || '',
+    'MBTI结果': mbti + (META[mbti] ? ' · ' + META[mbti].name : ''),
+    '性格标签': META[mbti]?.sub || '',
+    '提交时间': new Date().toLocaleString('zh-CN'),
+    '来源': type === 'cta' ? '咨询预约' : '测评完成',
   };
-  // sendBeacon 绕过 CORS，适合 fire-and-forget 通知
-  try {
-    const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
-    navigator.sendBeacon(FEISHU_WEBHOOK, blob);
-  } catch(e) {
-    // fallback: 普通 fetch（在支持 CORS 的环境下生效）
-    fetch(FEISHU_WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload), mode:'no-cors' }).catch(()=>{});
-  }
+  if (extra?.wechat) fields['微信号'] = extra.wechat;
+  // 通过 Vercel 云函数写入多维表格 + 发群通知
+  fetch(BITABLE_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(fields),
+  }).catch(() => {});
 }
 
 function submitCTA() {

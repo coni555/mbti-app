@@ -1,6 +1,7 @@
 {
   "rewrites": [
     { "source": "/api/feishu", "destination": "/api/feishu" },
+    { "source": "/api/bitable", "destination": "/api/bitable" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
