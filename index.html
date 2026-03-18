@@ -305,7 +305,7 @@
       <div class="fun-grid" id="fun-grid"></div>
     </div>
     <div class="report-section" id="sec-country">
-      <div class="sec-title"><span>🌍</span> 留学国家/地区推荐</div>
+      <div class="sec-title"><span>🌍</span> 留学国家/地区推荐 · <span id="sec-country-name"></span></div>
       <div class="sec-body" id="sec-country-body"></div>
     </div>
     <div class="report-section" id="sec-timeline">
@@ -1820,6 +1820,7 @@ function generateReport() {
   document.getElementById('sec-personality-body').textContent = sec.personality || '';
   document.getElementById('sec-path-body').textContent = sec.path || '';
   document.getElementById('sec-strengths-body').textContent = sec.strengths || '';
+  document.getElementById('sec-country-name').textContent = info.target;
   document.getElementById('sec-country-body').innerHTML = formatSectionContent(sec.country || '');
   document.getElementById('sec-timeline-body').textContent = sec.timeline || '';
   document.getElementById('sec-case-title').textContent = `${mbti} 申请走过的坑`;
