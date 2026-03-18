@@ -2354,7 +2354,9 @@ function sendToFeishu(type, extra) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(fields),
-  }).catch(() => {});
+  }).then(r => {
+    if (!r.ok) r.text().then(t => console.error('飞书API失败:', r.status, t));
+  }).catch(e => console.error('飞书请求失败:', e.message));
 }
 
 // 扫码进入时立即记录一条（每个 session 只发一次）
