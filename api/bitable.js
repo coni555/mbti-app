@@ -14,8 +14,8 @@ export default async function handler(req, res) {
 
   const APP_ID = 'cli_a933f958d921dcc4';
   const APP_SECRET = 'iElNIFJ8zLDJjJzCTkOEwfBPHLZBx8Yh';
-  const APP_TOKEN = 'RgUzblP29azfK3svQjEcUPHlnoe';
-  const TABLE_ID = 'tbljSiqkJS1reqch';
+  const APP_TOKEN = 'MR1ab1PizaBgWVskQl3csrmOnGh';
+  const TABLE_ID = 'tblW46zN3Qf0UmiI';
 
   try {
     // 1. 获取 tenant_access_token
