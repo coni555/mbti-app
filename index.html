@@ -2359,11 +2359,6 @@ function sendToFeishu(type, extra) {
   }).catch(e => console.error('飞书请求失败:', e.message));
 }
 
-// 扫码进入时立即记录一条（每个 session 只发一次）
-if (activeRef && !sessionStorage.getItem('mbti_scan_sent')) {
-  sessionStorage.setItem('mbti_scan_sent', '1');
-  sendToFeishu('scan');
-}
 
 function restart() {
   scores = new Array(15).fill(0); currentQ = 0;
