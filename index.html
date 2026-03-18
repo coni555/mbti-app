@@ -338,23 +338,9 @@
       <div class="sec-title"><span>⚠️</span> <span id="sec-case-title"></span></div>
       <div class="sec-body" id="sec-case-body"></div>
     </div>
-    <div class="cta-box" id="cta-box">
-      <div class="cta-title">想要更详细的背景评估和选校方案？</div>
-      <div class="cta-desc">留下微信号，资深顾问会在 24 小时内联系你，提供一次免费的 1v1 背景诊断（约15分钟），帮你理清方向，不推销课程。</div>
-      <div id="cta-form">
-        <div class="cta-input-row">
-          <input class="cta-input" type="text" id="cta-wechat" placeholder="你的微信号">
-          <button class="cta-submit" onclick="submitCTA()">预约咨询</button>
-        </div>
-        <div class="cta-note">* 完全自愿，不填也不影响你查看完整报告</div>
-      </div>
-    </div>
     <div class="action-row">
       <button class="btn-copy" id="btn-copy-card" onclick="copyCard()">📋 复制我的档案</button>
-      <button class="btn-copy-all" onclick="shareToMoments()">📲 分享到朋友圈</button>
-    </div>
-    <div class="action-row" style="margin-top:-4px;">
-      <button class="btn-copy-all" style="flex:1;" onclick="shareResult()">💾 导出长图</button>
+      <button class="btn-copy-all" onclick="generatePoster()">📲 生成海报</button>
     </div>
 
     <!-- 企业微信二维码 -->
@@ -371,17 +357,18 @@
 
 </div>
 
-<!-- 分享到朋友圈引导浮层 -->
+<!-- 海报浮层：长按保存 -->
 <div class="share-overlay" id="share-overlay" onclick="closeShareGuide(event)">
   <div class="share-overlay-content">
-    <div class="share-overlay-icon">📲</div>
-    <div class="share-overlay-title">分享到朋友圈</div>
-    <div class="share-overlay-steps">
-      正在为你生成专属长图...<br>
-      保存后按以下步骤操作：<br><br>
-      ① 打开微信，点击「发现」→「朋友圈」<br>
+    <div class="share-overlay-title" style="margin-bottom:12px;">长按下方图片保存到相册</div>
+    <div class="share-overlay-img-wrap">
+      <img id="poster-img" src="" alt="海报" style="max-width:90vw;max-height:70vh;border-radius:8px;box-shadow:0 4px 30px rgba(0,0,0,0.6);">
+    </div>
+    <div class="share-overlay-steps" style="margin-top:16px;">
+      保存后发到朋友圈：<br>
+      ① 打开微信 →「发现」→「朋友圈」<br>
       ② 长按右上角相机图标<br>
-      ③ 选择刚保存的图片发布即可
+      ③ 选择刚保存的图片发布
     </div>
     <button class="share-overlay-close" onclick="closeShareGuide(event)">我知道了</button>
   </div>
@@ -2327,51 +2314,26 @@ function copyCard() {
   doCopy(cardText);
 }
 
-function generateLongImage(callback) {
+function generatePoster() {
+  const btn = document.querySelector('[onclick="generatePoster()"]');
+  btn.textContent = '正在生成海报...';
+  btn.disabled = true;
   const target = document.getElementById('step-4');
-  return html2canvas(target, {
+  html2canvas(target, {
     backgroundColor: '#040812',
     scale: 2,
     useCORS: true,
     logging: false,
     scrollY: -window.scrollY
   }).then(canvas => {
-    canvas.toBlob(blob => {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `MBTI情报局_${info.name || '报告'}.png`;
-      a.click();
-      URL.revokeObjectURL(url);
-      if (callback) callback(true);
-    }, 'image/png');
+    const dataUrl = canvas.toDataURL('image/png');
+    document.getElementById('poster-img').src = dataUrl;
+    document.getElementById('share-overlay').classList.add('active');
+    btn.textContent = '✓ 海报已生成';
+    setTimeout(() => { btn.textContent = '📲 生成海报'; btn.disabled = false; }, 2500);
   }).catch(() => {
-    if (callback) callback(false);
-  });
-}
-
-function shareResult() {
-  const btn = document.querySelector('[onclick="shareResult()"]');
-  btn.textContent = '正在生成...';
-  btn.disabled = true;
-  generateLongImage(ok => {
-    btn.textContent = ok ? '✓ 已保存' : '导出失败，请重试';
-    setTimeout(() => { btn.textContent = '💾 导出长图'; btn.disabled = false; }, 2500);
-  });
-}
-
-function shareToMoments() {
-  const btn = document.querySelector('[onclick="shareToMoments()"]');
-  btn.textContent = '正在生成...';
-  btn.disabled = true;
-  generateLongImage(ok => {
-    if (ok) {
-      document.getElementById('share-overlay').classList.add('active');
-      btn.textContent = '✓ 图片已保存';
-    } else {
-      btn.textContent = '生成失败，请重试';
-    }
-    setTimeout(() => { btn.textContent = '📲 分享到朋友圈'; btn.disabled = false; }, 3000);
+    btn.textContent = '生成失败，请重试';
+    setTimeout(() => { btn.textContent = '📲 生成海报'; btn.disabled = false; }, 2500);
   });
 }
 
@@ -2403,12 +2365,6 @@ function sendToFeishu(type, extra) {
   }).catch(() => {});
 }
 
-function submitCTA() {
-  const wechat = document.getElementById('cta-wechat').value.trim();
-  if (!wechat) { document.getElementById('cta-wechat').style.borderColor = '#e06c6c'; return; }
-  sendToFeishu('cta', { wechat });
-  document.getElementById('cta-form').innerHTML = '<div class="cta-submitted">✓ 已提交！顾问会在 24 小时内通过微信联系你</div>';
-}
 
 function restart() {
   scores = new Array(15).fill(0); currentQ = 0;
