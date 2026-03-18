@@ -2336,7 +2336,7 @@ const BITABLE_API = '/api/bitable';
 function sendToFeishu(type, extra) {
   const mbti = document.getElementById('hero-mbti')?.textContent || '';
   const fields = {
-    '姓名': info.name || '',
+    '昵称': info.name || '',
     '年级': info.grade || '',
     '目标国家': info.target || '',
     'MBTI结果': mbti + (META[mbti] ? ' · ' + META[mbti].name : ''),
