@@ -1583,6 +1583,305 @@ const META = {
   ESTP: { name:'企业家', sub:'先干再说的行动派', tags:['实战经历型选手','人脉资源型申请者'], majors:['金融','市场营销','创业','媒体','房地产','体育管理'], careers:['销售/BD','金融交易','创业','房地产'], groupRole:'负责去找教授谈延期/加分/资源，社交能力全组最强', loveMatch:'ISFJ「守卫者」', loveDesc:'你在外面冲锋，需要一个稳固的大后方', fashion:'运动街头风 · 球鞋+轻奢配件+看起来轻松但其实很贵', life:'还没毕业就在做side hustle，人脉比学分积累得快' }
 };
 
+// ============ 基于MBTI的国家推荐（来自飞书16篇文档） ============
+const COUNTRY_RECS = {
+  INFP: {
+    primary: '英国 / 爱尔兰 / 加拿大',
+    primaryWhy: '更允许一个慢思考、重价值的人存在',
+    primaryPoints: [
+      '教学风格注重讨论和个人表达，适合你"边感受边学"的节奏',
+      '社会包容度高，不会被"卷"的氛围持续消耗',
+      '人文/社科/教育/创意方向的项目选择丰富且成熟',
+      '签证与毕业后路径相对清晰，减轻不确定性焦虑'
+    ],
+    secondary: '澳新',
+    secondaryCond: '前提是目标清晰',
+    secondaryPoints: [
+      '生活环境舒适、社区文化友好',
+      '适合对生活质量有要求或考虑长期留居的同学',
+      '需提前确认项目深度和方向匹配度'
+    ]
+  },
+  ENFP: {
+    primary: '英国 / 加拿大 / 美国',
+    primaryWhy: '探索空间大、跨学科项目制友好',
+    primaryPoints: [
+      '跨学科选课灵活，不必过早锁死方向',
+      '项目制学习模式能激发你的行动力和创造力',
+      '多元文化环境满足你对新体验和新视角的渴望',
+      '允许你"先展开探索、再逐步收敛方向"'
+    ],
+    secondary: '荷兰 / 爱尔兰',
+    secondaryCond: '适合方向已初步清晰的情况',
+    secondaryPoints: [
+      '创新氛围浓厚，跨界项目多',
+      '学费成本相对低，性价比高',
+      '需确认你能适应较快的决策节奏'
+    ]
+  },
+  INTJ: {
+    primary: '美国 / 加拿大 / 德国 / 荷兰 / 瑞士',
+    primaryWhy: '研究资源密度高，适合走成果驱动路线',
+    primaryPoints: [
+      '顶尖研究资源与产业资源密度高，利于建立长期壁垒',
+      '工科、研究、产业体系成熟，适合深耕型路线',
+      '独立研究氛围好，不强制过多社交互动',
+      '导师制和实验室资源能支撑你的长线规划'
+    ],
+    secondary: '英国 / 新加坡 / 香港',
+    secondaryCond: '目标明确、材料与产出准备充分',
+    secondaryPoints: [
+      '节奏快，适合已有筹码想快速跃迁的人',
+      '竞争强，适合抗压高、目标极清晰的人',
+      '注意：学制短意味着容错空间也小'
+    ]
+  },
+  INTP: {
+    primary: '加拿大',
+    primaryWhy: '研究/项目体系相对完整，信息密度高、摩擦低',
+    primaryPoints: [
+      '学术环境相对自由，给你足够的深度工作时间',
+      '研究型项目扎实，方法论训练到位',
+      '社会环境规则明确、边界清晰',
+      '移民政策友好，给你"先观察再决定"的空间'
+    ],
+    secondary: '英国 / 爱尔兰',
+    secondaryCond: '已明确方向的研究型/高强度型选择',
+    secondaryPoints: [
+      '英国适合方向清晰时的高强度冲刺',
+      '爱尔兰偏就业与产业链，但要筛项目深度',
+      '澳新需看能否接受小组任务占比较高的现实'
+    ]
+  },
+  ENTJ: {
+    primary: '美国 / 加拿大 / 新加坡 / 香港',
+    primaryWhy: '机会密度高、产业集群强、上升通道清晰',
+    primaryPoints: [
+      '产业与项目密度高，实习与校友资源丰富',
+      '节奏快、标准清晰，适合目标非常明确的你',
+      '校招体系成熟，能快速验证职业方向',
+      '行业圈层成熟，利于建立高价值人脉'
+    ],
+    secondary: '英国 / 荷兰 / 德国 / 瑞士',
+    secondaryCond: '节奏管理与资源策略成熟的前提下',
+    secondaryPoints: [
+      '英国学制短，适合已有筹码想快速跃迁的人',
+      '德荷瑞体系扎实，偏长期主义，适合深耕型做复利',
+      '注意把可控变量放前面：行业集群、实习通道、资源可得性'
+    ]
+  },
+  ENTP: {
+    primary: '美国 / 加拿大 / 荷兰',
+    primaryWhy: '信息密度高、试错空间大、跨学科生态强',
+    primaryPoints: [
+      '灵活的选课制度适合你"先试再定"的风格',
+      '创新创业生态丰富，能承接你的各种想法',
+      '学术自由度高，允许挑战传统框架',
+      '多元文化碰撞能激发你的思维火花'
+    ],
+    secondary: '英国 / 爱尔兰',
+    secondaryCond: '准备好高强度与很快的决策节奏',
+    secondaryPoints: [
+      '英国节奏快，适合方向已收敛的你',
+      '爱尔兰科技产业集中，适合Tech方向',
+      '注意：时间紧凑意味着必须快速聚焦'
+    ]
+  },
+  INFJ: {
+    primary: '英国 / 加拿大 / 荷兰',
+    primaryWhy: '深度+支持+可落地，适合价值驱动型选择',
+    primaryPoints: [
+      '教学注重深度讨论和反思，符合你"边思考边学"的节奏',
+      '社会包容度高，有空间建立深度人际关系',
+      '价值导向的项目（教育/社会政策等）选择丰富',
+      '毕业后路径清晰，降低不确定性焦虑'
+    ],
+    secondary: '爱尔兰',
+    secondaryCond: '方向清晰时很友好',
+    secondaryPoints: [
+      '科技与社会创新项目不断增多',
+      '生活成本相对可控，社区氛围温暖',
+      '需确认目标专业的项目深度'
+    ]
+  },
+  ENFJ: {
+    primary: '英国 / 爱尔兰 / 加拿大',
+    primaryWhy: '社群+实践+影响力，适合你的领导力特质',
+    primaryPoints: [
+      '校园社群活跃，能充分发挥你的组织和连接能力',
+      '实践导向的项目让你在做中学、在学中影响',
+      '多元文化环境激发你对社会议题的关注',
+      '校友网络活跃，利于你持续建立影响力'
+    ],
+    secondary: '澳新',
+    secondaryCond: '目标清晰，最好锁定实践路径或职业方向',
+    secondaryPoints: [
+      '生活友好度高，社区支持系统完善',
+      '适合教育/社工/公共健康等实践方向',
+      '需确认项目是否有足够的实践和社群资源'
+    ]
+  },
+  ISTJ: {
+    primary: '加拿大 / 德国 / 荷兰',
+    primaryWhy: '更稳、更可验证，规则清晰、路径明确',
+    primaryPoints: [
+      '教育体系结构化强，评价标准明确透明',
+      '就业路径清晰可规划，适合你"步步为营"的风格',
+      '社会秩序好，规则意识强，生活有章可循',
+      '工程/财务/数据等专业培养体系扎实'
+    ],
+    secondary: '爱尔兰 / 英国',
+    secondaryCond: '爱尔兰偏技术岗闭环清晰；英国1年制需预算稳',
+    secondaryPoints: [
+      '爱尔兰科技行业就业路径直接',
+      '英国节奏快，适合目标已非常明确的情况',
+      '注意英国一年制时间紧，需要更强的执行力'
+    ]
+  },
+  ISFJ: {
+    primary: '加拿大 / 澳新 / 爱尔兰',
+    primaryWhy: '安全友好、社区支持系统完善、适应成本低',
+    primaryPoints: [
+      '社会环境温暖包容，能快速建立归属感',
+      '华人社区成熟，降低初期适应焦虑',
+      '教育/护理/公共卫生等方向培养路径清晰',
+      '签证和移民政策友好，给你足够的安全感'
+    ],
+    secondary: '英国',
+    secondaryCond: '能接受高强度短学制，且项目实践与支持系统足',
+    secondaryPoints: [
+      '一年制节省时间和经济成本',
+      '但社交圈建立时间有限，需主动融入',
+      '建议选有较强学生支持系统的项目'
+    ]
+  },
+  ESTJ: {
+    primary: '美国 / 新加坡 / 加拿大',
+    primaryWhy: '结果导向、资源丰富、上升通道清晰',
+    primaryPoints: [
+      '成熟的校招体系和career service支撑你的职业目标',
+      '竞争氛围反而能激发你的执行力',
+      '行业资源密集，适合你的资源整合能力',
+      '就业数据透明，让你有据可依做决策'
+    ],
+    secondary: '英国 / 德国 / 荷兰',
+    secondaryCond: '目标越清晰越合适',
+    secondaryPoints: [
+      '英国节奏快、强度高，匹配你的高执行力',
+      '德荷适合理工、供应链、制造与工程方向',
+      '需评估语言和流程成本是否可接受'
+    ]
+  },
+  ESFJ: {
+    primary: '加拿大 / 爱尔兰 / 澳新',
+    primaryWhy: '社区氛围好、人际关系友好、归属感强',
+    primaryPoints: [
+      '多元包容的社区文化让你快速融入',
+      '校园社交活跃，能发挥你的连接和组织能力',
+      '教育/HR/公关等方向就业路径清晰',
+      '华人社区成熟，生活支持系统完善'
+    ],
+    secondary: '英国',
+    secondaryCond: '目标清晰、能承受一年强度',
+    secondaryPoints: [
+      '名校品牌在国内认可度高',
+      '但一年时间建立社交圈有限',
+      '建议选有活跃中国学生社群的项目'
+    ]
+  },
+  ISTP: {
+    primary: '德国 / 荷兰 / 加拿大',
+    primaryWhy: '技术导向、实践机会多、评价看产出',
+    primaryPoints: [
+      '工程/技术/数据类培养体系扎实，重实操',
+      '评价以项目产出为主，不靠表达和社交',
+      '产业与学术结合紧密，实习机会实在',
+      '独立工作空间充足，不强制过多团队互动'
+    ],
+    secondary: '澳新',
+    secondaryCond: '目标清晰、能拿到实践机会',
+    secondaryPoints: [
+      '生活压力小，自然环境好',
+      '部分工程/IT项目有Co-op机制',
+      '需提前锁定有实践资源的项目'
+    ]
+  },
+  ISFP: {
+    primary: '加拿大 / 澳新',
+    primaryWhy: '包容自由、节奏舒适、作品导向友好',
+    primaryPoints: [
+      '多元文化环境对个人风格高度包容',
+      '生活节奏适中，不会被高压环境消耗',
+      '艺术/设计/创意方向有展示空间',
+      '自然环境优美，能滋养你的感受力和创作灵感'
+    ],
+    secondary: '英国 / 爱尔兰',
+    secondaryCond: '作品方向清晰、城市与预算可控',
+    secondaryPoints: [
+      '伦敦/都柏林创意产业资源丰富',
+      '但节奏快，需确认你的准备充分度',
+      '建议选允许作品集替代传统考试的项目'
+    ]
+  },
+  ESTP: {
+    primary: '美国 / 加拿大 / 澳新',
+    primaryWhy: '实战机会多、行业连接强、行动导向',
+    primaryPoints: [
+      '丰富的实习、Co-op和行业项目让你在实战中成长',
+      '校友网络和职业资源帮你快速建立行业连接',
+      '灵活的课程设置适合你"边做边学"的风格',
+      '社交文化开放，能充分发挥你的人脉优势'
+    ],
+    secondary: '英国',
+    secondaryCond: '项目强实习/强行业合作',
+    secondaryPoints: [
+      '节奏快，适合你的行动力',
+      '但需确认项目有实质性的行业合作资源',
+      '纯理论型项目不适合你'
+    ]
+  },
+  ESFP: {
+    primary: '加拿大 / 澳新',
+    primaryWhy: '生活体验丰富、社交环境活跃、包容度高',
+    primaryPoints: [
+      '校园文化活跃，社交生活丰富多元',
+      '生活质量高，能满足你对体验感的追求',
+      '传媒/活动策划/旅游等方向有丰富的实践机会',
+      '华人社区成熟，适应成本低'
+    ],
+    secondary: '英国 / 爱尔兰',
+    secondaryCond: '能扛住节奏，且项目足够实践导向',
+    secondaryPoints: [
+      '伦敦/都柏林的娱乐和创意产业资源丰富',
+      '但一年制节奏快，需提前做好准备',
+      '建议选实践导向强、有行业合作的项目'
+    ]
+  }
+};
+
+function renderCountryRec(mbti) {
+  const rec = COUNTRY_RECS[mbti];
+  if (!rec) return '';
+  let html = '';
+  // 第一优先区
+  html += '<div style="margin-bottom:18px;">';
+  html += '<div style="color:#d4a843;font-size:14px;font-weight:bold;margin-bottom:6px;border-left:3px solid #d4a843;padding-left:8px;">🏆 第一优先区</div>';
+  html += '<div style="color:#f0d88a;font-size:16px;font-weight:bold;margin:8px 0;">' + rec.primary + '</div>';
+  html += '<div style="color:#a09080;font-size:13px;margin-bottom:10px;font-style:italic;">' + rec.primaryWhy + '</div>';
+  html += '<div style="color:#c0b090;font-size:13px;line-height:2;">';
+  rec.primaryPoints.forEach((p, i) => { html += (i+1) + '. ' + p + '<br>'; });
+  html += '</div></div>';
+  // 条件适配区
+  html += '<div>';
+  html += '<div style="color:#d4a843;font-size:14px;font-weight:bold;margin-bottom:6px;border-left:3px solid rgba(212,168,67,0.5);padding-left:8px;">🔄 条件适配区</div>';
+  html += '<div style="color:#f0d88a;font-size:15px;font-weight:bold;margin:8px 0;">' + rec.secondary + '</div>';
+  html += '<div style="color:#a09080;font-size:12px;margin-bottom:10px;">⚠️ ' + rec.secondaryCond + '</div>';
+  html += '<div style="color:#c0b090;font-size:13px;line-height:2;">';
+  rec.secondaryPoints.forEach((p, i) => { html += (i+1) + '. ' + p + '<br>'; });
+  html += '</div></div>';
+  return html;
+}
+
 // ============ 雷达图 & 内容解析 ============
 function computeRadar(sc) {
   return [
@@ -1821,8 +2120,9 @@ function generateReport() {
   document.getElementById('sec-personality-body').textContent = sec.personality || '';
   document.getElementById('sec-path-body').textContent = sec.path || '';
   document.getElementById('sec-strengths-body').textContent = sec.strengths || '';
-  document.getElementById('sec-country-name').textContent = info.target;
-  document.getElementById('sec-country-body').innerHTML = formatSectionContent(sec.country || '');
+  // 使用基于MBTI类型的国家推荐（而非用户选择的目的地）
+  document.getElementById('sec-country-name').textContent = '';
+  document.getElementById('sec-country-body').innerHTML = renderCountryRec(mbti);
   document.getElementById('sec-timeline-body').textContent = sec.timeline || '';
   document.getElementById('sec-case-title').textContent = `${mbti} 申请走过的坑`;
   document.getElementById('sec-case-body').textContent = sec.case || '';
