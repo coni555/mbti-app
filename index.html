@@ -108,21 +108,6 @@
   .card-label { font-size: 11px; color: #d4a843; letter-spacing: 2px; margin-bottom: 12px; font-family: 'Noto Sans SC', sans-serif; }
   .card-content { font-size: 14px; line-height: 2.1; color: #d0c0a0; font-family: 'Noto Sans SC', sans-serif; white-space: pre-wrap; }
 
-  /* CTA咨询区域 */
-  .cta-box {
-    background: linear-gradient(135deg, rgba(212,168,67,0.08), rgba(212,168,67,0.04));
-    border: 1px solid rgba(212,168,67,0.25); border-radius: 12px;
-    padding: 22px 18px; margin-bottom: 14px; text-align: center;
-  }
-  .cta-title { font-size: 15px; color: #f0d88a; margin-bottom: 8px; }
-  .cta-desc { font-size: 13px; color: #8a9bb5; line-height: 1.8; font-family: 'Noto Sans SC', sans-serif; margin-bottom: 16px; }
-  .cta-input-row { display: flex; gap: 10px; margin-bottom: 12px; }
-  .cta-input { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(212,168,67,0.25); border-radius: 8px; padding: 11px 14px; color: #e8d5a3; font-size: 13px; outline: none; font-family: 'Noto Sans SC', sans-serif; }
-  .cta-input:focus { border-color: rgba(212,168,67,0.5); }
-  .cta-submit { background: linear-gradient(135deg,#d4a843,#b8892e); border: none; color: #040812; padding: 11px 24px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; font-family: 'Noto Sans SC', sans-serif; letter-spacing: 1px; white-space: nowrap; transition: opacity 0.2s; }
-  .cta-submit:hover { opacity: 0.9; }
-  .cta-submitted { font-size: 13px; color: #d4a843; padding: 8px 0; }
-  .cta-note { font-size: 11px; color: #555; margin-top: 4px; font-family: 'Noto Sans SC', sans-serif; }
 
   .action-row { display: flex; gap: 8px; margin-bottom: 12px; }
   .btn-copy { flex: 1; padding: 13px; border-radius: 8px; font-size: 13px; font-weight: bold; background: linear-gradient(135deg,#d4a843,#b8892e); border: none; color: #040812; cursor: pointer; font-family: 'Noto Sans SC', sans-serif; transition: opacity 0.2s; }
@@ -169,13 +154,11 @@
   .qr-img { width: 140px; height: 140px; border-radius: 10px; padding: 8px; background: #fff; object-fit: contain; }
   .qr-hint { font-size: 11px; color: #666; margin-top: 12px; font-family: 'Noto Sans SC', sans-serif; letter-spacing: 0.5px; }
 
-  /* 分享引导浮层 */
-  .share-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 999; flex-direction: column; align-items: center; justify-content: center; padding: 40px 30px; }
+  /* 海报浮层 */
+  .share-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 999; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
   .share-overlay.active { display: flex; }
   .share-overlay-content { text-align: center; }
-  .share-overlay-icon { font-size: 48px; margin-bottom: 16px; }
-  .share-overlay-title { font-size: 18px; color: #f0d88a; margin-bottom: 12px; }
-  .share-overlay-steps { font-size: 14px; color: #c0b090; line-height: 2.2; margin-bottom: 24px; font-family: 'Noto Sans SC', sans-serif; text-align: left; }
+  .share-overlay-title { font-size: 15px; color: #aaa; margin-bottom: 14px; font-family: 'Noto Sans SC', sans-serif; }
   .share-overlay-close { padding: 12px 40px; border-radius: 8px; background: linear-gradient(135deg,#d4a843,#b8892e); border: none; color: #040812; font-size: 14px; font-weight: bold; cursor: pointer; font-family: 'Noto Sans SC', sans-serif; }
 
   @keyframes scan { 0%{transform:translateX(-100%)} 100%{transform:translateX(300%)} }
@@ -340,7 +323,7 @@
     </div>
     <div class="action-row">
       <button class="btn-copy" id="btn-copy-card" onclick="copyCard()">📋 复制我的档案</button>
-      <button class="btn-copy-all" onclick="generatePoster()">💾 导出长图</button>
+      <button class="btn-copy-all" onclick="generatePoster()">导出长图</button>
     </div>
 
     <!-- 企业微信二维码 -->
@@ -371,6 +354,15 @@
 <div class="footer">MBTI情报局 · V3.0</div>
 
 <script>
+// ============ 来源追踪 ============
+const _urlParams = new URLSearchParams(window.location.search);
+const _refFromUrl = _urlParams.get('ref') || '';
+if (_refFromUrl) sessionStorage.setItem('mbti_ref', _refFromUrl);
+const activeRef = sessionStorage.getItem('mbti_ref') || '';
+if (!sessionStorage.getItem('mbti_enter_time')) {
+  sessionStorage.setItem('mbti_enter_time', new Date().toLocaleString('zh-CN'));
+}
+
 const questions = [
   "我更愿意选择能真实帮助他人、服务社会的领域，而不只是高薪的方向。",
   "我在意这条路能否获得家人或重要朋友的支持与认可。",
@@ -2276,9 +2268,6 @@ function generateReport() {
     <div class="fun-card"><div class="fun-icon">👔</div><div class="fun-label">留学穿搭风格</div><div class="fun-text">${meta.fashion}</div></div>
     <div class="fun-card"><div class="fun-icon">🏠</div><div class="fun-label">留学生活人设</div><div class="fun-text">${meta.life}</div></div>`;
 
-  // ── CTA 预填微信号 ──
-  if (info.wechat) document.getElementById('cta-wechat').value = info.wechat;
-
   // ── 生成分享用纯文本 ──
   const funText = `\n🎭 你的留学人设\n· 小组作业：${meta.groupRole}\n· 恋爱配对：${meta.loveMatch} — ${meta.loveDesc}\n· 穿搭风格：${meta.fashion}\n· 生活人设：${meta.life}`;
   cardText = `🔍 MBTI情报局 · 我的留学人格档案\n【${mbti} · ${meta.name}】${meta.sub}\n\n${cardText}${funText}\n\n测测你的留学人格 →`;
@@ -2328,11 +2317,11 @@ function generatePoster() {
     document.getElementById('poster-img').src = dataUrl;
     document.getElementById('share-overlay').classList.add('active');
     btn.textContent = '✓ 已生成';
-    setTimeout(() => { btn.textContent = '💾 导出长图'; btn.disabled = false; }, 2500);
+    setTimeout(() => { btn.textContent = '导出长图'; btn.disabled = false; }, 2500);
   }).catch(() => {
     hideEls.forEach(el => el.style.display = '');
     btn.textContent = '生成失败，请重试';
-    setTimeout(() => { btn.textContent = '💾 导出长图'; btn.disabled = false; }, 2500);
+    setTimeout(() => { btn.textContent = '导出长图'; btn.disabled = false; }, 2500);
   });
 }
 
@@ -2353,7 +2342,11 @@ function sendToFeishu(type, extra) {
     'MBTI结果': mbti + (META[mbti] ? ' · ' + META[mbti].name : ''),
     '性格标签': META[mbti]?.sub || '',
     '提交时间': new Date().toLocaleString('zh-CN'),
-    '来源': type === 'cta' ? '咨询预约' : '测评完成',
+    '来源': type === 'scan' ? '扫码进入' : type === 'cta' ? '咨询预约' : '测评完成',
+    '来源员工': activeRef,
+    '落地页URL': window.location.href,
+    '首次进入时间': sessionStorage.getItem('mbti_enter_time') || '',
+    '转化阶段': type === 'scan' ? '仅扫码进入' : type === 'cta' ? '提交咨询' : '完成测评',
   };
   if (extra?.wechat) fields['微信号'] = extra.wechat;
   // 通过 Vercel 云函数写入多维表格 + 发群通知
@@ -2364,6 +2357,11 @@ function sendToFeishu(type, extra) {
   }).catch(() => {});
 }
 
+// 扫码进入时立即记录一条（每个 session 只发一次）
+if (activeRef && !sessionStorage.getItem('mbti_scan_sent')) {
+  sessionStorage.setItem('mbti_scan_sent', '1');
+  sendToFeishu('scan');
+}
 
 function restart() {
   scores = new Array(15).fill(0); currentQ = 0;
