@@ -309,6 +309,10 @@
       <div id="sec-country-name" style="font-size:18px;color:#f0d88a;font-weight:bold;margin-bottom:14px;letter-spacing:1px;"></div>
       <div class="sec-body" id="sec-country-body"></div>
     </div>
+    <div class="report-section" id="sec-traffic">
+      <div class="sec-title"><span>🚦</span> 留学路径红绿灯</div>
+      <div class="sec-body" id="sec-traffic-body"></div>
+    </div>
     <div class="report-section" id="sec-timeline">
       <div class="sec-title"><span>⏳</span> 你的时间窗口</div>
       <div class="sec-body" id="sec-timeline-body"></div>
@@ -1859,6 +1863,110 @@ const COUNTRY_RECS = {
   }
 };
 
+// ============ 留学路径红绿灯（来自飞书文档） ============
+const TRAFFIC_LIGHTS = {
+  INFP: {
+    green: ['英/爱/加 + 人文/教育/创意/社科方向', '高自主度、鼓励自我表达的项目', '评价方式允许慢思考、重过程'],
+    yellow: ['澳新授课型（目标需提前锁定）', '一年制高强度项目（方向不清时易焦虑）'],
+    red: ['强比较、强竞争、工具化评价的环境', '"一年镀金→立刻变现"的路径', '长期高压但缺少个人表达空间']
+  },
+  ENFP: {
+    green: ['英/加/美 跨学科、项目制友好的项目', '允许试错和调整方向的培养结构', '探索空间大、社群活跃的校园'],
+    yellow: ['高度垂直、不可转向的早期强定型路径', '一年制项目（需提前收敛方向）'],
+    red: ['单线程培养、只有单一出口的专业', '还没探索够就被迫定死答案', '你为了"稳定"压抑了探索欲']
+  },
+  INTJ: {
+    green: ['有清晰资源抓手：导师/实验室/产业项目', '课程能导向产出：论文、项目、作品', '你能把目标拆成里程碑推进'],
+    yellow: ['只有名气，没有资源可得证明', '学制很短但你产出准备不足', '方向"很热门"但说不清差异化定位'],
+    red: ['只因"看起来最优"选专业', '项目以课程堆叠为主，缺深度产出', '你在里面只能变忙，变强很难发生']
+  },
+  INTP: {
+    green: ['研究导向项目，方法论强+产出明确', '评价以论文/项目/系统/作品为主', '深度工作时间块完整，干扰少'],
+    yellow: ['英国1年高强度授课型（方向需清晰）', '跨学科拼盘项目（需确认主方法论）'],
+    red: ['课程浅、任务碎、形式社交占比高', '评价逻辑你不认同却被迫迎合', '只靠"好就业"决定，忽略深度需求']
+  },
+  ENTJ: {
+    green: ['有明确战绩出口：实习/项目交付/竞赛', '资源可得：校友/职业服务/产业链', '能设定主战场，精力集中打主线'],
+    yellow: ['平台很强但资源靠抢，时间管理要够', '学制很短，筹码不足可能来不及落地'],
+    red: ['只有名气与强度，没有战绩通道', '把"更忙"当成"更强"，缺复利设计', '过度押注捷径，核心壁垒没建好']
+  },
+  ENTP: {
+    green: ['项目制多、实习机会清晰、社群活跃', '选课自由、允许跨界与质疑的环境', '能在行动中校准方向的培养结构'],
+    yellow: ['英国/爱尔兰一年制高强度项目', '技术/数据类但不确定是否愿意深耕'],
+    red: ['课程死板、考试主导、没有项目空间', '为了"稳定对口"压抑探索欲', '讨论与质疑被压制，只能闭嘴完成']
+  },
+  INFJ: {
+    green: ['有清晰方法论训练+导师可获得+小班讨论', '公共政策/教育/社会创新/心理/可持续方向', '支持系统强的项目环境'],
+    yellow: ['爱尔兰/澳新授课型（目标需非常清晰）', '泛管理/跨学科（需有明确议题锚点）'],
+    red: ['只为"更体面/更快回本"去选方向', '强比较、强绩效、强淘汰环境', '缺支持系统、导师弱、靠自推硬扛']
+  },
+  ENFJ: {
+    green: ['cohort强、项目实践多、反馈清晰', '教育/公共政策/国际发展/传播策略方向', '能把影响力落地的培养结构'],
+    yellow: ['澳新授课型（需锁定实践路径）', '商科泛管理但没锁定具体人群场景'],
+    red: ['日常工作长期缺乏人际反馈与意义感', '强比较强淘汰环境，你会越扛越累', '项目文化冷、合作稀缺、支持系统弱']
+  },
+  ISTJ: {
+    green: ['规则透明、考核明确、职业闭环可验证', '会计/供应链/工程管理/应用数据方向', '含co-op/实习机制的项目'],
+    yellow: ['英国1年制（强度高、预算要稳）', '转专业跨度大但缺可证明的相关经历'],
+    red: ['只靠名气选择，闭环验证不足', '强依赖临场表达与社交资源置换', '行业准入/证书互认不清楚，Plan B没做']
+  },
+  ISFJ: {
+    green: ['带实习/placement的实践型项目', '教育/公共服务/HR/健康管理方向', '城市生活条件可控，支持系统完善'],
+    yellow: ['英国1年制（节奏快但落地可行）', '需高频展示与强社交推动的环境'],
+    red: ['只靠名气做决定，忽略生活与节奏', '强淘汰、强比较、强绩效文化', '读完落点极不清晰的高风险路线']
+  },
+  ESTJ: {
+    green: ['有实习与雇主连接，评价标准明确', '商业分析/项目管理/供应链/会计方向', '职业服务强，就业数据透明'],
+    yellow: ['英国1年高强度（目标需极清晰）', '想读前沿跨学科需先写清岗位目标'],
+    red: ['目标不清却选高度自由松散的项目', '规则模糊、反馈很慢的培养方式', '为了光环硬选强淘汰导致长期透支']
+  },
+  ESFJ: {
+    green: ['cohort强、实习/placement清晰', '教育/HR/公共健康/社工/服务管理方向', '社区氛围好、同伴关系密切'],
+    yellow: ['英国1年高强度（目标要非常清晰）', '研究向项目（需确认能扛住孤独）'],
+    red: ['选专业只为"别人觉得体面"', '高孤独+高不确定+低支持系统', '强淘汰强比较，你又习惯把压力往自己身上扛']
+  },
+  ISTP: {
+    green: ['项目密集、实习衔接明确、成果能说话', '工程/计算机应用/数据与系统方向', '评价靠作品产出，不靠表达和社交'],
+    yellow: ['澳新授课型（需确保有实践机会）', '跨学科项目（需明确"我要做出什么"）'],
+    red: ['训练核心围绕写作展示和会议对齐', '评价高度依赖主观印象与社交存在感', '大量理论堆叠却难以落地到作品']
+  },
+  ISFP: {
+    green: ['设计/影像/新媒体/UX/空间体验方向', '项目制、作品输出清晰', '生活节奏相对可控，文化包容度高'],
+    yellow: ['英国/爱尔兰（作品方向需明确）', '跨学科但还没想好作品集主线'],
+    red: ['只因"好就业"选择，自己完全没感觉', '强比较强绩效强淘汰环境', '实践很少、表达空间很小的项目']
+  },
+  ESTP: {
+    green: ['项目制+企业合作+实习机制明确', '能在6-12个月做出作品/项目/实习成果', '行业密度高的城市，机会可达性强'],
+    yellow: ['英国1年（必须确认实习与行业链接）', '创业/创新类项目（目标不清时易发散）'],
+    red: ['主要靠论文与理论评价、实操机会少', '长期低互动低反馈、要求你先坐住的环境', '读完也说不清自己能解决什么问题']
+  },
+  ESFP: {
+    green: ['营销/品牌/传媒/交互/会展旅游体育方向', '项目制+实习/placement+可做作品集', '校园文化活跃，社交生活丰富'],
+    yellow: ['英国/爱尔兰（节奏快需提前准备）', '看起来热闹但课程实践少的项目'],
+    red: ['只因名校光环硬选低互动方向', '论文为唯一输出、缺行业链接', '长期强压强比较强淘汰环境']
+  }
+};
+
+function renderTrafficLights(mbti) {
+  const tl = TRAFFIC_LIGHTS[mbti];
+  if (!tl) return '';
+  let html = '<div style="display:flex;flex-direction:column;gap:14px;">';
+  // Green
+  html += '<div style="background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.2);border-radius:8px;padding:12px 14px;">';
+  html += '<div style="color:#66bb6a;font-size:13px;font-weight:bold;margin-bottom:8px;">🟢 放心走</div>';
+  html += '<div style="color:#c0b090;font-size:12px;line-height:1.9;">' + tl.green.map(g => '· ' + g).join('<br>') + '</div></div>';
+  // Yellow
+  html += '<div style="background:rgba(255,193,7,0.06);border:1px solid rgba(255,193,7,0.15);border-radius:8px;padding:12px 14px;">';
+  html += '<div style="color:#ffc107;font-size:13px;font-weight:bold;margin-bottom:8px;">🟡 需校准</div>';
+  html += '<div style="color:#c0b090;font-size:12px;line-height:1.9;">' + tl.yellow.map(y => '· ' + y).join('<br>') + '</div></div>';
+  // Red
+  html += '<div style="background:rgba(244,67,54,0.06);border:1px solid rgba(244,67,54,0.15);border-radius:8px;padding:12px 14px;">';
+  html += '<div style="color:#ef5350;font-size:13px;font-weight:bold;margin-bottom:8px;">🔴 高概率消耗</div>';
+  html += '<div style="color:#c0b090;font-size:12px;line-height:1.9;">' + tl.red.map(r => '· ' + r).join('<br>') + '</div></div>';
+  html += '</div>';
+  return html;
+}
+
 function renderCountryRec(mbti) {
   const rec = COUNTRY_RECS[mbti];
   if (!rec) return '';
@@ -2123,6 +2231,7 @@ function generateReport() {
   // 使用基于MBTI类型的国家推荐（而非用户选择的目的地）
   document.getElementById('sec-country-name').textContent = '';
   document.getElementById('sec-country-body').innerHTML = renderCountryRec(mbti);
+  document.getElementById('sec-traffic-body').innerHTML = renderTrafficLights(mbti);
   document.getElementById('sec-timeline-body').textContent = sec.timeline || '';
   document.getElementById('sec-case-title').textContent = `${mbti} 申请走过的坑`;
   document.getElementById('sec-case-body').textContent = sec.case || '';
