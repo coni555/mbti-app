@@ -161,6 +161,23 @@
   .case-section { background: rgba(212,168,67,0.04); border: 1px dashed rgba(212,168,67,0.2); }
   .case-section .sec-body { font-size: 13px; color: #a09070; line-height: 1.9; }
 
+  /* 企业微信二维码区域 */
+  .qr-section { text-align: center; margin: 16px 0; padding: 20px 16px; background: rgba(212,168,67,0.04); border: 1px solid rgba(212,168,67,0.15); border-radius: 12px; }
+  .qr-divider { width: 40px; height: 2px; background: rgba(212,168,67,0.3); margin: 0 auto 14px; }
+  .qr-title { font-size: 15px; color: #f0d88a; margin-bottom: 6px; }
+  .qr-desc { font-size: 12px; color: #8a9bb5; margin-bottom: 14px; font-family: 'Noto Sans SC', sans-serif; }
+  .qr-img { width: 160px; height: 160px; border-radius: 8px; border: 1px solid rgba(212,168,67,0.2); object-fit: cover; }
+  .qr-hint { font-size: 11px; color: #555; margin-top: 10px; font-family: 'Noto Sans SC', sans-serif; }
+
+  /* 分享引导浮层 */
+  .share-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 999; flex-direction: column; align-items: center; justify-content: center; padding: 40px 30px; }
+  .share-overlay.active { display: flex; }
+  .share-overlay-content { text-align: center; }
+  .share-overlay-icon { font-size: 48px; margin-bottom: 16px; }
+  .share-overlay-title { font-size: 18px; color: #f0d88a; margin-bottom: 12px; }
+  .share-overlay-steps { font-size: 14px; color: #c0b090; line-height: 2.2; margin-bottom: 24px; font-family: 'Noto Sans SC', sans-serif; text-align: left; }
+  .share-overlay-close { padding: 12px 40px; border-radius: 8px; background: linear-gradient(135deg,#d4a843,#b8892e); border: none; color: #040812; font-size: 14px; font-weight: bold; cursor: pointer; font-family: 'Noto Sans SC', sans-serif; }
+
   @keyframes scan { 0%{transform:translateX(-100%)} 100%{transform:translateX(300%)} }
   @keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
 </style>
@@ -334,11 +351,40 @@
     </div>
     <div class="action-row">
       <button class="btn-copy" id="btn-copy-card" onclick="copyCard()">📋 复制我的档案</button>
-      <button class="btn-copy-all" onclick="shareResult()">导出长图</button>
+      <button class="btn-copy-all" onclick="shareToMoments()">📲 分享到朋友圈</button>
     </div>
+    <div class="action-row" style="margin-top:-4px;">
+      <button class="btn-copy-all" style="flex:1;" onclick="shareResult()">💾 导出长图</button>
+    </div>
+
+    <!-- 企业微信二维码 -->
+    <div class="qr-section">
+      <div class="qr-divider"></div>
+      <div class="qr-title">想要1v1专属留学规划？</div>
+      <div class="qr-desc">扫码添加企业微信，获得免费背景诊断</div>
+      <img class="qr-img" src="qrcode.png" alt="企业微信二维码">
+      <div class="qr-hint">长按识别二维码 · 新通教育</div>
+    </div>
+
     <button class="btn-restart" onclick="restart()">重新测评</button>
   </div>
 
+</div>
+
+<!-- 分享到朋友圈引导浮层 -->
+<div class="share-overlay" id="share-overlay" onclick="closeShareGuide(event)">
+  <div class="share-overlay-content">
+    <div class="share-overlay-icon">📲</div>
+    <div class="share-overlay-title">分享到朋友圈</div>
+    <div class="share-overlay-steps">
+      正在为你生成专属长图...<br>
+      保存后按以下步骤操作：<br><br>
+      ① 打开微信，点击「发现」→「朋友圈」<br>
+      ② 长按右上角相机图标<br>
+      ③ 选择刚保存的图片发布即可
+    </div>
+    <button class="share-overlay-close" onclick="closeShareGuide(event)">我知道了</button>
+  </div>
 </div>
 
 <div class="footer">MBTI情报局 · V3.0</div>
@@ -2281,12 +2327,9 @@ function copyCard() {
   doCopy(cardText);
 }
 
-function shareResult() {
-  const btn = document.querySelector('.btn-copy-all');
-  btn.textContent = '正在生成长图...';
-  btn.disabled = true;
+function generateLongImage(callback) {
   const target = document.getElementById('step-4');
-  html2canvas(target, {
+  return html2canvas(target, {
     backgroundColor: '#040812',
     scale: 2,
     useCORS: true,
@@ -2300,13 +2343,42 @@ function shareResult() {
       a.download = `MBTI情报局_${info.name || '报告'}.png`;
       a.click();
       URL.revokeObjectURL(url);
-      btn.textContent = '✓ 已保存';
-      setTimeout(() => { btn.textContent = '导出长图'; btn.disabled = false; }, 2500);
+      if (callback) callback(true);
     }, 'image/png');
   }).catch(() => {
-    btn.textContent = '导出失败，请重试';
-    setTimeout(() => { btn.textContent = '导出长图'; btn.disabled = false; }, 2500);
+    if (callback) callback(false);
   });
+}
+
+function shareResult() {
+  const btn = document.querySelector('[onclick="shareResult()"]');
+  btn.textContent = '正在生成...';
+  btn.disabled = true;
+  generateLongImage(ok => {
+    btn.textContent = ok ? '✓ 已保存' : '导出失败，请重试';
+    setTimeout(() => { btn.textContent = '💾 导出长图'; btn.disabled = false; }, 2500);
+  });
+}
+
+function shareToMoments() {
+  const btn = document.querySelector('[onclick="shareToMoments()"]');
+  btn.textContent = '正在生成...';
+  btn.disabled = true;
+  generateLongImage(ok => {
+    if (ok) {
+      document.getElementById('share-overlay').classList.add('active');
+      btn.textContent = '✓ 图片已保存';
+    } else {
+      btn.textContent = '生成失败，请重试';
+    }
+    setTimeout(() => { btn.textContent = '📲 分享到朋友圈'; btn.disabled = false; }, 3000);
+  });
+}
+
+function closeShareGuide(e) {
+  if (e.target.classList.contains('share-overlay') || e.target.classList.contains('share-overlay-close')) {
+    document.getElementById('share-overlay').classList.remove('active');
+  }
 }
 
 // ============ 飞书数据沉淀（多维表格 + 群通知）============
