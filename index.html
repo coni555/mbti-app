@@ -138,6 +138,13 @@
   #radar-canvas { max-width: 100%; }
   .tag-grid { display: flex; flex-wrap: wrap; gap: 8px; }
   .tag-item { padding: 8px 16px; border-radius: 20px; font-size: 12px; font-family: 'Noto Sans SC', sans-serif; border: 1px solid rgba(212,168,67,0.25); color: #d4a843; background: rgba(212,168,67,0.06); }
+  .persona-card { display: flex; gap: 16px; align-items: center; background: rgba(212,168,67,0.06); border: 1px solid rgba(212,168,67,0.18); border-radius: 14px; padding: 18px 16px; margin-bottom: 14px; }
+  .persona-avatar { width: 100px; height: 100px; flex-shrink: 0; border-radius: 12px; object-fit: contain; background: rgba(255,255,255,0.04); padding: 6px; }
+  .persona-info { flex: 1; min-width: 0; }
+  .persona-name { font-size: 16px; color: #f0d88a; font-weight: bold; margin-bottom: 4px; }
+  .persona-sub { font-size: 12px; color: #a09080; line-height: 1.6; font-family: 'Noto Sans SC', sans-serif; }
+  .persona-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .persona-tag { font-size: 10px; padding: 3px 8px; border-radius: 10px; border: 1px solid rgba(212,168,67,0.25); color: #d4a843; background: rgba(212,168,67,0.08); font-family: 'Noto Sans SC', sans-serif; }
   .fun-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .fun-card { background: rgba(212,168,67,0.04); border: 1px solid rgba(212,168,67,0.12); border-radius: 10px; padding: 14px 12px; }
   .fun-icon { font-size: 20px; margin-bottom: 6px; }
@@ -311,6 +318,7 @@
     </div>
     <div class="report-section fun-section">
       <div class="sec-title"><span>🎭</span> 你的留学人设</div>
+      <div id="persona-card-wrap"></div>
       <div class="fun-grid" id="fun-grid"></div>
     </div>
     <div class="report-section" id="sec-country">
@@ -2693,6 +2701,19 @@ function generateReport() {
   document.getElementById('career-tags').innerHTML = meta.careers.map(c => `<span class="tag-item">${c}</span>`).join('');
 
   // ── 趣味人设 ──
+  // 角色卡片（左图右文）
+  document.getElementById('persona-card-wrap').innerHTML = `
+    <div class="persona-card">
+      <img class="persona-avatar" src="avatars/${mbti}.png" alt="${mbti}">
+      <div class="persona-info">
+        <div class="persona-name">${meta.name} · ${mbti}</div>
+        <div class="persona-sub">${meta.sub}</div>
+        <div class="persona-tags">
+          ${(meta.tags || []).map(t => `<span class="persona-tag">${t}</span>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  // 趣味格子
   document.getElementById('fun-grid').innerHTML = `
     <div class="fun-card"><div class="fun-icon">📝</div><div class="fun-label">小组作业人设</div><div class="fun-text">${meta.groupRole}</div></div>
     <div class="fun-card"><div class="fun-icon">💕</div><div class="fun-label">恋爱最佳配对</div><div class="fun-match">${meta.loveMatch}</div><div class="fun-text">${meta.loveDesc}</div></div>
