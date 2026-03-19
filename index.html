@@ -133,6 +133,7 @@
   .sec-title span { font-size: 16px; }
   .sub-label { font-size: 12px; color: #d4a843; margin-top: 14px; margin-bottom: 8px; font-family: 'Noto Sans SC', sans-serif; letter-spacing: 1px; }
   .sec-body { font-size: 14px; line-height: 2; color: #c0b090; font-family: 'Noto Sans SC', sans-serif; }
+  #sec-personality-body, #sec-path-body, #sec-strengths-body { white-space: pre-wrap; }
   .radar-wrap { display: flex; justify-content: center; padding: 8px 0; }
   #radar-canvas { max-width: 100%; }
   .tag-grid { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -189,7 +190,8 @@
         <span>✦ 测评说明</span><br>
         共32道题，每题选1-5分，没有对错<br>
         结果根据你的真实回答生成，不是通用模板<br>
-        填写越真实，分析越准确
+        填写越真实，分析越准确<br>
+        <span style="color:#666;font-size:11px;">⚠️ 本测评为留学场景专属 MBTI 参考，与官方测试不同，结果仅供参考。</span>
       </div>
       <div class="steps-row">
         <div class="step-item"><div class="step-num">1</div>填写基本信息<span class="step-arrow">→</span></div>
@@ -227,8 +229,13 @@
         <button class="chip chip-sm" onclick="selectChip('target',this,'英国')">英国</button>
         <button class="chip chip-sm" onclick="selectChip('target',this,'澳大利亚')">澳大利亚</button>
         <button class="chip chip-sm" onclick="selectChip('target',this,'加拿大')">加拿大</button>
+        <button class="chip chip-sm" onclick="selectChip('target',this,'日本')">日本</button>
+        <button class="chip chip-sm" onclick="selectChip('target',this,'韩国')">韩国</button>
+        <button class="chip chip-sm" onclick="selectChip('target',this,'新加坡')">新加坡</button>
+        <button class="chip chip-sm" onclick="selectChip('target',this,'马来西亚')">马来西亚</button>
         <button class="chip chip-sm" onclick="selectChip('target',this,'欧洲')">欧洲</button>
-        <button class="chip chip-sm" onclick="selectChip('target',this,'香港/新加坡')">香港/新加坡</button>
+        <button class="chip chip-sm" onclick="selectChip('target',this,'香港')">香港</button>
+        <button class="chip chip-sm" onclick="selectChip('target',this,'其他')">其他</button>
         <button class="chip chip-sm" onclick="selectChip('target',this,'还没想好')">还没想好</button>
       </div>
     </div>
@@ -310,6 +317,8 @@
       <div class="sec-body" id="sec-country-body"></div>
       <button onclick="toggleSchools()" id="btn-school-toggle" style="width:100%;margin-top:14px;padding:12px;background:rgba(212,168,67,0.12);border:1px solid rgba(212,168,67,0.3);border-radius:10px;color:#d4a843;font-size:14px;cursor:pointer;font-weight:bold;">🏫 查看适配院校推荐 ▼</button>
       <div id="sec-school-body" style="display:none;margin-top:12px;"></div>
+      <div id="sec-budget-body"></div>
+      <div id="sec-user-country" style="display:none;margin-top:18px;"></div>
     </div>
     <div class="report-section" id="sec-traffic">
       <div class="sec-title"><span>🚦</span> 留学路径红绿灯</div>
@@ -608,25 +617,133 @@ function countryAdvice(type, country) {
 2. 如果有明确的行业方向（如荷兰商科/德国工程），欧洲是高性价比选择
 3. 提前确认目标专业在你目标行业里的实际认可情况
 4. 适合有一定独立生活能力、且对欧洲文化有兴趣的同学`,
-    '香港/新加坡': `【推荐指数】★★★★★
+    '香港': `【推荐指数】★★★★★
 
 ▎优势
-1. 顶尖学校（港大/港中文/NUS/NTU）全球排名高，国内认可度极高
-2. 距离近、文化熟悉，适应成本最低
-3. 金融和科技就业生态成熟，实习和就业资源丰富
-4. 学制紧凑（1-1.5年硕士），时间成本低
+1. 港大/港中文/港科大全球排名极高，国内认可度顶尖
+2. 距离内地最近，文化熟悉，适应成本极低
+3. 国际金融中心，金融/法律/商科就业资源丰富
+4. 学制紧凑（1年硕士），时间成本最低
 
 ▎劣势
 1. 申请竞争极其激烈，尤其商科/传媒等热门专业
-2. 生活成本高（香港租房尤其贵），住宿条件可能不如预期
-3. 校园体验和"出国感"相对弱，可能不满足对海外生活的憧憬
-4. 就业市场虽好但容量有限，金融/科技以外的行业选择偏窄
+2. 租房成本全球最贵之一，住宿条件可能不如预期
+3. "出国感"较弱，可能不满足对海外生活的憧憬
+4. 就业市场容量有限，金融/科技以外行业选择偏窄
 
 ▎与你的匹配点
 1. 如果对欧美有顾虑（距离/安全/文化），这是风险最低的顶尖选项
 2. 离家近的优势让你可以"进可攻退可守"，降低决策压力
 3. 高效紧凑的学制适合目标明确、想快速提升学历的你
 4. 成熟的华人职业网络能帮你快速建立行业连接`,
+    '新加坡': `【推荐指数】★★★★★
+
+▎优势
+1. NUS/NTU亚洲顶尖，全球排名前15，学历含金量极高
+2. 中英双语环境，华人占比高，适应零门槛
+3. 亚洲科技和金融中心，就业率极高
+4. 安全指数全球前列，家长放心度最高
+
+▎劣势
+1. 国土面积小，生活空间有限，可能会觉得"闷"
+2. 气候炎热潮湿，全年夏天需要适应
+3. 学业压力大，课程密度高
+4. 生活成本较高，住宿尤其紧张
+
+▎与你的匹配点
+1. 高效紧凑的学制适合目标明确的你
+2. 中英双语环境降低了语言焦虑
+3. 就业市场对中国学生友好，回国或留新都有支撑
+4. 安全稳定的环境让你专注学业`,
+    '日本': isN
+      ? `【推荐指数】★★★★☆
+
+▎优势
+1. 国公立大学学费极低（年均3-5万人民币），奖学金种类丰富
+2. 设计/动画/建筑/理工领域全球领先
+3. 社会安全、生活精致，文化体验独特
+4. 距离中国近，时差仅1小时
+
+▎劣势
+1. 大部分项目需要日语N1-N2水平，语言门槛高
+2. 就业市场对外国人较封闭，需要极强的日语能力
+3. 社会文化偏保守，融入需要时间
+4. 英语授课项目（SGU等）选择面有限
+
+▎与你的匹配点
+1. 日本"匠人精神"的教育理念适合你深入探索一个领域
+2. 设计/创意类方向在日本能获得独特的行业视角
+3. 安静有序的学习环境适合你沉浸式研究
+4. 低成本高质量的组合让你没有经济后顾之忧`
+      : `【推荐指数】★★★★☆
+
+▎优势
+1. 国公立大学学费极低，留学总成本远低于英美澳
+2. 理工/制造/医药等实用学科水平全球顶尖
+3. 社会治安好、生活便利、距离中国近
+4. JASSO等奖学金体系完善，减轻经济压力
+
+▎劣势
+1. 日语能力是硬门槛，大部分项目要求N1-N2
+2. 职场文化独特（年功序列等），需要提前了解
+3. 英语授课项目数量有限，选择面窄
+4. 社交文化含蓄，建立深度人际关系需要时间
+
+▎与你的匹配点
+1. 严谨的学术训练体系与你务实的学习风格匹配
+2. 日本企业重视专业技能，你的执行力在就业市场有优势
+3. 生活成本可控，让你专注于学业和职业积累
+4. 距离近、文化相似度高，适应成本低`,
+    '韩国': `【推荐指数】★★★★☆
+
+▎优势
+1. SKY（首尔大/高丽/延世）在亚洲认可度高，学费相对低
+2. GKS政府奖学金覆盖面广，可全额资助
+3. 韩流文化产业发达，传媒/设计/娱乐方向独具优势
+4. 距离中国极近（2小时飞行），生活便利度高
+
+▎劣势
+1. 韩语能力要求高（TOPIK 4-6级），英语授课项目有限
+2. 就业市场对外国人开放度一般，留韩就业竞争大
+3. 社会竞争文化浓厚（"内卷"程度不亚于国内）
+4. 冬季寒冷，首尔生活成本近年上涨
+
+▎与你的匹配点
+1. 如果对韩国文化/产业有兴趣，这是最直接的入口
+2. 高性价比+近距离，试错成本低
+3. 丰富的校园文化活动让你快速融入
+4. GKS奖学金让零成本留学成为可能`,
+    '马来西亚': `【推荐指数】★★★☆☆
+
+▎优势
+1. 留学总成本极低（年均5-10万人民币），性价比最高选项之一
+2. 英语授课为主，语言门槛低
+3. 多元文化（华人占比约23%），中文沟通无障碍
+4. 部分高校（马来亚大学QS60）排名提升快，学历认可度在提高
+
+▎劣势
+1. 整体学术声誉不如英美澳，顶尖雇主认可度有限
+2. 就业市场规模小，多数学生选择回国发展
+3. 基础设施和学术资源与发达国家有差距
+4. 气候炎热潮湿，需要适应
+
+▎与你的匹配点
+1. 如果预算有限但想拿到国际学历，这是最务实的选择
+2. 华人文化圈让你没有文化冲击，适应极快
+3. 可以作为跳板——在马来读本科/硕士后申请欧美博士
+4. 适合"先走出去看看"的探索型决策`,
+    '其他': `每个留学目的地都有独特的价值，没有被列出不代表不适合你。
+
+▎如何评估一个留学目的地
+1. 目标学校的QS/THE排名和专业排名是否满足你的需求
+2. 毕业后的就业签证政策——能否给你工作/实习的缓冲期
+3. 学费+生活费总预算是否在可承受范围内
+4. 文化适应度——语言/饮食/社交方式你能否接受
+
+▎建议
+· 如果是小众目的地（如北欧、中东、东南亚其他国家），建议找有该地区经验的顾问深度咨询
+· 提前联系目标学校的在读中国学生，获取真实一手体验
+· 不要因为"冷门"而犹豫——适合你的才是最好的`,
     '还没想好': `方向还没确定其实没关系——说明你还没被固定思维框住。
 
 ▎如何找到最适合你的方向
@@ -638,8 +755,9 @@ function countryAdvice(type, country) {
 ▎各方向快速参考
 · 追求顶尖学历+就业资源 → 美国/英国
 · 看重性价比+移民可能 → 加拿大/澳大利亚
-· 想要低成本+高质量学术 → 欧洲（德国/荷兰/北欧）
-· 求稳+离家近+高认可度 → 香港/新加坡`
+· 想要低成本+高质量学术 → 欧洲（德国/荷兰/北欧）/ 日本
+· 求稳+离家近+高认可度 → 香港/新加坡
+· 预算有限+国际体验 → 马来西亚/韩国（有奖学金）`
   };
   return advice[country] || advice['还没想好'];
 }
@@ -1642,11 +1760,11 @@ const COUNTRY_RECS = {
       '人文/社科/教育/创意方向的项目选择丰富且成熟',
       '签证与毕业后路径相对清晰，减轻不确定性焦虑'
     ],
-    secondary: '澳新',
+    secondary: '澳新 / 日本',
     secondaryCond: '前提是目标清晰',
     secondaryPoints: [
-      '生活环境舒适、社区文化友好',
-      '适合对生活质量有要求或考虑长期留居的同学',
+      '澳新生活环境舒适、社区文化友好',
+      '日本设计/创意方向独具优势，低成本高质量',
       '需提前确认项目深度和方向匹配度'
     ]
   },
@@ -1863,11 +1981,11 @@ const COUNTRY_RECS = {
       '艺术/设计/创意方向有展示空间',
       '自然环境优美，能滋养你的感受力和创作灵感'
     ],
-    secondary: '英国 / 爱尔兰',
+    secondary: '英国 / 日本 / 爱尔兰',
     secondaryCond: '作品方向清晰、城市与预算可控',
     secondaryPoints: [
       '伦敦/都柏林创意产业资源丰富',
-      '但节奏快，需确认你的准备充分度',
+      '日本设计/动画/建筑全球领先，低成本高质量',
       '建议选允许作品集替代传统考试的项目'
     ]
   },
@@ -2027,22 +2145,80 @@ const SCHOOL_RECS = {
     { name: '慕尼黑工业大学（德国）', qs: 28, tags: ['工程', '免学费', '就业'], pros: '德国工科第一、几乎免学费、德企就业直通', cons: '德语要求高、官僚流程多' },
     { name: '阿姆斯特丹大学（荷兰）', qs: 53, tags: ['社科', '传媒', '英语授课'], pros: '传媒社科欧洲领先、全英授课、城市国际化', cons: '住房难找、生活成本较高' },
   ],
-  '香港/新加坡': [
-    { name: '新加坡国立大学', qs: 8, tags: ['亚洲顶尖', '就业', '多元'], pros: '亚洲第一、就业率极高、中英双语环境', cons: '学业压力大、气候炎热' },
-    { name: '南洋理工大学', qs: 15, tags: ['工程', '创新', '实践'], pros: '工程商科强、校园设施新、行业合作多', cons: '位置偏远、社交圈相对小' },
+  '香港': [
     { name: '香港大学', qs: 17, tags: ['国际化', '法律商科', '都市'], pros: '亚洲国际化程度最高、金融法律顶尖、离内地近', cons: '住宿紧张、生活成本高' },
     { name: '香港中文大学', qs: 36, tags: ['人文', '书院制', '双语'], pros: '书院制社区感强、中英双语、山景校园美', cons: '山上校园交通不便' },
     { name: '香港科技大学', qs: 47, tags: ['商科', 'STEM', '创业'], pros: '商学院亚洲顶尖、创业氛围好、校友网络强', cons: '校园较小、位置偏远' },
+    { name: '香港理工大学', qs: 57, tags: ['实践', '设计', '酒店管理'], pros: '设计/酒店管理全球顶尖、实习资源丰富', cons: '学术排名略低于前三' },
+    { name: '香港城市大学', qs: 62, tags: ['工程', '创新', '都市'], pros: '工程/计算机强、九龙核心地段、设施新', cons: '校园面积小' },
+  ],
+  '新加坡': [
+    { name: '新加坡国立大学', qs: 8, tags: ['亚洲顶尖', '就业', '多元'], pros: '亚洲第一、就业率极高、中英双语环境', cons: '学业压力大、气候炎热' },
+    { name: '南洋理工大学', qs: 15, tags: ['工程', '创新', '实践'], pros: '工程商科强、校园设施新、行业合作多', cons: '位置偏远、社交圈相对小' },
+    { name: '新加坡管理大学', qs: 590, tags: ['商科', '就业', '都市'], pros: '商科就业率极高、市中心校区、小班教学', cons: '综合排名不高但商科口碑好' },
+    { name: '新加坡科技设计大学', qs: 0, tags: ['设计', '创新', 'STEM'], pros: 'MIT联合创办、设计与科技融合、创新导向', cons: '成立时间短、知名度在建设中' },
+  ],
+  '日本': [
+    { name: '东京大学', qs: 32, tags: ['综合', '科研', '学术深度'], pros: '日本第一学府、科研实力顶尖、国际项目(PEAK)英语授课', cons: '竞争极强、日语环境为主' },
+    { name: '京都大学', qs: 50, tags: ['科研', '独立思考', '学术自由'], pros: '学术自由传统、诺贝尔奖摇篮、研究资源丰富', cons: '地理位置相对偏、英语项目少' },
+    { name: '大阪大学', qs: 80, tags: ['工程', '医学', '实践'], pros: '工学/医学强、产学合作紧密、关西地区核心', cons: '国际知名度低于东大京大' },
+    { name: '东京工业大学', qs: 84, tags: ['STEM', '工程', '科研'], pros: '日本理工第一、学费极低、就业率高', cons: '纯理工校、人文社科缺失' },
+    { name: '早稻田大学', qs: 181, tags: ['国际化', '人文', '校友网络'], pros: '国际生最多的日本私立、英语项目丰富、校友网络强', cons: '私立学费较高、排名不反映实力' },
+  ],
+  '韩国': [
+    { name: '首尔国立大学', qs: 31, tags: ['综合', '科研', '学术深度'], pros: '韩国第一学府、学费极低（国立）、研究资源丰富', cons: '韩语要求高、竞争激烈' },
+    { name: 'KAIST', qs: 56, tags: ['STEM', '创新', '科研'], pros: '韩国MIT、全英授课理工项目、奖学金覆盖广', cons: '位于大田非首尔、纯理工导向' },
+    { name: '延世大学', qs: 56, tags: ['国际化', '医学', '都市'], pros: '国际化程度高、医学/商科强、首尔核心', cons: '私立学费较高' },
+    { name: '高丽大学', qs: 67, tags: ['商科', '法律', '校友网络'], pros: '商科/法学顶尖、校友在韩国企业影响力大', cons: '申请竞争大、韩语要求高' },
+    { name: '成均馆大学', qs: 100, tags: ['商科', '实践', '三星'], pros: '三星集团投资、商学院亚洲前列、就业资源丰富', cons: '校园分两地（首尔+水原）' },
+  ],
+  '马来西亚': [
+    { name: '马来亚大学', qs: 60, tags: ['综合', '性价比', '多元'], pros: '马来最高学府、QS排名提升快、学费极低', cons: '国际知名度仍在建设中' },
+    { name: '博特拉大学', qs: 158, tags: ['农学', '环境', '性价比'], pros: '农学/环境科学东南亚领先、校园环境好', cons: '位置偏远、部分专业认可度有限' },
+    { name: '理科大学', qs: 137, tags: ['STEM', '科研', '性价比'], pros: '理工科研强、槟城生活成本低、英语授课', cons: '非首都、社交圈较小' },
+    { name: '国民大学', qs: 159, tags: ['社科', '教育', '本土'], pros: '教育/社科强、学费低、马来文化体验丰富', cons: '部分课程马来语授课' },
+  ],
+  '其他': [
+    { name: '暂无具体推荐', qs: 0, tags: ['咨询顾问'], pros: '针对您的目的地，建议与顾问一对一沟通获取个性化推荐', cons: '' },
   ],
   '还没想好': [
     { name: 'MIT（美国）', qs: 1, tags: ['STEM', '创新'], pros: '理工全球第一', cons: '竞争极强' },
     { name: '牛津大学（英国）', qs: 3, tags: ['学术深度', '导师制'], pros: '导师制一对一', cons: '节奏快' },
     { name: '墨尔本大学（澳洲）', qs: 13, tags: ['综合', '宜居'], pros: '澳洲学术最强', cons: '学制较长' },
     { name: '多伦多大学（加拿大）', qs: 21, tags: ['综合', '多元'], pros: '加拿大综合第一', cons: '大班教学' },
-    { name: 'ETH苏黎世（欧洲）', qs: 7, tags: ['STEM', '免学费'], pros: '理工顶尖+低学费', cons: '德语环境' },
-    { name: '新加坡国立大学（亚洲）', qs: 8, tags: ['就业', '双语'], pros: '亚洲第一', cons: '学业压力大' },
+    { name: '东京大学（日本）', qs: 32, tags: ['科研', '性价比'], pros: '日本第一+低学费', cons: '日语门槛' },
+    { name: '首尔国立大学（韩国）', qs: 31, tags: ['综合', '奖学金'], pros: '韩国第一+GKS奖学金', cons: '韩语要求' },
+    { name: '新加坡国立大学', qs: 8, tags: ['就业', '双语'], pros: '亚洲第一', cons: '学业压力大' },
   ]
 };
+
+// ============ 预算数据 ============
+const BUDGET_RECS = {
+  '美国': { tuition: '25-55万/年', living: '15-25万/年', total: '40-80万/年', note: 'STEM偏高，公立偏低' },
+  '英国': { tuition: '15-35万/年', living: '12-18万/年', total: '27-53万/年', note: '一年制硕士总成本可控' },
+  '澳大利亚': { tuition: '15-30万/年', living: '10-15万/年', total: '25-45万/年', note: '可打工补贴生活费' },
+  '加拿大': { tuition: '10-25万/年', living: '8-15万/年', total: '18-40万/年', note: 'Co-op可覆盖部分费用' },
+  '日本': { tuition: '3-10万/年', living: '6-10万/年', total: '9-20万/年', note: '国公立极便宜，奖学金多' },
+  '韩国': { tuition: '3-8万/年', living: '5-8万/年', total: '8-16万/年', note: 'GKS全奖覆盖广' },
+  '新加坡': { tuition: '8-20万/年', living: '8-12万/年', total: '16-32万/年', note: '有服务义务奖学金' },
+  '马来西亚': { tuition: '2-5万/年', living: '3-5万/年', total: '5-10万/年', note: '性价比极高' },
+  '欧洲': { tuition: '0-15万/年', living: '8-15万/年', total: '8-30万/年', note: '德国公立免学费' },
+  '香港': { tuition: '12-20万/年', living: '8-12万/年', total: '20-32万/年', note: '离内地近，奖学金竞争激烈' },
+};
+
+function renderBudget(country) {
+  const b = BUDGET_RECS[country];
+  if (!b) return '';
+  return '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(212,168,67,0.15);border-radius:10px;padding:14px;margin-top:12px;">' +
+    '<div style="color:#d4a843;font-size:13px;font-weight:bold;margin-bottom:8px;">💰 留学预算参考（' + country + '）</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;">' +
+      '<div style="text-align:center;"><div style="color:#a09080;font-size:11px;">学费</div><div style="color:#f0d88a;font-size:13px;font-weight:bold;">' + b.tuition + '</div></div>' +
+      '<div style="text-align:center;"><div style="color:#a09080;font-size:11px;">生活费</div><div style="color:#f0d88a;font-size:13px;font-weight:bold;">' + b.living + '</div></div>' +
+      '<div style="text-align:center;"><div style="color:#a09080;font-size:11px;">总计</div><div style="color:#f0d88a;font-size:13px;font-weight:bold;">' + b.total + '</div></div>' +
+    '</div>' +
+    '<div style="color:#a09080;font-size:11px;text-align:center;">📌 ' + b.note + '（人民币，仅供参考）</div>' +
+  '</div>';
+}
 
 // MBTI维度与学校标签匹配规则
 const MBTI_TAG_MATCH = {
@@ -2376,9 +2552,28 @@ function generateReport() {
   // 使用基于MBTI类型的国家推荐（而非用户选择的目的地）
   document.getElementById('sec-country-name').textContent = '';
   document.getElementById('sec-country-body').innerHTML = renderCountryRec(mbti);
-  document.getElementById('sec-school-body').innerHTML = renderSchoolRec(info.target, mbti);
+  // 学校推荐：使用MBTI推荐的第一优先国家
+  const rec = COUNTRY_RECS[mbti];
+  const recPrimary = rec ? rec.primary.split(' / ')[0] : info.target;
+  document.getElementById('sec-school-body').innerHTML = renderSchoolRec(recPrimary, mbti);
   document.getElementById('sec-school-body').style.display = 'none';
   document.getElementById('btn-school-toggle').textContent = '🏫 查看适配院校推荐 ▼';
+  // 预算
+  document.getElementById('sec-budget-body').innerHTML = renderBudget(recPrimary);
+  // 用户原始选择解读
+  const userTarget = info.target;
+  if (userTarget && userTarget !== '还没想好' && userTarget !== '其他' && rec && !rec.primary.includes(userTarget)) {
+    const userAdvice = countryAdvice(mbti, userTarget);
+    document.getElementById('sec-user-country').style.display = 'block';
+    document.getElementById('sec-user-country').innerHTML =
+      '<div style="border-top:1px solid rgba(212,168,67,0.15);padding-top:16px;">' +
+      '<div style="color:#d4a843;font-size:14px;font-weight:bold;margin-bottom:10px;">📍 你选了' + userTarget + ' — 来看看匹配度</div>' +
+      '<div style="color:#c0b090;font-size:13px;line-height:2;white-space:pre-wrap;">' + userAdvice + '</div>' +
+      renderBudget(userTarget) +
+      '</div>';
+  } else {
+    document.getElementById('sec-user-country').style.display = 'none';
+  }
   document.getElementById('sec-traffic-body').innerHTML = renderTrafficLights(mbti);
   document.getElementById('sec-timeline-body').textContent = sec.timeline || '';
   document.getElementById('sec-case-title').textContent = `${mbti} 申请走过的坑`;
