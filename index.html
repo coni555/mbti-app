@@ -308,6 +308,8 @@
       <div class="sec-title"><span>🌍</span> 留学国家/地区推荐</div>
       <div id="sec-country-name" style="font-size:18px;color:#f0d88a;font-weight:bold;margin-bottom:14px;letter-spacing:1px;"></div>
       <div class="sec-body" id="sec-country-body"></div>
+      <button onclick="toggleSchools()" id="btn-school-toggle" style="width:100%;margin-top:14px;padding:12px;background:rgba(212,168,67,0.12);border:1px solid rgba(212,168,67,0.3);border-radius:10px;color:#d4a843;font-size:14px;cursor:pointer;font-weight:bold;">🏫 查看适配院校推荐 ▼</button>
+      <div id="sec-school-body" style="display:none;margin-top:12px;"></div>
     </div>
     <div class="report-section" id="sec-traffic">
       <div class="sec-title"><span>🚦</span> 留学路径红绿灯</div>
@@ -325,6 +327,8 @@
       <button class="btn-copy" id="btn-copy-card" onclick="copyCard()">📋 复制我的档案</button>
       <button class="btn-copy-all" onclick="generatePoster()">导出长图</button>
     </div>
+
+    <div style="text-align:center;color:#666;font-size:11px;margin:20px 0 10px;line-height:1.6;">⚠️ 本测评为留学场景专属 MBTI 参考，与官方 MBTI 测试不同，结果仅供参考。</div>
 
     <!-- 企业微信二维码 -->
     <div class="qr-section">
@@ -1987,6 +1991,113 @@ const TRAFFIC_LIGHTS = {
   }
 };
 
+// ============ 学校推荐数据（QS 2025） ============
+const SCHOOL_RECS = {
+  '美国': [
+    { name: 'MIT（麻省理工）', qs: 1, tags: ['STEM', '创新', '跨学科'], pros: '全球理工第一、创新创业氛围浓厚、跨学科资源丰富', cons: '竞争极强、社交压力大、生活成本高' },
+    { name: '斯坦福大学', qs: 2, tags: ['创业', '跨学科', '实践'], pros: '硅谷核心、创业资源顶级、学术自由度高', cons: '录取率极低、周边生活成本高' },
+    { name: '哈佛大学', qs: 4, tags: ['文理兼修', '校友网络', '通识'], pros: '顶级人脉网络、通识教育强、资源无上限', cons: '学术压力大、竞争氛围浓' },
+    { name: '哥伦比亚大学', qs: 7, tags: ['人文社科', '实习', '都市'], pros: '纽约核心地段、实习机会极多、国际化程度高', cons: '生活成本高、校园空间小' },
+    { name: 'UCLA', qs: 29, tags: ['多元文化', '影视传媒', '性价比'], pros: '公立性价比高、多元包容、气候宜人', cons: '大班教学多、选课竞争' },
+  ],
+  '英国': [
+    { name: '牛津大学', qs: 3, tags: ['学术深度', '导师制', '小班'], pros: '导师制一对一教学、学术传统深厚、学院社区感强', cons: '教学节奏快、社交圈较封闭' },
+    { name: '剑桥大学', qs: 5, tags: ['科研', '学院制', '导师制'], pros: '科研资源顶级、学院制归属感强、学术氛围纯粹', cons: '地理位置偏、娱乐较少' },
+    { name: 'UCL（伦敦大学学院）', qs: 9, tags: ['跨学科', '伦敦', '多元'], pros: '伦敦核心、跨学科灵活、国际学生比例高', cons: '校园分散、住宿紧张' },
+    { name: '爱丁堡大学', qs: 22, tags: ['人文', '独立思考', '性价比'], pros: '人文社科强、城市宜居、生活成本相对低', cons: '天气较冷、部分专业竞争大' },
+    { name: 'KCL（伦敦国王学院）', qs: 37, tags: ['社科', '法律', '伦敦核心'], pros: '社科法律强势、伦敦市中心、实习便利', cons: '校园分散、学生体验因校区而异' },
+  ],
+  '澳大利亚': [
+    { name: '墨尔本大学', qs: 13, tags: ['综合', '研究型', '多元'], pros: '澳洲学术声誉最高、墨尔本宜居、就业机会多', cons: '学制较长（本科3-4年）、学费较高' },
+    { name: '悉尼大学', qs: 18, tags: ['校友网络', '都市', '传统'], pros: '校友网络强、悉尼地理优势、校园美', cons: '学术压力大、生活成本高' },
+    { name: '新南威尔士大学', qs: 19, tags: ['工程', '实践', '就业'], pros: '工程商科强、与行业联系紧密、就业率高', cons: '学期制紧凑（Trimester）' },
+    { name: '澳国立大学', qs: 30, tags: ['科研', '小班', '安静'], pros: '科研实力强、师生比高、堪培拉安静适合学习', cons: '城市较小、社交圈有限' },
+    { name: '莫纳什大学', qs: 37, tags: ['药学', '国际化', '实践'], pros: '药学全球顶尖、国际校区多、实践机会丰富', cons: '主校区离市中心远' },
+  ],
+  '加拿大': [
+    { name: '多伦多大学', qs: 21, tags: ['综合', '科研', '多元'], pros: '加拿大综合第一、研究资源丰富、多伦多国际化', cons: '大班教学、竞争压力大' },
+    { name: 'UBC（英属哥伦比亚大学）', qs: 34, tags: ['环境', '宜居', '跨学科'], pros: '校园全球最美之一、温哥华宜居、环境科学强', cons: '温哥华生活成本高' },
+    { name: '麦吉尔大学', qs: 29, tags: ['医学', '法语环境', '学术'], pros: '加拿大"小哈佛"、学费相对低、蒙特利尔文化丰富', cons: '冬季极冷、法语环境适应' },
+    { name: '滑铁卢大学', qs: 112, tags: ['Co-op', '工程', '就业'], pros: 'Co-op带薪实习全球领先、工程CS顶尖、就业率极高', cons: '城市较小、娱乐少（注：虽非QS100但Co-op模式独特）' },
+  ],
+  '欧洲': [
+    { name: 'ETH苏黎世（瑞士）', qs: 7, tags: ['STEM', '科研', '免学费'], pros: '理工全球顶尖、学费极低、瑞士就业前景好', cons: '德语环境、生活成本极高' },
+    { name: '巴黎文理研究大学（法国）', qs: 24, tags: ['人文', '精英制', '小班'], pros: '法国精英教育、小班制深度教学、巴黎文化资源', cons: '法语授课为主、申请流程复杂' },
+    { name: '代尔夫特理工（荷兰）', qs: 47, tags: ['工程', '设计', '英语授课'], pros: '工程设计全球前列、英语授课、荷兰开放包容', cons: '住房紧张、社交圈需主动拓展' },
+    { name: '慕尼黑工业大学（德国）', qs: 28, tags: ['工程', '免学费', '就业'], pros: '德国工科第一、几乎免学费、德企就业直通', cons: '德语要求高、官僚流程多' },
+    { name: '阿姆斯特丹大学（荷兰）', qs: 53, tags: ['社科', '传媒', '英语授课'], pros: '传媒社科欧洲领先、全英授课、城市国际化', cons: '住房难找、生活成本较高' },
+  ],
+  '香港/新加坡': [
+    { name: '新加坡国立大学', qs: 8, tags: ['亚洲顶尖', '就业', '多元'], pros: '亚洲第一、就业率极高、中英双语环境', cons: '学业压力大、气候炎热' },
+    { name: '南洋理工大学', qs: 15, tags: ['工程', '创新', '实践'], pros: '工程商科强、校园设施新、行业合作多', cons: '位置偏远、社交圈相对小' },
+    { name: '香港大学', qs: 17, tags: ['国际化', '法律商科', '都市'], pros: '亚洲国际化程度最高、金融法律顶尖、离内地近', cons: '住宿紧张、生活成本高' },
+    { name: '香港中文大学', qs: 36, tags: ['人文', '书院制', '双语'], pros: '书院制社区感强、中英双语、山景校园美', cons: '山上校园交通不便' },
+    { name: '香港科技大学', qs: 47, tags: ['商科', 'STEM', '创业'], pros: '商学院亚洲顶尖、创业氛围好、校友网络强', cons: '校园较小、位置偏远' },
+  ],
+  '还没想好': [
+    { name: 'MIT（美国）', qs: 1, tags: ['STEM', '创新'], pros: '理工全球第一', cons: '竞争极强' },
+    { name: '牛津大学（英国）', qs: 3, tags: ['学术深度', '导师制'], pros: '导师制一对一', cons: '节奏快' },
+    { name: '墨尔本大学（澳洲）', qs: 13, tags: ['综合', '宜居'], pros: '澳洲学术最强', cons: '学制较长' },
+    { name: '多伦多大学（加拿大）', qs: 21, tags: ['综合', '多元'], pros: '加拿大综合第一', cons: '大班教学' },
+    { name: 'ETH苏黎世（欧洲）', qs: 7, tags: ['STEM', '免学费'], pros: '理工顶尖+低学费', cons: '德语环境' },
+    { name: '新加坡国立大学（亚洲）', qs: 8, tags: ['就业', '双语'], pros: '亚洲第一', cons: '学业压力大' },
+  ]
+};
+
+// MBTI维度与学校标签匹配规则
+const MBTI_TAG_MATCH = {
+  E: ['多元', '多元文化', '社交', '都市', '国际化', '校友网络'],
+  I: ['导师制', '小班', '安静', '独立思考', '书院制', '学院制'],
+  S: ['实践', '就业', 'Co-op', '就业导向', '工程'],
+  N: ['跨学科', '创新', '创业', '人文', '设计', '通识'],
+  T: ['STEM', '科研', '工程', '研究型'],
+  F: ['人文', '社科', '多元', '传媒', '书院制', '性价比'],
+  J: ['传统', '学术深度', '学术', '综合'],
+  P: ['创业', '跨学科', '实践', '设计', '影视传媒']
+};
+
+function renderSchoolRec(target, mbti) {
+  const schools = SCHOOL_RECS[target];
+  if (!schools) return '<div style="color:#a09080;">暂无该地区学校数据</div>';
+  const dims = mbti.split('');
+  const matchTags = new Set();
+  dims.forEach(d => { (MBTI_TAG_MATCH[d]||[]).forEach(t => matchTags.add(t)); });
+
+  return schools.map(s => {
+    const isMatch = s.tags.some(t => matchTags.has(t));
+    const tagHtml = s.tags.map(t =>
+      '<span style="display:inline-block;padding:2px 8px;margin:2px;border-radius:10px;font-size:11px;' +
+      (matchTags.has(t) ? 'background:rgba(212,168,67,0.25);color:#f0d88a;' : 'background:rgba(255,255,255,0.08);color:#a09080;') +
+      '">' + t + '</span>'
+    ).join('');
+
+    return '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(212,168,67,' + (isMatch?'0.3':'0.1') + ');border-radius:10px;padding:14px;margin-bottom:10px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
+        '<span style="color:#f0d88a;font-size:15px;font-weight:bold;">' + s.name + '</span>' +
+        '<span style="color:#a09080;font-size:12px;">QS #' + s.qs + '</span>' +
+      '</div>' +
+      (isMatch ? '<div style="color:#d4a843;font-size:11px;margin-bottom:6px;">✦ 与你的性格高度匹配</div>' : '') +
+      '<div style="margin-bottom:8px;">' + tagHtml + '</div>' +
+      '<div style="font-size:12px;line-height:1.8;">' +
+        '<span style="color:#8fbf8f;">▎优势：</span><span style="color:#c0b090;">' + s.pros + '</span><br>' +
+        '<span style="color:#bf8f8f;">▎劣势：</span><span style="color:#a09080;">' + s.cons + '</span>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function toggleSchools() {
+  const body = document.getElementById('sec-school-body');
+  const btn = document.getElementById('btn-school-toggle');
+  if (body.style.display === 'none') {
+    body.style.display = 'block';
+    btn.textContent = '🏫 收起院校推荐 ▲';
+  } else {
+    body.style.display = 'none';
+    btn.textContent = '🏫 查看适配院校推荐 ▼';
+  }
+}
+
 function renderTrafficLights(mbti) {
   const tl = TRAFFIC_LIGHTS[mbti];
   if (!tl) return '';
@@ -2265,6 +2376,9 @@ function generateReport() {
   // 使用基于MBTI类型的国家推荐（而非用户选择的目的地）
   document.getElementById('sec-country-name').textContent = '';
   document.getElementById('sec-country-body').innerHTML = renderCountryRec(mbti);
+  document.getElementById('sec-school-body').innerHTML = renderSchoolRec(info.target, mbti);
+  document.getElementById('sec-school-body').style.display = 'none';
+  document.getElementById('btn-school-toggle').textContent = '🏫 查看适配院校推荐 ▼';
   document.getElementById('sec-traffic-body').innerHTML = renderTrafficLights(mbti);
   document.getElementById('sec-timeline-body').textContent = sec.timeline || '';
   document.getElementById('sec-case-title').textContent = `${mbti} 申请走过的坑`;
