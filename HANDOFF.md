@@ -4,7 +4,8 @@
 留学咨询公司（新通教育）的 MBTI 测评 H5 应用，学员自助测评 + 数据沉淀到飞书 + 企业微信引流。
 
 ## 文件结构
-- `/Users/coni/mbti-app/index.html` — 单文件 HTML 应用（CSS+HTML+JS，~2700行）
+- `/Users/coni/mbti-app/index.html` — 单文件 HTML 应用（CSS+HTML+JS，~2800行）
+- `/Users/coni/mbti-app/avatars/` — 16种 MBTI 类型的低多边形风格头像（INFJ.png ~ ESTP.png）
 - `/Users/coni/mbti-app/functions/api/bitable.js` — Cloudflare Pages Function，写飞书多维表格 + 发群通知
 - `/Users/coni/mbti-app/api/bitable.js` — 旧 Vercel 云函数（已弃用，保留备份）
 - `/Users/coni/mbti-app/qrcode.png` — 企业微信二维码（底部引流用）
@@ -33,43 +34,6 @@
 - 飞书多维表格 table_id: tblW46zN3Qf0UmiI
 - 飞书 Webhook: https://open.feishu.cn/open-apis/bot/v2/hook/104820c9-2175-4482-b4e4-ea4620d7685e
 
-## 代码结构 (index.html ~2700行)
-```
-L1-8:       头部 meta + 外部依赖（Google Fonts, html2canvas）
-L9-160:     CSS 样式（报告页、雷达图、海报浮层、二维码、budget卡片等）
-L161-355:   HTML 结构
-              - Step 0: 介绍页（含"非官方MBTI"声明）
-              - Step 1: 填信息（昵称/年级/目标国家12选1/微信）
-              - Step 2: 32道答题（4维度×8题）
-              - Step 3: 加载动画
-              - Step 4: 报告页（hero → 维度分析 → 性格 → 路径 → 优势 →
-                        国家推荐 → 用户选择解读 → 学校推荐 → 预算参考 →
-                        红绿灯 → 时间线 → 案例 → 声明 → 二维码 → 重新测评）
-L356-365:   海报浮层
-L366-430:   32道题目定义 + 评分逻辑
-              - E/I: Q1-8 (1-4正向E, 5-8反向I)
-              - S/N: Q9-16
-              - T/F: Q17-24
-              - J/P: Q25-32
-L431-750:   countryAdvice(mbti, country) — 12个国家的MBTI适配分析
-              含推荐指数、优势4点、劣势4点、与MBTI匹配点
-              部分国家有 isF/isN/isJ 条件分支
-L751-1700:  TEMPLATES 对象（16种MBTI类型完整文案）
-L1701-1740: META 对象（16种类型元数据）
-L1741-2030: COUNTRY_RECS 对象（16种类型的留学国家推荐，primary+secondary）
-L2031-2100: TRAFFIC_LIGHTS 对象
-L2100-2200: SCHOOL_RECS 对象（12个国家/地区的QS排名院校）
-              + BUDGET_RECS 对象（10个国家/地区的学费/生活费/总计）
-              + MBTI_TAG_MATCH（性格标签匹配高亮）
-              + renderSchoolRec() / renderBudget() 渲染函数
-L2200-2500: computeRadar() / drawRadar() / parseCardSections() / parseFullReport()
-L2500-2600: generateReport() — 核心报告生成函数
-              - 学校推荐基于 MBTI 推荐的 primary 国家（非用户选择）
-              - 当用户选择 ≠ MBTI推荐时，额外显示用户选择的匹配度分析 + 预算对比
-L2600-2650: generatePoster() — html2canvas导出长图
-L2650-2700: sendToFeishu() — 飞书数据上报 + 员工来源追踪(?ref=xxx)
-```
-
 ## 核心数据对象
 
 ### countryAdvice(mbti, country) — 国家适配分析
@@ -77,26 +41,40 @@ L2650-2700: sendToFeishu() — 飞书数据上报 + 员工来源追踪(?ref=xxx)
 支持12个国家/地区：美国/英国/澳大利亚/加拿大/日本/韩国/新加坡/马来西亚/欧洲/香港/其他/还没想好。
 
 ### SCHOOL_RECS[country] — 院校推荐
-```js
-{ '美国': [{name, qs}...], '英国': [...], ... }
-```
 每个国家3-5所QS排名院校。含 MBTI_TAG_MATCH 做性格标签高亮。
 
 ### BUDGET_RECS[country] — 预算参考
-```js
-{ tuition: 'X万/年', living: 'X万/年', total: 'X万/年', note: '备注' }
-```
+tuition/living/total/note，覆盖10个国家/地区。
 
 ### COUNTRY_RECS[mbti] — 国家推荐
-```js
-{ primary: '国家名', primaryWhy, primaryPoints: [...],
-  secondary: '国家名', secondaryCond, secondaryPoints: [...] }
-```
+primary + secondary，16种类型全部补全（含日本/韩国/新加坡/马来西亚）。
 
 ### TRAFFIC_LIGHTS[mbti] — 红绿灯信号
-```js
-{ green: [...], yellow: [...], red: [...] }
-```
+green/yellow/red 三级。
+
+## 报告页关键板块
+
+### 用户选择 vs MBTI推荐 — 四种联动逻辑
+| 情况 | 行为 |
+|------|------|
+| 用户选 = primary 国家 | 肯定"你的直觉很准"，不显示对比 |
+| 用户选 = secondary 国家 | 温和提示"在你的条件适配区"，显示对比+预算 |
+| 用户选 ≠ 推荐范围 | 完整对比分析（桥接措辞+预算对比+院校推荐） |
+| 用户选 = 还没想好/其他 | 不显示，保持原样 |
+
+院校推荐也联动：当用户选择 ≠ 推荐国时，折叠面板同时展示两个国家的院校。
+
+### 留学人设 — 明信片卡片
+- 顶部：左侧 MBTI 角色头像（avatars/[TYPE].png） + 右侧类型名/副标题/标签
+- 右上角虚线邮票装饰 (STUDY ABROAD)
+- 虚线分隔线
+- 下方 2×2 网格：小组作业/恋爱配对/穿搭风格/生活人设
+
+### 时间窗口 — 结构化渲染
+formatTimeline() 函数将纯文本转为结构化 HTML（段落分隔、箭头列表、高亮卡片）。
+
+### 内容免责声明
+封面页 + 报告结尾都有三条声明（仅反映留学人格/基于当前状态/可能随经历变化）。
 
 ## 员工追踪
 - 5个员工各有专属二维码（employee-qrcodes/），扫码链接带 `?ref=员工名`
@@ -115,17 +93,20 @@ L2650-2700: sendToFeishu() — 飞书数据上报 + 员工来源追踪(?ref=xxx)
 9. ✅ 32题 MBTI 测试（4维度×8题，替代原15题）
 10. ✅ QS100院校推荐（可折叠）+ "非官方MBTI"声明
 11. ✅ V4迭代：国家从7→12、预算数据、用户选择解读、换行修复
+12. ✅ V4.0版本号 + COUNTRY_RECS secondary 全部补全
+13. ✅ 内容免责声明（封面+结尾）
+14. ✅ 用户选择与MBTI推荐四种联动（对比措辞+院校联动）
+15. ✅ 时间窗口结构化排版（formatTimeline）
+16. ✅ 留学人设明信片卡片 + 16种MBTI角色头像
 
 ## 已知问题 / 可优化项
-- ~~COUNTRY_RECS 的 secondary 字段：只有 INFP/ISFP 加了日本~~ ✅ 已补全（V4.0）
-- ~~版本号底部仍显示 V3.0~~ ✅ 已更新为 V4.0
 - 微信公众号是订阅号（非服务号），无法使用 JS-SDK 自定义分享卡片
 - 如需更换二维码：替换 qrcode.png 文件后 push 即可
 
 ## 部署流程
 ```bash
 cd /Users/coni/mbti-app
-git add index.html && git commit -m "描述" && git push
+git add . && git commit -m "描述" && git push
 # Cloudflare Pages 自动从 GitHub main 部署，通常 1-2 分钟生效
 # 云函数(functions/api/bitable.js)也由 Cloudflare Pages 一并部署
 ```
