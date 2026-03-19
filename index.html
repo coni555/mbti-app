@@ -2579,16 +2579,30 @@ function generateReport() {
   document.getElementById('btn-school-toggle').textContent = '🏫 查看适配院校推荐 ▼';
   // 预算
   document.getElementById('sec-budget-body').innerHTML = renderBudget(recPrimary);
-  // 用户原始选择解读
+  // 用户原始选择解读（与MBTI推荐做对比）
   const userTarget = info.target;
   if (userTarget && userTarget !== '还没想好' && userTarget !== '其他' && rec && !rec.primary.includes(userTarget)) {
     const userAdvice = countryAdvice(mbti, userTarget);
+    const recPrimaryName = rec.primary.split(' / ')[0];
     document.getElementById('sec-user-country').style.display = 'block';
     document.getElementById('sec-user-country').innerHTML =
       '<div style="border-top:1px solid rgba(212,168,67,0.15);padding-top:16px;">' +
-      '<div style="color:#d4a843;font-size:14px;font-weight:bold;margin-bottom:10px;">📍 你选了' + userTarget + ' — 来看看匹配度</div>' +
+      // 标题：对比视角
+      '<div style="color:#d4a843;font-size:14px;font-weight:bold;margin-bottom:8px;">📍 你选了' + userTarget + '，但我们更推荐' + recPrimaryName + '</div>' +
+      // 桥接说明
+      '<div style="color:#a09080;font-size:12px;line-height:1.8;margin-bottom:14px;padding:10px 12px;background:rgba(212,168,67,0.06);border-radius:8px;">' +
+      '根据你的 ' + mbti + ' 性格特质，<b style="color:#d4a843;">' + recPrimaryName + '</b> 在学习风格、成长路径上与你的匹配度更高（见上方推荐）。' +
+      '不过你选的 <b style="color:#d4a843;">' + userTarget + '</b> 也有它的优势和适合你的地方 👇' +
+      '</div>' +
+      // 用户选择的详细分析
       '<div style="color:#c0b090;font-size:13px;line-height:2;white-space:pre-wrap;">' + userAdvice + '</div>' +
-      renderBudget(userTarget) +
+      // 预算对比
+      '<div style="margin-top:14px;padding:12px;background:rgba(212,168,67,0.06);border:1px solid rgba(212,168,67,0.12);border-radius:10px;">' +
+      '<div style="color:#d4a843;font-size:13px;font-weight:bold;margin-bottom:8px;">💰 预算对比</div>' +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap;">' +
+      '<div style="flex:1;min-width:140px;">' + renderBudget(recPrimaryName) + '</div>' +
+      '<div style="flex:1;min-width:140px;">' + renderBudget(userTarget) + '</div>' +
+      '</div></div>' +
       '</div>';
   } else {
     document.getElementById('sec-user-country').style.display = 'none';
