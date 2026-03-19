@@ -133,7 +133,7 @@
   .sec-title span { font-size: 16px; }
   .sub-label { font-size: 12px; color: #d4a843; margin-top: 14px; margin-bottom: 8px; font-family: 'Noto Sans SC', sans-serif; letter-spacing: 1px; }
   .sec-body { font-size: 14px; line-height: 2; color: #c0b090; font-family: 'Noto Sans SC', sans-serif; }
-  #sec-personality-body, #sec-path-body, #sec-strengths-body { white-space: pre-wrap; }
+  #sec-personality-body, #sec-path-body, #sec-strengths-body, #sec-timeline-body, #sec-case-body { white-space: pre-wrap; }
   .radar-wrap { display: flex; justify-content: center; padding: 8px 0; }
   #radar-canvas { max-width: 100%; }
   .tag-grid { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -2313,6 +2313,36 @@ function renderTrafficLights(mbti) {
   return html;
 }
 
+function formatTimeline(raw, mbti) {
+  if (!raw) return '';
+  // 拆行
+  const lines = raw.split('\n').filter(l => l.trim());
+  let html = '';
+  let inBullets = false;
+  lines.forEach(line => {
+    const trimmed = line.trim();
+    if (trimmed.startsWith('·') || trimmed.startsWith('•')) {
+      if (!inBullets) { html += '<div style="margin-top:12px;">'; inBullets = true; }
+      const content = trimmed.replace(/^[·•]\s*/, '');
+      html += '<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">' +
+        '<span style="color:#d4a843;font-size:14px;flex-shrink:0;margin-top:2px;">›</span>' +
+        '<span>' + content + '</span></div>';
+    } else {
+      if (inBullets) { html += '</div>'; inBullets = false; }
+      // 风险提示行（包含"最大的申请风险"）→ 高亮
+      if (trimmed.includes('最大的') && trimmed.includes('风险')) {
+        html += '<div style="color:#d4a843;font-size:13px;font-weight:bold;margin-top:16px;padding:8px 12px;background:rgba(212,168,67,0.08);border-left:3px solid #d4a843;border-radius:0 6px 6px 0;">' +
+          '⚠️ ' + trimmed + '</div>';
+      } else {
+        // 普通段落
+        html += '<div style="margin-bottom:8px;line-height:1.9;">' + trimmed + '</div>';
+      }
+    }
+  });
+  if (inBullets) html += '</div>';
+  return html;
+}
+
 function renderCountryRec(mbti) {
   const rec = COUNTRY_RECS[mbti];
   if (!rec) return '';
@@ -2649,7 +2679,10 @@ function generateReport() {
       '</div>';
   }
   document.getElementById('sec-traffic-body').innerHTML = renderTrafficLights(mbti);
-  document.getElementById('sec-timeline-body').textContent = sec.timeline || '';
+  // 时间窗口：结构化渲染
+  const timelineRaw = sec.timeline || '';
+  const timelineHTML = formatTimeline(timelineRaw, mbti);
+  document.getElementById('sec-timeline-body').innerHTML = timelineHTML;
   document.getElementById('sec-case-title').textContent = `${mbti} 申请走过的坑`;
   document.getElementById('sec-case-body').textContent = sec.case || '';
 
