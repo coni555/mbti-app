@@ -138,19 +138,78 @@
   #radar-canvas { max-width: 100%; }
   .tag-grid { display: flex; flex-wrap: wrap; gap: 8px; }
   .tag-item { padding: 8px 16px; border-radius: 20px; font-size: 12px; font-family: 'Noto Sans SC', sans-serif; border: 1px solid rgba(212,168,67,0.25); color: #d4a843; background: rgba(212,168,67,0.06); }
-  .persona-card { display: flex; gap: 16px; align-items: center; background: rgba(212,168,67,0.06); border: 1px solid rgba(212,168,67,0.18); border-radius: 14px; padding: 18px 16px; margin-bottom: 14px; }
-  .persona-avatar { width: 100px; height: 100px; flex-shrink: 0; border-radius: 12px; object-fit: contain; background: rgba(255,255,255,0.04); padding: 6px; }
-  .persona-info { flex: 1; min-width: 0; }
-  .persona-name { font-size: 16px; color: #f0d88a; font-weight: bold; margin-bottom: 4px; }
-  .persona-sub { font-size: 12px; color: #a09080; line-height: 1.6; font-family: 'Noto Sans SC', sans-serif; }
-  .persona-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-  .persona-tag { font-size: 10px; padding: 3px 8px; border-radius: 10px; border: 1px solid rgba(212,168,67,0.25); color: #d4a843; background: rgba(212,168,67,0.08); font-family: 'Noto Sans SC', sans-serif; }
-  .fun-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .fun-card { background: rgba(212,168,67,0.04); border: 1px solid rgba(212,168,67,0.12); border-radius: 10px; padding: 14px 12px; }
-  .fun-icon { font-size: 20px; margin-bottom: 6px; }
-  .fun-label { font-size: 11px; color: #d4a843; margin-bottom: 6px; font-family: 'Noto Sans SC', sans-serif; letter-spacing: 1px; }
-  .fun-text { font-size: 12px; color: #a09080; line-height: 1.7; font-family: 'Noto Sans SC', sans-serif; }
-  .fun-match { display: inline-block; background: rgba(212,168,67,0.12); padding: 2px 8px; border-radius: 4px; font-size: 11px; color: #d4a843; margin-bottom: 4px; font-family: 'Noto Sans SC', sans-serif; }
+  /* 明信片 */
+  .postcard {
+    position: relative; overflow: hidden;
+    background: linear-gradient(145deg, rgba(20,30,50,0.95), rgba(12,22,40,0.98));
+    border: 1px solid rgba(212,168,67,0.22);
+    border-radius: 16px; padding: 0; margin-bottom: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(212,168,67,0.08);
+  }
+  .postcard-stamp {
+    position: absolute; top: 12px; right: 14px;
+    width: 42px; height: 50px;
+    border: 2px dashed rgba(212,168,67,0.25); border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; color: rgba(212,168,67,0.4); letter-spacing: 1px;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+  .postcard-top {
+    display: flex; align-items: center; gap: 18px;
+    padding: 24px 22px 16px;
+  }
+  .postcard-avatar {
+    width: 90px; height: 90px; flex-shrink: 0;
+    object-fit: contain; filter: drop-shadow(0 2px 8px rgba(212,168,67,0.15));
+  }
+  .postcard-hero { flex: 1; min-width: 0; }
+  .postcard-type {
+    font-size: 11px; color: #8a9bb5; letter-spacing: 3px;
+    font-family: 'Noto Sans SC', sans-serif; margin-bottom: 4px;
+  }
+  .postcard-name {
+    font-size: 20px; color: #f0d88a; font-weight: 700;
+    letter-spacing: 1px; margin-bottom: 2px;
+  }
+  .postcard-sub {
+    font-size: 12px; color: #a09080; line-height: 1.5;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+  .postcard-tags {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;
+  }
+  .postcard-tag {
+    font-size: 10px; padding: 3px 10px; border-radius: 12px;
+    border: 1px solid rgba(212,168,67,0.2); color: #d4a843;
+    background: rgba(212,168,67,0.06); font-family: 'Noto Sans SC', sans-serif;
+  }
+  .postcard-divider {
+    height: 1px; margin: 0 22px;
+    background: repeating-linear-gradient(90deg, rgba(212,168,67,0.2) 0, rgba(212,168,67,0.2) 6px, transparent 6px, transparent 12px);
+  }
+  .postcard-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0; padding: 0;
+  }
+  .postcard-cell {
+    padding: 14px 18px;
+    border-top: 1px solid rgba(212,168,67,0.06);
+  }
+  .postcard-cell:nth-child(odd) { border-right: 1px solid rgba(212,168,67,0.06); }
+  .postcard-cell-icon { font-size: 16px; margin-bottom: 4px; }
+  .postcard-cell-label {
+    font-size: 10px; color: #d4a843; margin-bottom: 5px;
+    font-family: 'Noto Sans SC', sans-serif; letter-spacing: 1px;
+  }
+  .postcard-cell-text {
+    font-size: 12px; color: #a09080; line-height: 1.65;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+  .postcard-cell-match {
+    display: inline-block; background: rgba(212,168,67,0.1);
+    padding: 2px 8px; border-radius: 4px; font-size: 11px;
+    color: #d4a843; margin-bottom: 4px; font-family: 'Noto Sans SC', sans-serif;
+  }
   .case-section { background: rgba(212,168,67,0.04); border: 1px dashed rgba(212,168,67,0.2); }
   .case-section .sec-body { font-size: 13px; color: #a09070; line-height: 1.9; }
 
@@ -318,8 +377,7 @@
     </div>
     <div class="report-section fun-section">
       <div class="sec-title"><span>🎭</span> 你的留学人设</div>
-      <div id="persona-card-wrap"></div>
-      <div class="fun-grid" id="fun-grid"></div>
+      <div id="postcard-wrap"></div>
     </div>
     <div class="report-section" id="sec-country">
       <div class="sec-title"><span>🌍</span> 留学国家/地区推荐</div>
@@ -2701,24 +2759,29 @@ function generateReport() {
   document.getElementById('career-tags').innerHTML = meta.careers.map(c => `<span class="tag-item">${c}</span>`).join('');
 
   // ── 趣味人设 ──
-  // 角色卡片（左图右文）
-  document.getElementById('persona-card-wrap').innerHTML = `
-    <div class="persona-card">
-      <img class="persona-avatar" src="avatars/${mbti}.png" alt="${mbti}">
-      <div class="persona-info">
-        <div class="persona-name">${meta.name} · ${mbti}</div>
-        <div class="persona-sub">${meta.sub}</div>
-        <div class="persona-tags">
-          ${(meta.tags || []).map(t => `<span class="persona-tag">${t}</span>`).join('')}
+  // 明信片
+  document.getElementById('postcard-wrap').innerHTML = `
+    <div class="postcard">
+      <div class="postcard-stamp">STUDY<br>ABROAD</div>
+      <div class="postcard-top">
+        <img class="postcard-avatar" src="avatars/${mbti}.png" alt="${mbti}">
+        <div class="postcard-hero">
+          <div class="postcard-type">${mbti}</div>
+          <div class="postcard-name">${meta.name}</div>
+          <div class="postcard-sub">${meta.sub}</div>
+          <div class="postcard-tags">
+            ${(meta.tags || []).map(t => `<span class="postcard-tag">${t}</span>`).join('')}
+          </div>
         </div>
       </div>
+      <div class="postcard-divider"></div>
+      <div class="postcard-grid">
+        <div class="postcard-cell"><div class="postcard-cell-icon">📝</div><div class="postcard-cell-label">小组作业人设</div><div class="postcard-cell-text">${meta.groupRole}</div></div>
+        <div class="postcard-cell"><div class="postcard-cell-icon">💕</div><div class="postcard-cell-label">恋爱最佳配对</div><div class="postcard-cell-match">${meta.loveMatch}</div><div class="postcard-cell-text">${meta.loveDesc}</div></div>
+        <div class="postcard-cell"><div class="postcard-cell-icon">👔</div><div class="postcard-cell-label">留学穿搭风格</div><div class="postcard-cell-text">${meta.fashion}</div></div>
+        <div class="postcard-cell"><div class="postcard-cell-icon">🏠</div><div class="postcard-cell-label">留学生活人设</div><div class="postcard-cell-text">${meta.life}</div></div>
+      </div>
     </div>`;
-  // 趣味格子
-  document.getElementById('fun-grid').innerHTML = `
-    <div class="fun-card"><div class="fun-icon">📝</div><div class="fun-label">小组作业人设</div><div class="fun-text">${meta.groupRole}</div></div>
-    <div class="fun-card"><div class="fun-icon">💕</div><div class="fun-label">恋爱最佳配对</div><div class="fun-match">${meta.loveMatch}</div><div class="fun-text">${meta.loveDesc}</div></div>
-    <div class="fun-card"><div class="fun-icon">👔</div><div class="fun-label">留学穿搭风格</div><div class="fun-text">${meta.fashion}</div></div>
-    <div class="fun-card"><div class="fun-icon">🏠</div><div class="fun-label">留学生活人设</div><div class="fun-text">${meta.life}</div></div>`;
 
   // ── 生成分享用纯文本 ──
   const funText = `\n🎭 你的留学人设\n· 小组作业：${meta.groupRole}\n· 恋爱配对：${meta.loveMatch} — ${meta.loveDesc}\n· 穿搭风格：${meta.fashion}\n· 生活人设：${meta.life}`;
