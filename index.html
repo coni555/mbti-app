@@ -214,6 +214,22 @@
   .case-section { background: rgba(212,168,67,0.04); border: 1px dashed rgba(212,168,67,0.2); }
   .case-section .sec-body { font-size: 13px; color: #a09070; line-height: 1.9; }
 
+  /* 解锁门禁区域 */
+  #lock-overlay { position: relative; }
+  .lock-fade { height: 80px; background: linear-gradient(to bottom, transparent, rgba(4,8,18,0.98)); margin-top: -80px; position: relative; z-index: 1; pointer-events: none; }
+  .lock-gate { text-align: center; padding: 32px 20px; background: rgba(4,8,18,0.95); border: 1px solid rgba(212,168,67,0.2); border-radius: 16px; position: relative; z-index: 2; }
+  .lock-icon { font-size: 40px; margin-bottom: 12px; }
+  .lock-title { font-size: 20px; color: #f0d88a; font-weight: bold; margin-bottom: 6px; }
+  .lock-subtitle { font-size: 13px; color: #8a9bb5; margin-bottom: 18px; font-family: 'Noto Sans SC', sans-serif; }
+  .lock-list { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 24px; }
+  .lock-list span { font-size: 12px; color: #8a9bb5; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 6px 12px; font-family: 'Noto Sans SC', sans-serif; }
+  .lock-qr-wrap { margin-bottom: 20px; }
+  .lock-qr-label { font-size: 14px; color: #d4a843; margin-bottom: 14px; font-family: 'Noto Sans SC', sans-serif; }
+  .lock-qr-img { width: 140px; height: 140px; border-radius: 10px; padding: 8px; background: #fff; object-fit: contain; }
+  .lock-qr-hint { font-size: 11px; color: #666; margin-top: 10px; font-family: 'Noto Sans SC', sans-serif; }
+  .btn-unlock { width: 100%; padding: 14px; background: linear-gradient(135deg, #d4a843, #b8892e); border: none; color: #040812; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; font-family: 'Noto Serif SC', serif; letter-spacing: 1px; transition: opacity 0.2s; }
+  .btn-unlock:hover { opacity: 0.9; }
+
   /* 企业微信二维码区域 */
   .qr-section { text-align: center; margin: 24px 0 8px; padding: 28px 20px; background: rgba(255,255,255,0.03); border: 1px solid rgba(212,168,67,0.12); border-radius: 14px; }
   .qr-divider { width: 32px; height: 1.5px; background: linear-gradient(90deg, transparent, rgba(212,168,67,0.4), transparent); margin: 0 auto 16px; }
@@ -375,59 +391,88 @@
       <div class="sub-label">推荐专业方向</div>
       <div class="tag-grid" id="major-tags"></div>
     </div>
-    <div class="report-section">
-      <div class="sec-title"><span>💼</span> 适配职业方向</div>
-      <div class="tag-grid" id="career-tags"></div>
-    </div>
-    <div class="report-section" id="sec-strengths">
-      <div class="sec-title"><span>⚡</span> 你的申请核心优势</div>
-      <div class="sec-body" id="sec-strengths-body"></div>
-    </div>
-    <div class="report-section fun-section">
-      <div class="sec-title"><span>🎭</span> 你的留学人设</div>
-      <div id="postcard-wrap"></div>
-    </div>
-    <div class="report-section" id="sec-country">
-      <div class="sec-title"><span>🌍</span> 留学国家/地区推荐</div>
-      <div id="sec-country-name" style="font-size:18px;color:#f0d88a;font-weight:bold;margin-bottom:14px;letter-spacing:1px;"></div>
-      <div class="sec-body" id="sec-country-body"></div>
-      <button onclick="toggleSchools()" id="btn-school-toggle" style="width:100%;margin-top:14px;padding:12px;background:rgba(212,168,67,0.12);border:1px solid rgba(212,168,67,0.3);border-radius:10px;color:#d4a843;font-size:14px;cursor:pointer;font-weight:bold;">🏫 查看适配院校推荐 ▼</button>
-      <div id="sec-school-body" style="display:none;margin-top:12px;"></div>
-      <div id="sec-budget-body"></div>
-      <div id="sec-user-country" style="display:none;margin-top:18px;"></div>
-    </div>
-    <div class="report-section" id="sec-traffic">
-      <div class="sec-title"><span>🚦</span> 留学路径红绿灯</div>
-      <div class="sec-body" id="sec-traffic-body"></div>
-    </div>
-    <div class="report-section" id="sec-timeline">
-      <div class="sec-title"><span>⏳</span> 你的时间窗口</div>
-      <div class="sec-body" id="sec-timeline-body"></div>
-    </div>
-    <div class="report-section case-section" id="sec-case">
-      <div class="sec-title"><span>⚠️</span> <span id="sec-case-title"></span></div>
-      <div class="sec-body" id="sec-case-body"></div>
-    </div>
-    <div class="action-row">
-      <button class="btn-copy" id="btn-copy-card" onclick="copyCard()">📋 复制我的档案</button>
-      <button class="btn-copy-all" onclick="generatePoster()">导出长图</button>
-    </div>
+    <!-- === 锁定区域：需解锁查看 === -->
+    <div id="locked-content">
+      <div id="lock-overlay">
+        <div class="lock-fade"></div>
+        <div class="lock-gate">
+          <div class="lock-icon">🔒</div>
+          <div class="lock-title">完整报告已生成</div>
+          <div class="lock-subtitle">以下 7 个深度板块待解锁</div>
+          <div class="lock-list">
+            <span>💼 适配职业方向</span>
+            <span>⚡ 申请核心优势</span>
+            <span>🎭 留学人设</span>
+            <span>🌍 国家/院校推荐</span>
+            <span>🚦 路径红绿灯</span>
+            <span>⏳ 时间窗口</span>
+            <span>⚠️ 案例避坑</span>
+          </div>
+          <div class="lock-qr-wrap">
+            <div class="lock-qr-label">扫码添加顾问，即可解锁完整报告</div>
+            <img class="lock-qr-img" src="qrcode.png" alt="企业微信二维码">
+            <div class="lock-qr-hint">长按识别二维码 · 新通教育</div>
+          </div>
+          <button class="btn-unlock" onclick="unlockReport()">✅ 我已添加，查看完整报告</button>
+        </div>
+      </div>
 
-    <div style="text-align:center;color:#666;font-size:11px;margin:20px 0 10px;line-height:1.6;">⚠️ 本测评为留学场景专属 MBTI 参考，与官方 MBTI 测试不同，结果仅供参考。</div>
-    <div style="text-align:left;color:#555;font-size:10px;margin:0 0 16px;line-height:1.8;padding:12px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;">
-      <span style="color:#666;font-size:11px;">📌 内容免责声明</span><br>
-      1. 本测试结果仅反映你的「留学人格」，并非性格测评（如MBTI）；<br>
-      2. 测试结果基于当前状态生成，仅代表当下的留学倾向，供参考使用；<br>
-      3. 随着个人经历、环境及认知变化，测试结果可能发生相应变化。
-    </div>
+      <div id="locked-sections" style="display:none;">
+        <div class="report-section">
+          <div class="sec-title"><span>💼</span> 适配职业方向</div>
+          <div class="tag-grid" id="career-tags"></div>
+        </div>
+        <div class="report-section" id="sec-strengths">
+          <div class="sec-title"><span>⚡</span> 你的申请核心优势</div>
+          <div class="sec-body" id="sec-strengths-body"></div>
+        </div>
+        <div class="report-section fun-section">
+          <div class="sec-title"><span>🎭</span> 你的留学人设</div>
+          <div id="postcard-wrap"></div>
+        </div>
+        <div class="report-section" id="sec-country">
+          <div class="sec-title"><span>🌍</span> 留学国家/地区推荐</div>
+          <div id="sec-country-name" style="font-size:18px;color:#f0d88a;font-weight:bold;margin-bottom:14px;letter-spacing:1px;"></div>
+          <div class="sec-body" id="sec-country-body"></div>
+          <button onclick="toggleSchools()" id="btn-school-toggle" style="width:100%;margin-top:14px;padding:12px;background:rgba(212,168,67,0.12);border:1px solid rgba(212,168,67,0.3);border-radius:10px;color:#d4a843;font-size:14px;cursor:pointer;font-weight:bold;">🏫 查看适配院校推荐 ▼</button>
+          <div id="sec-school-body" style="display:none;margin-top:12px;"></div>
+          <div id="sec-budget-body"></div>
+          <div id="sec-user-country" style="display:none;margin-top:18px;"></div>
+        </div>
+        <div class="report-section" id="sec-traffic">
+          <div class="sec-title"><span>🚦</span> 留学路径红绿灯</div>
+          <div class="sec-body" id="sec-traffic-body"></div>
+        </div>
+        <div class="report-section" id="sec-timeline">
+          <div class="sec-title"><span>⏳</span> 你的时间窗口</div>
+          <div class="sec-body" id="sec-timeline-body"></div>
+        </div>
+        <div class="report-section case-section" id="sec-case">
+          <div class="sec-title"><span>⚠️</span> <span id="sec-case-title"></span></div>
+          <div class="sec-body" id="sec-case-body"></div>
+        </div>
+        <div class="action-row">
+          <button class="btn-copy" id="btn-copy-card" onclick="copyCard()">📋 复制我的档案</button>
+          <button class="btn-copy-all" onclick="generatePoster()">导出长图</button>
+        </div>
 
-    <!-- 企业微信二维码 -->
-    <div class="qr-section">
-      <div class="qr-divider"></div>
-      <div class="qr-title">想要1v1专属留学规划？</div>
-      <div class="qr-desc">扫码添加企业微信，获得免费背景诊断</div>
-      <img class="qr-img" src="qrcode.png" alt="企业微信二维码">
-      <div class="qr-hint">长按识别二维码 · 新通教育</div>
+        <div style="text-align:center;color:#666;font-size:11px;margin:20px 0 10px;line-height:1.6;">⚠️ 本测评为留学场景专属 MBTI 参考，与官方 MBTI 测试不同，结果仅供参考。</div>
+        <div style="text-align:left;color:#555;font-size:10px;margin:0 0 16px;line-height:1.8;padding:12px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;">
+          <span style="color:#666;font-size:11px;">📌 内容免责声明</span><br>
+          1. 本测试结果仅反映你的「留学人格」，并非性格测评（如MBTI）；<br>
+          2. 测试结果基于当前状态生成，仅代表当下的留学倾向，供参考使用；<br>
+          3. 随着个人经历、环境及认知变化，测试结果可能发生相应变化。
+        </div>
+
+        <!-- 企业微信二维码 -->
+        <div class="qr-section">
+          <div class="qr-divider"></div>
+          <div class="qr-title">想要1v1专属留学规划？</div>
+          <div class="qr-desc">扫码添加企业微信，获得免费背景诊断</div>
+          <img class="qr-img" src="qrcode.png" alt="企业微信二维码">
+          <div class="qr-hint">长按识别二维码 · 新通教育</div>
+        </div>
+      </div>
     </div>
 
     <button class="btn-restart" onclick="restart()">重新测评</button>
@@ -3260,6 +3305,12 @@ function sendToFeishu(type, extra) {
 }
 
 
+function unlockReport() {
+  document.getElementById('lock-overlay').style.display = 'none';
+  document.getElementById('locked-sections').style.display = 'block';
+  localStorage.setItem('mbti_unlocked', '1');
+}
+
 function restart() {
   scores = new Array(15).fill(0); currentQ = 0;
   info = { name:'', gender:'', phone:'', grade:'', target:'' };
@@ -3268,6 +3319,10 @@ function restart() {
   document.getElementById('input-phone').value = '';
   document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
   document.getElementById('btn-info-next').disabled = true;
+  // 重置解锁状态
+  document.getElementById('lock-overlay').style.display = '';
+  document.getElementById('locked-sections').style.display = 'none';
+  localStorage.removeItem('mbti_unlocked');
   goStep(0);
 }
 </script>
