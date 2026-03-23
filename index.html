@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔍 MBTI 情报局 · 你的专属留学情报</title>
+<title>🔍 MBTI留学情报局 · 留学专属性格测试</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
@@ -237,7 +237,7 @@
 
 <div class="header">
   <div class="header-label">▸ CLASSIFIED INTELLIGENCE ◂</div>
-  <h1>🔍 MBTI 情报局</h1>
+  <h1>🔍 MBTI留学情报局</h1>
   <div class="header-sub">测出你的性格密码，解锁你的专属留学路径</div>
 </div>
 
@@ -279,8 +279,15 @@
       <input type="text" id="input-name" placeholder="姓名或昵称都可以" oninput="checkInfo()">
     </div>
     <div class="field-group">
-      <label class="field-label">微信号（可选，用于接收完整报告）</label>
-      <input type="text" id="input-wechat" placeholder="选填，不影响测评结果">
+      <label class="field-label">手机号（可选，用于接收完整报告）</label>
+      <input type="tel" id="input-phone" placeholder="选填，不影响测评结果">
+    </div>
+    <div class="field-group">
+      <label class="field-label">性别*</label>
+      <div class="chip-row" id="gender-chips">
+        <button class="chip" onclick="selectChip('gender',this,'男')">男</button>
+        <button class="chip" onclick="selectChip('gender',this,'女')">女</button>
+      </div>
     </div>
     <div class="field-group">
       <label class="field-label">现在大几？*</label>
@@ -439,7 +446,7 @@
   </div>
 </div>
 
-<div class="footer">MBTI情报局 · V4.0</div>
+<div class="footer">MBTI留学情报局 · V4.0</div>
 
 <script>
 // ============ 来源追踪 ============
@@ -454,40 +461,40 @@ if (!sessionStorage.getItem('mbti_enter_time')) {
 const questions = [
   // === E/I 能量来源 Q1-Q8 (1-4正向E, 5-8反向I) ===
   "有固定的学习小组、团队合作和课堂互动，会让我更有动力。",
-  "长期独自做研究或写作会让我感到明显疲惫和消耗。",
+  "一个人闷头写文书或做研究超过半天，我就明显疲惫。",
   "我愿意持续维护人际关系网络（校友、实习、导师），并把它变成资源。",
-  "我习惯通过和别人聊天来理清自己的想法。",
+  "选校选专业时，我更喜欢跟学长学姐、朋友聊完再做决定。",
   "连续社交几小时后，我需要独处来恢复精力。",
-  "比起小组讨论，我更喜欢先自己想清楚再发言。",
-  "我更享受和一两个好朋友深聊，而非大群社交。",
-  "发消息比打电话或见面聊让我更自在。",
+  "海外课堂上，比起直接参与讨论，我更想先自己想清楚再举手发言。",
+  "在国外我更喜欢跟一两个好朋友深聊，而不是参加大型留学生聚会。",
+  "跟国外学校或中介沟通时，发邮件比打电话让我更自在。",
   // === S/N 信息获取 Q9-Q16 (9-12正向S, 13-16反向N) ===
   "比起做项目和实习，我更适合通过听讲和读书来学习。",
   "我希望留学经历能转化为明确的岗位技能或职业方向。",
-  "我更关注事实和细节，而不是背后的抽象理论。",
-  "做决策时，我更信赖已被验证的经验和数据。",
+  "选学校时，我更看排名、就业率这些硬数据，而不是「学术氛围」这类抽象感受。",
+  "选留学方向时，我更信赖已毕业学长的真实反馈，而非中介的推荐。",
   "我经常联想到事物之间隐藏的联系和含义。",
   "比起重复已有方法，我更喜欢探索新概念和可能性。",
   "写文书时，我更擅长提出创新视角而非罗列事实。",
   "我容易对常规重复的事情感到无聊。",
   // === T/F 决策方式 Q17-Q24 (17-20正向T, 21-24反向F) ===
-  "做选择时，逻辑分析和利弊对比是我的主要方式。",
-  "给人反馈时，直说问题比照顾感受更重要。",
-  "我更在意决定是否「正确」，而非是否让所有人满意。",
-  "面对争论，我优先分析谁的论据更有道理。",
+  "选offer时，我会列Excel对比学费、排名、就业率，逐项打分。",
+  "小组作业中队友拖后腿，我会直接指出问题而不是帮他兜着。",
+  "选校时，我更在意这个选择是否理性最优，而非家人朋友是否都觉得好。",
+  "和家人争论留学方向时，我会拿数据说话，而不是被情绪左右。",
   "我更愿意选择能真实帮助他人、服务社会的领域，而不只是高薪的方向。",
   "我在意这条路能否获得家人或重要朋友的支持与认可。",
   "如果一个方向赚钱但价值观让我不舒服，我很难长期坚持。",
-  "我很容易感受到身边人的情绪变化。",
+  "在异国他乡，我很容易感受到室友或同学的情绪低落，会主动关心。",
   // === J/P 生活方式 Q25-Q32 (25-28正向J, 29-32反向P) ===
   "我在规则清晰、评价标准明确的环境里表现更好。",
   "我有把责任全揽到自己身上的倾向，压力大时更明显。",
-  "我喜欢提前做计划，讨厌临时变化。",
-  "出行前我会详细规划路线和行程。",
+  "留学申请我喜欢提前一年规划时间线，讨厌临时加校或改方向。",
+  "出国前我会把签证、住宿、接机、银行卡全部提前安排好。",
   "比起计划，我更喜欢随机应变、见机行事。",
   "我经常同时进行好几件事，最后才集中完成。",
-  "过于详细的计划反而限制了我的发挥。",
-  "截止日期临近时，我反而效率更高、灵感更多。",
+  "过于死板的申请时间表反而让我焦虑，不如留些灵活空间。",
+  "申请截止前一周，我反而文书灵感爆发、效率最高。",
 ];
 
 // ============ 时间线辅助函数 ============
@@ -2905,7 +2912,7 @@ function calcMBTI(scores) {
 
 // ============ UI状态 ============
 let currentStep = 0;
-let info = { name:'', grade:'', wechat:'', target:'' };
+let info = { name:'', gender:'', phone:'', grade:'', target:'' };
 let scores = new Array(32).fill(0);
 let currentQ = 0;
 let cardText = '';
@@ -2921,7 +2928,7 @@ function goStep(n) {
 }
 
 function selectChip(type, el, val) {
-  const gid = type==='grade' ? 'grade-chips' : 'target-chips';
+  const gid = type==='grade' ? 'grade-chips' : type==='gender' ? 'gender-chips' : 'target-chips';
   document.querySelectorAll('#'+gid+' .chip').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
   info[type] = val;
@@ -2930,8 +2937,8 @@ function selectChip(type, el, val) {
 
 function checkInfo() {
   info.name = document.getElementById('input-name').value.trim();
-  info.wechat = document.getElementById('input-wechat').value.trim();
-  document.getElementById('btn-info-next').disabled = !(info.name && info.grade && info.target);
+  info.phone = document.getElementById('input-phone').value.trim();
+  document.getElementById('btn-info-next').disabled = !(info.name && info.gender && info.grade && info.target);
 }
 
 function renderQuestion() {
@@ -3162,7 +3169,7 @@ function generateReport() {
 
   // ── 生成分享用纯文本 ──
   const funText = `\n🎭 你的留学人设\n· 小组作业：${meta.groupRole}\n· 恋爱配对：${meta.loveMatch} — ${meta.loveDesc}\n· 穿搭风格：${meta.fashion}\n· 生活人设：${meta.life}`;
-  cardText = `🔍 MBTI情报局 · 我的留学人格档案\n【${mbti} · ${meta.name}】${meta.sub}\n\n${cardText}${funText}\n\n测测你的留学人格 →`;
+  cardText = `🔍 MBTI留学情报局 · 我的留学人格档案\n【${mbti} · ${meta.name}】${meta.sub}\n\n${cardText}${funText}\n\n测测你的留学人格 →`;
 
   goStep(4);
   // 滚动到顶部
@@ -3240,7 +3247,8 @@ function sendToFeishu(type, extra) {
     '首次进入时间': sessionStorage.getItem('mbti_enter_time') || '',
     '转化阶段': type === 'scan' ? '仅扫码进入' : type === 'cta' ? '提交咨询' : '完成测评',
   };
-  if (extra?.wechat) fields['微信号'] = extra.wechat;
+  if (extra?.phone) fields['手机号'] = extra.phone;
+  if (extra?.gender) fields['性别'] = extra.gender;
   // 通过 Vercel 云函数写入多维表格 + 发群通知
   fetch(BITABLE_API, {
     method: 'POST',
@@ -3254,10 +3262,10 @@ function sendToFeishu(type, extra) {
 
 function restart() {
   scores = new Array(15).fill(0); currentQ = 0;
-  info = { name:'', grade:'', wechat:'', target:'' };
+  info = { name:'', gender:'', phone:'', grade:'', target:'' };
   cardText = '';
   document.getElementById('input-name').value = '';
-  document.getElementById('input-wechat').value = '';
+  document.getElementById('input-phone').value = '';
   document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
   document.getElementById('btn-info-next').disabled = true;
   goStep(0);
