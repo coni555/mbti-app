@@ -245,7 +245,7 @@
   .share-overlay-title { font-size: 15px; color: #aaa; margin-bottom: 14px; font-family: 'Noto Sans SC', sans-serif; }
   .share-overlay-close { padding: 12px 40px; border-radius: 8px; background: linear-gradient(135deg,#d4a843,#b8892e); border: none; color: #040812; font-size: 14px; font-weight: bold; cursor: pointer; font-family: 'Noto Sans SC', sans-serif; }
 
-  /* 兑换码展示页 */
+  /* 情报码展示页 */
   .code-display { text-align: center; padding: 20px 0; }
   .code-display .code-teaser { font-size: 14px; color: #8a9bb5; margin-bottom: 6px; font-family: 'Noto Sans SC', sans-serif; }
   .code-display .code-mbti { font-size: 28px; color: #f0d88a; font-weight: 700; margin-bottom: 24px; }
@@ -433,9 +433,25 @@
             <span>⏳ 时间窗口</span>
             <span>⚠️ 案例避坑</span>
           </div>
+
+          <!-- 情报码展示区 -->
+          <div id="lock-code-section" style="margin-bottom:20px;display:none;">
+            <div style="font-size:13px;color:#8a9bb5;margin-bottom:8px;font-family:'Noto Sans SC',sans-serif;">你的专属情报码</div>
+            <div class="code-box" style="margin:0 auto 12px;">
+              <div class="code-value" id="lock-code-value"></div>
+            </div>
+            <button class="code-copy-btn" id="lock-code-copy-btn" onclick="copyCode()" style="margin-bottom:16px;">📋 复制情报码</button>
+            <div class="code-steps" style="margin-bottom:0;">
+              <div class="cs-title">如何解锁完整报告？</div>
+              <div class="cs-item"><span class="cs-num">1</span><span>复制上方情报码</span></div>
+              <div class="cs-item"><span class="cs-num">2</span><span>扫描下方二维码，添加情报员企业微信</span></div>
+              <div class="cs-item"><span class="cs-num">3</span><span>将情报码发送给情报员，即可解锁</span></div>
+            </div>
+          </div>
+
           <div class="lock-qr-wrap">
-            <div class="lock-qr-label">扫码添加顾问，即可解锁完整报告</div>
-            <img class="lock-qr-img" src="qrcode.png" alt="企业微信二维码">
+            <div class="lock-qr-label">扫码添加情报员，即可解锁完整报告</div>
+            <img class="lock-qr-img" id="lock-qr-img" src="qrcode.png" alt="企业微信二维码">
             <div class="lock-qr-hint">长按识别二维码 · 新通教育</div>
           </div>
           <button class="btn-unlock" onclick="unlockReport()">✅ 我已添加，查看完整报告</button>
@@ -503,26 +519,26 @@
     <button class="btn-restart" onclick="restart()">重新测评</button>
   </div>
 
-  <!-- STEP 5: 兑换码展示 -->
+  <!-- STEP 5: 情报码展示（已废弃，情报码集成到 lock overlay 中） -->
   <div class="step" id="step-5">
     <div class="code-display">
       <div class="code-teaser">你的留学人格测评已完成</div>
       <div class="code-mbti" id="code-mbti-type"></div>
-      <div class="code-label">你的专属兑换码</div>
+      <div class="code-label">你的专属情报码</div>
       <div class="code-box">
         <div class="code-value" id="code-value"></div>
       </div>
-      <button class="code-copy-btn" id="code-copy-btn" onclick="copyCode()">📋 复制兑换码</button>
+      <button class="code-copy-btn" id="code-copy-btn" onclick="copyCode()">📋 复制情报码</button>
       <div class="code-steps">
         <div class="cs-title">如何获取完整报告？</div>
-        <div class="cs-item"><span class="cs-num">1</span><span>复制上方兑换码</span></div>
-        <div class="cs-item"><span class="cs-num">2</span><span>扫描下方二维码，添加留学顾问企业微信</span></div>
-        <div class="cs-item"><span class="cs-num">3</span><span>将兑换码发送给顾问，即可获取专属报告</span></div>
+        <div class="cs-item"><span class="cs-num">1</span><span>复制上方情报码</span></div>
+        <div class="cs-item"><span class="cs-num">2</span><span>扫描下方二维码，添加情报员企业微信</span></div>
+        <div class="cs-item"><span class="cs-num">3</span><span>将情报码发送给情报员，即可获取专属报告</span></div>
       </div>
       <div class="qr-section" style="margin-top:0;">
         <div class="qr-divider"></div>
-        <div class="qr-title">扫码添加留学顾问</div>
-        <div class="qr-desc">发送兑换码，获取你的完整留学人格报告</div>
+        <div class="qr-title">扫码添加情报员</div>
+        <div class="qr-desc">发送情报码，获取你的完整留学人格报告</div>
         <img class="qr-img" id="code-qr-img" src="qrcode.png" alt="企业微信二维码">
         <div class="qr-hint">长按识别二维码 · 新通教育</div>
       </div>
@@ -535,9 +551,9 @@
     <div class="query-form">
       <div class="query-badge">员工查询入口</div>
       <div class="qf-title">报告查询</div>
-      <div class="qf-desc">输入用户的兑换码，查看并发送完整报告</div>
+      <div class="qf-desc">输入用户的情报码，查看并发送完整报告</div>
       <div class="field-group">
-        <label class="field-label">兑换码 *</label>
+        <label class="field-label">情报码 *</label>
         <input type="text" id="query-code" placeholder="如 INTJ-A3BK5X" oninput="checkQueryForm()">
       </div>
       <div class="field-group">
@@ -3294,13 +3310,12 @@ function generateReport() {
     goStep(4);
     setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
   } else {
-    // 正常模式：生成兑换码，显示兑换码页面
+    // 正常模式：生成情报码，显示报告页（含锁定区域）
     currentCode = generateRedemptionCode(mbti);
-    displayCodePage(currentCode, mbti);
-    // 仍然渲染 step-4（但不显示），以便飞书数据准确
-    goStep(5);
+    displayCodeInOverlay(currentCode, mbti);
+    goStep(4);
     setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
-    // 通知飞书（含兑换码）
+    // 通知飞书（含情报码）
     sendToFeishu('report');
   }
 }
@@ -3371,10 +3386,9 @@ function sendToFeishu(type, extra) {
     '来源': type === 'scan' ? '扫码进入' : type === 'cta' ? '咨询预约' : '测评完成',
     '来源员工': activeRef,
     '落地页URL': window.location.href,
-    '首次进入时间': sessionStorage.getItem('mbti_enter_time') || '',
     '转化阶段': type === 'scan' ? '仅扫码进入' : type === 'cta' ? '提交咨询' : '完成测评',
   };
-  if (currentCode) fields['兑换码'] = currentCode;
+  if (currentCode) fields['情报码'] = currentCode;
   if (extra?.phone) fields['手机号'] = extra.phone;
   if (extra?.gender) fields['性别'] = extra.gender;
   // 通过 Vercel 云函数写入多维表格 + 发群通知
@@ -3409,7 +3423,7 @@ function restart() {
   goStep(0);
 }
 
-// ============ 兑换码系统 ============
+// ============ 情报码系统 ============
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 30 chars, no I/O/0/1
 const CODE_COUNTRIES = ['美国','英国','澳大利亚','加拿大','日本','韩国','新加坡','马来西亚','欧洲','香港','其他','还没想好'];
 const CODE_GRADES = ['大一','大二','大三','大四'];
@@ -3469,29 +3483,30 @@ function generateTypicalScores(mbti) {
 }
 
 function copyCode() {
-  const code = document.getElementById('code-value').textContent;
-  const btn = document.getElementById('code-copy-btn');
+  const code = (document.getElementById('lock-code-value') || document.getElementById('code-value')).textContent;
+  const btn = document.getElementById('lock-code-copy-btn') || document.getElementById('code-copy-btn');
   if (navigator.clipboard) {
     navigator.clipboard.writeText(code).then(() => {
-      btn.textContent = '✓ 已复制兑换码！';
-      setTimeout(() => { btn.textContent = '📋 复制兑换码'; }, 2500);
+      btn.textContent = '✓ 已复制情报码！';
+      setTimeout(() => { btn.textContent = '📋 复制情报码'; }, 2500);
     }).catch(fallback);
   } else { fallback(); }
   function fallback() {
     const ta = document.createElement('textarea');
     ta.value = code; document.body.appendChild(ta); ta.select();
     document.execCommand('copy'); document.body.removeChild(ta);
-    btn.textContent = '✓ 已复制兑换码！';
-    setTimeout(() => { btn.textContent = '📋 复制兑换码'; }, 2500);
+    btn.textContent = '✓ 已复制情报码！';
+    setTimeout(() => { btn.textContent = '📋 复制情报码'; }, 2500);
   }
 }
 
-function displayCodePage(code, mbti) {
-  document.getElementById('code-value').textContent = code;
-  document.getElementById('code-mbti-type').textContent = mbti + ' · ' + (META[mbti]?.name || '');
+function displayCodeInOverlay(code, mbti) {
+  // 在 lock overlay 中显示情报码
+  document.getElementById('lock-code-value').textContent = code;
+  document.getElementById('lock-code-section').style.display = 'block';
   // 员工专属二维码
   if (activeRef) {
-    const refQr = document.getElementById('code-qr-img');
+    const refQr = document.getElementById('lock-qr-img');
     if (refQr) refQr.src = 'employee-qrcodes/' + activeRef + '.png';
   }
 }
@@ -3509,7 +3524,7 @@ function queryReport() {
   const decoded = decodeRedemptionCode(code);
   if (!decoded) {
     const errEl = document.getElementById('query-error');
-    errEl.textContent = '兑换码格式有误，请检查后重试（格式如 INTJ-A3BK5X）';
+    errEl.textContent = '情报码格式有误，请检查后重试（格式如 INTJ-A3BK5X）';
     errEl.style.display = 'block';
     return;
   }
@@ -3523,6 +3538,12 @@ function queryReport() {
   queryMode = true;
   // 触发报告生成（会渲染到 step-4）
   generateReport();
+  // 通知飞书：标记该情报码为"已查询"
+  fetch(BITABLE_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'mark_queried', code: code }),
+  }).catch(() => {});
 }
 
 // 页面初始化：检测查询模式
