@@ -541,8 +541,8 @@
         <input type="text" id="query-code" placeholder="如 INTJ-A3BK5X" oninput="checkQueryForm()">
       </div>
       <div class="field-group">
-        <label class="field-label">用户姓名 *</label>
-        <input type="text" id="query-name" class="qf-name-input" placeholder="输入用户姓名（用于报告展示）" oninput="checkQueryForm()">
+        <label class="field-label">用户姓名（选填）</label>
+        <input type="text" id="query-name" class="qf-name-input" placeholder="不填则显示为"同学"">
       </div>
       <div class="query-error" id="query-error"></div>
       <button class="btn-primary" id="btn-query" disabled onclick="queryReport()">查询报告 →</button>
@@ -3499,14 +3499,13 @@ function displayCodePage(code, mbti) {
 // ============ 查询模式 ============
 function checkQueryForm() {
   const code = document.getElementById('query-code').value.trim();
-  const name = document.getElementById('query-name').value.trim();
-  document.getElementById('btn-query').disabled = !(code && name);
+  document.getElementById('btn-query').disabled = !code;
   document.getElementById('query-error').style.display = 'none';
 }
 
 function queryReport() {
   const code = document.getElementById('query-code').value.trim();
-  const name = document.getElementById('query-name').value.trim();
+  const name = document.getElementById('query-name').value.trim() || '同学';
   const decoded = decodeRedemptionCode(code);
   if (!decoded) {
     const errEl = document.getElementById('query-error');
