@@ -245,6 +245,31 @@
   .share-overlay-title { font-size: 15px; color: #aaa; margin-bottom: 14px; font-family: 'Noto Sans SC', sans-serif; }
   .share-overlay-close { padding: 12px 40px; border-radius: 8px; background: linear-gradient(135deg,#d4a843,#b8892e); border: none; color: #040812; font-size: 14px; font-weight: bold; cursor: pointer; font-family: 'Noto Sans SC', sans-serif; }
 
+  /* 兑换码展示页 */
+  .code-display { text-align: center; padding: 20px 0; }
+  .code-display .code-teaser { font-size: 14px; color: #8a9bb5; margin-bottom: 6px; font-family: 'Noto Sans SC', sans-serif; }
+  .code-display .code-mbti { font-size: 28px; color: #f0d88a; font-weight: 700; margin-bottom: 24px; }
+  .code-display .code-label { font-size: 13px; color: #8a9bb5; margin-bottom: 10px; font-family: 'Noto Sans SC', sans-serif; }
+  .code-box { background: rgba(212,168,67,0.08); border: 2px dashed rgba(212,168,67,0.4); border-radius: 12px; padding: 20px; margin: 0 auto 20px; }
+  .code-value { font-size: 28px; font-weight: 700; color: #d4a843; letter-spacing: 4px; font-family: 'Courier New', monospace; word-break: break-all; }
+  .code-copy-btn { width: 100%; padding: 14px; background: linear-gradient(135deg,#d4a843,#b8892e); border: none; color: #040812; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; font-family: 'Noto Serif SC', serif; letter-spacing: 1px; margin-bottom: 24px; transition: opacity 0.2s; }
+  .code-copy-btn:hover { opacity: 0.9; }
+  .code-steps { text-align: left; background: rgba(255,255,255,0.03); border: 1px solid rgba(212,168,67,0.12); border-radius: 10px; padding: 16px 18px; margin-bottom: 24px; }
+  .code-steps .cs-title { font-size: 14px; color: #f0d88a; margin-bottom: 12px; font-weight: bold; }
+  .code-steps .cs-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 13px; color: #a09080; line-height: 1.6; font-family: 'Noto Sans SC', sans-serif; }
+  .code-steps .cs-num { width: 22px; height: 22px; border-radius: 50%; background: rgba(212,168,67,0.15); border: 1px solid rgba(212,168,67,0.4); display: flex; align-items: center; justify-content: center; font-size: 11px; color: #d4a843; font-weight: bold; flex-shrink: 0; }
+
+  /* 查询模式 */
+  .query-form { padding: 10px 0; }
+  .query-form .qf-title { font-size: 18px; color: #f0d88a; text-align: center; margin-bottom: 6px; }
+  .query-form .qf-desc { font-size: 13px; color: #8a9bb5; text-align: center; margin-bottom: 24px; font-family: 'Noto Sans SC', sans-serif; }
+  .query-form .field-group { margin-bottom: 18px; }
+  .query-form input[type="text"] { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(212,168,67,0.2); border-radius: 8px; padding: 14px; color: #e8d5a3; font-size: 16px; outline: none; font-family: 'Courier New', monospace; letter-spacing: 2px; transition: border-color 0.2s; }
+  .query-form input[type="text"]:focus { border-color: rgba(212,168,67,0.5); }
+  .query-form .qf-name-input { font-family: 'Noto Sans SC', sans-serif !important; letter-spacing: 0 !important; font-size: 14px !important; }
+  .query-error { color: #e85d5d; font-size: 13px; text-align: center; margin-bottom: 14px; display: none; font-family: 'Noto Sans SC', sans-serif; }
+  .query-badge { display: inline-block; padding: 3px 10px; background: rgba(212,168,67,0.15); border: 1px solid rgba(212,168,67,0.3); border-radius: 4px; font-size: 11px; color: #d4a843; margin-bottom: 8px; font-family: 'Noto Sans SC', sans-serif; }
+
   @keyframes scan { 0%{transform:translateX(-100%)} 100%{transform:translateX(300%)} }
   @keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
 </style>
@@ -476,6 +501,52 @@
     </div>
 
     <button class="btn-restart" onclick="restart()">重新测评</button>
+  </div>
+
+  <!-- STEP 5: 兑换码展示 -->
+  <div class="step" id="step-5">
+    <div class="code-display">
+      <div class="code-teaser">你的留学人格测评已完成</div>
+      <div class="code-mbti" id="code-mbti-type"></div>
+      <div class="code-label">你的专属兑换码</div>
+      <div class="code-box">
+        <div class="code-value" id="code-value"></div>
+      </div>
+      <button class="code-copy-btn" id="code-copy-btn" onclick="copyCode()">📋 复制兑换码</button>
+      <div class="code-steps">
+        <div class="cs-title">如何获取完整报告？</div>
+        <div class="cs-item"><span class="cs-num">1</span><span>复制上方兑换码</span></div>
+        <div class="cs-item"><span class="cs-num">2</span><span>扫描下方二维码，添加留学顾问企业微信</span></div>
+        <div class="cs-item"><span class="cs-num">3</span><span>将兑换码发送给顾问，即可获取专属报告</span></div>
+      </div>
+      <div class="qr-section" style="margin-top:0;">
+        <div class="qr-divider"></div>
+        <div class="qr-title">扫码添加留学顾问</div>
+        <div class="qr-desc">发送兑换码，获取你的完整留学人格报告</div>
+        <img class="qr-img" id="code-qr-img" src="qrcode.png" alt="企业微信二维码">
+        <div class="qr-hint">长按识别二维码 · 新通教育</div>
+      </div>
+    </div>
+    <button class="btn-restart" onclick="restart()">重新测评</button>
+  </div>
+
+  <!-- STEP 6: 查询模式（员工用） -->
+  <div class="step" id="step-6">
+    <div class="query-form">
+      <div class="query-badge">员工查询入口</div>
+      <div class="qf-title">报告查询</div>
+      <div class="qf-desc">输入用户的兑换码，查看并发送完整报告</div>
+      <div class="field-group">
+        <label class="field-label">兑换码 *</label>
+        <input type="text" id="query-code" placeholder="如 INTJ-A3BK5X" oninput="checkQueryForm()">
+      </div>
+      <div class="field-group">
+        <label class="field-label">用户姓名 *</label>
+        <input type="text" id="query-name" class="qf-name-input" placeholder="输入用户姓名（用于报告展示）" oninput="checkQueryForm()">
+      </div>
+      <div class="query-error" id="query-error"></div>
+      <button class="btn-primary" id="btn-query" disabled onclick="queryReport()">查询报告 →</button>
+    </div>
   </div>
 
 </div>
@@ -3216,11 +3287,22 @@ function generateReport() {
   const funText = `\n🎭 你的留学人设\n· 小组作业：${meta.groupRole}\n· 恋爱配对：${meta.loveMatch} — ${meta.loveDesc}\n· 穿搭风格：${meta.fashion}\n· 生活人设：${meta.life}`;
   cardText = `🔍 MBTI留学情报局 · 我的留学人格档案\n【${mbti} · ${meta.name}】${meta.sub}\n\n${cardText}${funText}\n\n测测你的留学人格 →`;
 
-  goStep(4);
-  // 滚动到顶部
-  setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
-  // 通知飞书
-  sendToFeishu('report');
+  if (queryMode) {
+    // 查询模式：直接显示完整报告（无锁）
+    document.getElementById('lock-overlay').style.display = 'none';
+    document.getElementById('locked-sections').style.display = 'block';
+    goStep(4);
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
+  } else {
+    // 正常模式：生成兑换码，显示兑换码页面
+    currentCode = generateRedemptionCode(mbti);
+    displayCodePage(currentCode, mbti);
+    // 仍然渲染 step-4（但不显示），以便飞书数据准确
+    goStep(5);
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
+    // 通知飞书（含兑换码）
+    sendToFeishu('report');
+  }
 }
 
 function copyCard() {
@@ -3292,6 +3374,7 @@ function sendToFeishu(type, extra) {
     '首次进入时间': sessionStorage.getItem('mbti_enter_time') || '',
     '转化阶段': type === 'scan' ? '仅扫码进入' : type === 'cta' ? '提交咨询' : '完成测评',
   };
+  if (currentCode) fields['兑换码'] = currentCode;
   if (extra?.phone) fields['手机号'] = extra.phone;
   if (extra?.gender) fields['性别'] = extra.gender;
   // 通过 Vercel 云函数写入多维表格 + 发群通知
@@ -3312,9 +3395,9 @@ function unlockReport() {
 }
 
 function restart() {
-  scores = new Array(15).fill(0); currentQ = 0;
+  scores = new Array(32).fill(0); currentQ = 0;
   info = { name:'', gender:'', phone:'', grade:'', target:'' };
-  cardText = '';
+  cardText = ''; currentCode = '';
   document.getElementById('input-name').value = '';
   document.getElementById('input-phone').value = '';
   document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
@@ -3325,6 +3408,139 @@ function restart() {
   localStorage.removeItem('mbti_unlocked');
   goStep(0);
 }
+
+// ============ 兑换码系统 ============
+const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 30 chars, no I/O/0/1
+const CODE_COUNTRIES = ['美国','英国','澳大利亚','加拿大','日本','韩国','新加坡','马来西亚','欧洲','香港','其他','还没想好'];
+const CODE_GRADES = ['大一','大二','大三','大四'];
+const CODE_GENDERS = ['男','女'];
+let currentCode = '';
+let queryMode = false;
+
+function generateRedemptionCode(mbti) {
+  const ci = Math.max(0, CODE_COUNTRIES.indexOf(info.target));
+  const gi = Math.max(0, CODE_GRADES.indexOf(info.grade));
+  const si = Math.max(0, CODE_GENDERS.indexOf(info.gender));
+  const c1 = CODE_CHARS[ci];
+  const c2 = CODE_CHARS[gi];
+  const c3 = CODE_CHARS[si];
+  const r1 = CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)];
+  const r2 = CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)];
+  const r3 = CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)];
+  return mbti + '-' + c1 + c2 + c3 + r1 + r2 + r3;
+}
+
+function decodeRedemptionCode(code) {
+  code = code.trim().toUpperCase();
+  const parts = code.split('-');
+  if (parts.length !== 2 || parts[0].length !== 4 || parts[1].length !== 6) return null;
+  const mbti = parts[0];
+  const validMBTI = ['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP','ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'];
+  if (!validMBTI.includes(mbti)) return null;
+  const suffix = parts[1];
+  const ci = CODE_CHARS.indexOf(suffix[0]);
+  const gi = CODE_CHARS.indexOf(suffix[1]);
+  const si = CODE_CHARS.indexOf(suffix[2]);
+  if (ci < 0 || gi < 0 || si < 0) return null;
+  return {
+    mbti: mbti,
+    target: CODE_COUNTRIES[ci] || '其他',
+    grade: CODE_GRADES[gi] || '大三',
+    gender: CODE_GENDERS[si] || '男'
+  };
+}
+
+function generateTypicalScores(mbti) {
+  const s = new Array(32).fill(3);
+  const isE = mbti[0] === 'E', isS = mbti[1] === 'S', isT = mbti[2] === 'T', isJ = mbti[3] === 'J';
+  // E/I: forward 0-3, reverse 4-7
+  for (let i = 0; i < 4; i++) s[i] = isE ? 4 : 2;
+  for (let i = 4; i < 8; i++) s[i] = isE ? 2 : 4;
+  // S/N: forward 8-11, reverse 12-15
+  for (let i = 8; i < 12; i++) s[i] = isS ? 4 : 2;
+  for (let i = 12; i < 16; i++) s[i] = isS ? 2 : 4;
+  // T/F: forward 16-19, reverse 20-23
+  for (let i = 16; i < 20; i++) s[i] = isT ? 4 : 2;
+  for (let i = 20; i < 24; i++) s[i] = isT ? 2 : 4;
+  // J/P: forward 24-27, reverse 28-31
+  for (let i = 24; i < 28; i++) s[i] = isJ ? 4 : 2;
+  for (let i = 28; i < 32; i++) s[i] = isJ ? 2 : 4;
+  return s;
+}
+
+function copyCode() {
+  const code = document.getElementById('code-value').textContent;
+  const btn = document.getElementById('code-copy-btn');
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(code).then(() => {
+      btn.textContent = '✓ 已复制兑换码！';
+      setTimeout(() => { btn.textContent = '📋 复制兑换码'; }, 2500);
+    }).catch(fallback);
+  } else { fallback(); }
+  function fallback() {
+    const ta = document.createElement('textarea');
+    ta.value = code; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    btn.textContent = '✓ 已复制兑换码！';
+    setTimeout(() => { btn.textContent = '📋 复制兑换码'; }, 2500);
+  }
+}
+
+function displayCodePage(code, mbti) {
+  document.getElementById('code-value').textContent = code;
+  document.getElementById('code-mbti-type').textContent = mbti + ' · ' + (META[mbti]?.name || '');
+  // 员工专属二维码
+  if (activeRef) {
+    const refQr = document.getElementById('code-qr-img');
+    if (refQr) refQr.src = 'employee-qrcodes/' + activeRef + '.png';
+  }
+}
+
+// ============ 查询模式 ============
+function checkQueryForm() {
+  const code = document.getElementById('query-code').value.trim();
+  const name = document.getElementById('query-name').value.trim();
+  document.getElementById('btn-query').disabled = !(code && name);
+  document.getElementById('query-error').style.display = 'none';
+}
+
+function queryReport() {
+  const code = document.getElementById('query-code').value.trim();
+  const name = document.getElementById('query-name').value.trim();
+  const decoded = decodeRedemptionCode(code);
+  if (!decoded) {
+    const errEl = document.getElementById('query-error');
+    errEl.textContent = '兑换码格式有误，请检查后重试（格式如 INTJ-A3BK5X）';
+    errEl.style.display = 'block';
+    return;
+  }
+  // 填充 info 和 scores
+  info.name = name;
+  info.gender = decoded.gender;
+  info.grade = decoded.grade;
+  info.target = decoded.target;
+  info.phone = '';
+  scores = generateTypicalScores(decoded.mbti);
+  queryMode = true;
+  // 触发报告生成（会渲染到 step-4）
+  generateReport();
+}
+
+// 页面初始化：检测查询模式
+(function initMode() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('mode') === 'query') {
+    queryMode = true;
+    // 隐藏正常流程的 header
+    document.querySelector('.header').style.display = 'none';
+    // 直接显示查询表单
+    document.getElementById('step-0').classList.remove('active');
+    document.getElementById('step-6').classList.add('active');
+    currentStep = 6;
+    // 更新页面标题
+    document.title = '报告查询 · MBTI留学情报局';
+  }
+})();
 </script>
 </body>
 </html>
