@@ -454,7 +454,6 @@
             <img class="lock-qr-img" id="lock-qr-img" src="qrcode.png" alt="企业微信二维码">
             <div class="lock-qr-hint">长按识别二维码 · 新通教育</div>
           </div>
-          <button class="btn-unlock" onclick="unlockReport()">✅ 我已添加，查看完整报告</button>
         </div>
       </div>
 
@@ -3387,10 +3386,11 @@ function sendToFeishu(type, extra) {
     '来源员工': activeRef,
     '落地页URL': window.location.href,
     '转化阶段': type === 'scan' ? '仅扫码进入' : type === 'cta' ? '提交咨询' : '完成测评',
+    '性别': info.gender || '',
   };
   if (currentCode) fields['情报码'] = currentCode;
+  if (info.phone) fields['手机号'] = info.phone;
   if (extra?.phone) fields['手机号'] = extra.phone;
-  if (extra?.gender) fields['性别'] = extra.gender;
   // 通过 Vercel 云函数写入多维表格 + 发群通知
   fetch(BITABLE_API, {
     method: 'POST',

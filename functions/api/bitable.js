@@ -49,13 +49,13 @@ export async function onRequestPost(context) {
 
       const recordId = searchData.data.items[0].record_id;
 
-      // 更新转化阶段为"已查询"
+      // 更新查询状态为"已查询"
       const updateRes = await fetch(
         `https://open.feishu.cn/open-apis/bitable/v1/apps/${APP_TOKEN}/tables/${TABLE_ID}/records/${recordId}`,
         {
           method: 'PUT',
           headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fields: { '转化阶段': '已查询' } }),
+          body: JSON.stringify({ fields: { '查询状态': '已查询' } }),
         }
       );
       const updateData = await updateRes.json();
