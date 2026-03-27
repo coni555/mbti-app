@@ -24,7 +24,38 @@ export async function onRequestPost(context) {
     }
     const token = tokenData.tenant_access_token;
 
-    // 判断操作类型：mark_queried（标记已查询）或 默认（写入新记录）
+    // 操作类型：query_by_phone（手机号查询）/ mark_queried（标记已查询）/ 默认（写入新记录）
+
+    // 按手机号查询记录，返回情报码和昵称
+    if (body.action === 'query_by_phone' && body.phone) {
+      const searchRes = await fetch(
+        `https://open.feishu.cn/open-apis/bitable/v1/apps/${APP_TOKEN}/tables/${TABLE_ID}/records/search`,
+        {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filter: {
+              conjunction: 'and',
+              conditions: [{ field_name: '手机号', operator: 'is', value: [body.phone] }],
+            },
+            page_size: 1,
+          }),
+        }
+      );
+      const searchData = await searchRes.json();
+
+      if (searchData.code !== 0 || !searchData.data?.items?.length) {
+        return new Response(JSON.stringify({ success: false, msg: '未找到该手机号记录' }), { headers: corsHeaders });
+      }
+
+      const fields = searchData.data.items[0].fields;
+      return new Response(JSON.stringify({
+        success: true,
+        code: fields['情报码'] || '',
+        name: fields['昵称'] || '',
+      }), { headers: corsHeaders });
+    }
+
     if (body.action === 'mark_queried' && body.code) {
       // 按情报码搜索记录
       const searchRes = await fetch(
