@@ -550,7 +550,11 @@
     <div class="query-form">
       <div class="query-badge">查询入口</div>
       <div class="qf-title">报告查询</div>
-      <div class="qf-desc">输入情报码，查看你的完整报告</div>
+      <div class="qf-desc">输入手机号和情报码，查看你的完整报告</div>
+      <div class="field-group">
+        <label class="field-label">手机号 *</label>
+        <input type="tel" id="query-phone" placeholder="填写测评时使用的手机号" oninput="checkQueryForm()" maxlength="11">
+      </div>
       <div class="field-group">
         <label class="field-label">情报码 *</label>
         <input type="text" id="query-code" placeholder="如 INTJ-A3BK5X" oninput="checkQueryForm()">
@@ -3513,17 +3517,31 @@ function displayCodeInOverlay(code, mbti) {
 
 // ============ 查询模式 ============
 function checkQueryForm() {
+  const phone = document.getElementById('query-phone').value.trim();
   const code = document.getElementById('query-code').value.trim();
-  document.getElementById('btn-query').disabled = !code;
+  document.getElementById('btn-query').disabled = !(phone && code);
   document.getElementById('query-error').style.display = 'none';
 }
 
 function queryReport() {
+  const phone = document.getElementById('query-phone').value.trim();
   const code = document.getElementById('query-code').value.trim();
   const name = document.getElementById('query-name').value.trim() || '同学';
+  const errEl = document.getElementById('query-error');
+
+  if (!phone) {
+    errEl.textContent = '请输入手机号';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (!code) {
+    errEl.textContent = '请输入情报码';
+    errEl.style.display = 'block';
+    return;
+  }
+
   const decoded = decodeRedemptionCode(code);
   if (!decoded) {
-    const errEl = document.getElementById('query-error');
     errEl.textContent = '情报码格式有误，请检查后重试（格式如 INTJ-A3BK5X）';
     errEl.style.display = 'block';
     return;
@@ -3533,7 +3551,7 @@ function queryReport() {
   info.gender = decoded.gender;
   info.grade = decoded.grade;
   info.target = decoded.target;
-  info.phone = '';
+  info.phone = phone;
   scores = generateTypicalScores(decoded.mbti);
   queryMode = true;
   // 触发报告生成（会渲染到 step-4）
