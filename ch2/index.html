@@ -497,7 +497,9 @@
           3. 随着个人经历、环境及认知变化，测试结果可能发生相应变化。
         </div>
 
-        <!-- 企业微信二维码（渠道2：不显示） -->
+        <!-- 企业微信二维码 -->
+        <div class="qr-section" id="report-qr-section" style="display:none;">
+        </div>
       </div>
     </div>
 
@@ -3291,7 +3293,16 @@ function generateReport() {
     document.getElementById('lock-overlay').style.display = 'none';
     document.getElementById('locked-sections').style.display = 'block';
     document.querySelectorAll('#step-4 .btn-restart').forEach(el => el.style.display = 'none');
-    document.querySelectorAll('#step-4 .qr-section').forEach(el => el.style.display = 'none');
+    // 替换底部二维码为分享活码
+    const qrSec = document.getElementById('report-qr-section');
+    if (qrSec) {
+      qrSec.style.display = '';
+      qrSec.innerHTML = '<div class="qr-divider"></div>' +
+        '<div class="qr-title">1min生成你的留学版MBTI专属报告！</div>' +
+        '<div class="qr-desc">扫码立即测试，发现你的留学人格</div>' +
+        '<img class="qr-img" src="../share-qrcode.png" alt="分享获客活码">' +
+        '<div class="qr-hint">长按识别二维码 · MBTI情报局</div>';
+    }
     goStep(4);
     setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
   } else {
@@ -3328,8 +3339,8 @@ function generatePoster() {
   btn.textContent = '正在生成...';
   btn.disabled = true;
   const target = document.getElementById('step-4');
-  // 截图前隐藏不需要的区域（按钮行、二维码、重新测评）
-  const hideEls = target.querySelectorAll('.action-row, .qr-section, .btn-restart');
+  // 截图前隐藏不需要的区域（按钮行、重新测评；查询模式保留分享活码）
+  const hideEls = target.querySelectorAll('.action-row, .btn-restart' + (queryMode ? '' : ', .qr-section'));
   hideEls.forEach(el => el.style.display = 'none');
   html2canvas(target, {
     backgroundColor: '#040812',
