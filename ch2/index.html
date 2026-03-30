@@ -533,7 +533,7 @@
       <div class="qf-desc">输入手机号，查看你的完整报告</div>
       <div class="field-group">
         <label class="field-label">手机号 *</label>
-        <input type="tel" id="query-phone" placeholder="填写测评时使用的手机号" oninput="checkQueryForm()" maxlength="11">
+        <input type="tel" id="query-phone" placeholder="请输入11位手机号" oninput="filterPhone(this);checkQueryForm()" maxlength="11" inputmode="numeric" pattern="[0-9]*">
       </div>
       <div class="field-group">
         <label class="field-label">情报码（选填，可加速匹配）</label>
@@ -3497,9 +3497,11 @@ function displayCodeInOverlay(code, mbti) {
 }
 
 // ============ 查询模式 ============
+function filterPhone(el) { el.value = el.value.replace(/\D/g, ''); }
+
 function checkQueryForm() {
   const phone = document.getElementById('query-phone').value.trim();
-  document.getElementById('btn-query').disabled = !phone;
+  document.getElementById('btn-query').disabled = !/^1\d{10}$/.test(phone);
   document.getElementById('query-error').style.display = 'none';
 }
 
@@ -3509,8 +3511,8 @@ function queryReport() {
   const name = document.getElementById('query-name').value.trim() || '同学';
   const errEl = document.getElementById('query-error');
 
-  if (!phone) {
-    errEl.textContent = '请输入手机号';
+  if (!/^1\d{10}$/.test(phone)) {
+    errEl.textContent = '请输入正确的11位手机号';
     errEl.style.display = 'block';
     return;
   }
