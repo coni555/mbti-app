@@ -3287,9 +3287,11 @@ function generateReport() {
   cardText = `🔍 MBTI留学情报局 · 我的留学人格档案\n【${mbti} · ${meta.name}】${meta.sub}\n\n${cardText}${funText}\n\n测测你的留学人格 →`;
 
   if (queryMode) {
-    // 查询模式：直接显示完整报告（无锁）
+    // 查询模式：直接显示完整报告（无锁），隐藏测评页残留元素
     document.getElementById('lock-overlay').style.display = 'none';
     document.getElementById('locked-sections').style.display = 'block';
+    document.querySelectorAll('#step-4 .btn-restart').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('#step-4 .qr-section').forEach(el => el.style.display = 'none');
     goStep(4);
     setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
   } else {
