@@ -3403,8 +3403,8 @@ function sendToFeishu(type, extra) {
     '性别': info.gender || '',
   };
   if (currentCode) fields['情报码'] = currentCode;
-  if (info.phone) fields['手机号'] = info.phone;
-  if (extra?.phone) fields['手机号'] = extra.phone;
+  if (info.phone) fields['测试页手机号'] = info.phone;
+  if (extra?.phone) fields['测试页手机号'] = extra.phone;
   // 通过 Vercel 云函数写入多维表格 + 发群通知
   fetch(BITABLE_API, {
     method: 'POST',
@@ -3572,7 +3572,7 @@ function queryReport() {
   fetch(BITABLE_API, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'mark_queried', code: code }),
+    body: JSON.stringify({ action: 'mark_queried', code: code, phone: phone }),
   }).catch(() => {});
 }
 

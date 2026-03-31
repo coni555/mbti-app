@@ -36,7 +36,7 @@ export async function onRequestPost(context) {
           body: JSON.stringify({
             filter: {
               conjunction: 'and',
-              conditions: [{ field_name: '手机号', operator: 'is', value: [body.phone] }],
+              conditions: [{ field_name: '测试页手机号', operator: 'is', value: [body.phone] }],
             },
             page_size: 1,
           }),
@@ -86,7 +86,7 @@ export async function onRequestPost(context) {
         {
           method: 'PUT',
           headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fields: { '查询状态': '已查询' } }),
+          body: JSON.stringify({ fields: { '查询状态': '已查询', ...(body.phone ? { '查询页手机号': body.phone } : {}) } }),
         }
       );
       const updateData = await updateRes.json();
