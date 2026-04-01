@@ -106,7 +106,7 @@ export async function onRequestPost(context) {
         '事件': event,
         '渠道': channel || '',
         '来源员工': ref || '',
-        '时间戳': new Date().toISOString(),
+        '时间戳': Date.now(),
       };
       const statsRes = await fetch(
         `https://open.feishu.cn/open-apis/bitable/v1/apps/${STATS_APP_TOKEN}/tables/${STATS_TABLE_ID}/records`,
