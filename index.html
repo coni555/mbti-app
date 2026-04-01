@@ -568,6 +568,20 @@
     </div>
   </div>
 
+  <div class="step" id="step-7">
+    <div class="query-form">
+      <div class="query-badge">员工专用</div>
+      <div class="qf-title">报告查询</div>
+      <div class="qf-desc">输入情报码，查看学员完整报告</div>
+      <div class="field-group">
+        <label class="field-label">情报码 *</label>
+        <input type="text" id="staff-code" placeholder="如 INTJ-A3BK5X" oninput="checkStaffForm()">
+      </div>
+      <div class="query-error" id="staff-error"></div>
+      <button class="btn-primary" id="btn-staff" disabled onclick="staffQuery()">查询报告 →</button>
+    </div>
+  </div>
+
 </div>
 
 <!-- 海报浮层：长按保存 -->
@@ -3535,6 +3549,31 @@ function checkQueryForm() {
   document.getElementById('query-error').style.display = 'none';
 }
 
+function checkStaffForm() {
+  const code = document.getElementById('staff-code').value.trim();
+  document.getElementById('btn-staff').disabled = !code;
+  document.getElementById('staff-error').style.display = 'none';
+}
+
+function staffQuery() {
+  const code = document.getElementById('staff-code').value.trim();
+  const errEl = document.getElementById('staff-error');
+  const decoded = decodeRedemptionCode(code);
+  if (!decoded) {
+    errEl.textContent = '情报码格式有误，请检查后重试（格式如 INTJ-A3BK5X）';
+    errEl.style.display = 'block';
+    return;
+  }
+  info.name = '同学';
+  info.gender = decoded.gender;
+  info.grade = decoded.grade;
+  info.target = decoded.target;
+  info.phone = '';
+  scores = generateTypicalScores(decoded.mbti);
+  queryMode = true;
+  generateReport();
+}
+
 function queryReport() {
   const phone = document.getElementById('query-phone').value.trim();
   const code = document.getElementById('query-code').value.trim();
@@ -3589,6 +3628,13 @@ function queryReport() {
     currentStep = 6;
     // 更新页面标题
     document.title = '报告查询 · MBTI留学情报局';
+  }
+  if (params.get('mode') === 'staff') {
+    document.querySelector('.header').style.display = 'none';
+    document.getElementById('step-0').classList.remove('active');
+    document.getElementById('step-7').classList.add('active');
+    currentStep = 7;
+    document.title = '员工查询 · MBTI情报局';
   }
 })();
 </script>
