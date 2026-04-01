@@ -3053,6 +3053,7 @@ function goStep(n) {
   document.getElementById('step-'+currentStep).classList.remove('active');
   currentStep = n;
   document.getElementById('step-'+n).classList.add('active');
+  if (n === 2) logEvent('信息提交');
   if (n === 2) renderQuestion();
   if (n === 3) { startDots(); setTimeout(generateReport, 1400); }
   else stopDots();
@@ -3073,6 +3074,7 @@ function checkInfo() {
 }
 
 function renderQuestion() {
+  if (currentQ === 0) logEvent('开始答题');
   document.getElementById('question-num').textContent = `第 ${currentQ+1} 题 / 共 ${questions.length} 题`;
   document.getElementById('question-text').textContent = questions[currentQ];
   const dotsRow = document.getElementById('dots-row');
@@ -3384,6 +3386,16 @@ function closeShareGuide(e) {
 
 // ============ 飞书数据沉淀（多维表格 + 群通知）============
 const BITABLE_API = '/api/bitable';
+function logEvent(event) {
+  if (sessionStorage.getItem('logged_' + event)) return;
+  sessionStorage.setItem('logged_' + event, '1');
+  const channel = window.location.pathname.match(/\/(ch\d)\//)?.[1] || 'main';
+  fetch(BITABLE_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'log_event', event: event, channel: channel, ref: activeRef }),
+  }).catch(() => {});
+}
 function sendToFeishu(type, extra) {
   const mbti = document.getElementById('hero-mbti')?.textContent || '';
   const fields = {
@@ -3629,6 +3641,7 @@ function queryReport() {
     // 更新页面标题
     document.title = '报告查询 · MBTI留学情报局';
   }
+  logEvent('页面访问');
 })();
 </script>
 </body>

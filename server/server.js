@@ -5,6 +5,8 @@ const APP_ID = 'cli_a94faf48a0f99bc9';
 const APP_SECRET = 'xG0gGodEldcqrPUOII8WWcZOppVjLspq';
 const APP_TOKEN = 'MjSQwHVPwiyWPxkU4oocQWeZnRe';
 const TABLE_ID = 'tbl1pugZQqoieCKr';
+const STATS_APP_TOKEN = 'NzRqbDeruanLWjsLNzhcyfU0nJf';
+const STATS_TABLE_ID = 'tblkNnC12bDALi0F';
 const WEBHOOK_URL = 'https://open.feishu.cn/open-apis/bot/v2/hook/e9fe8f0e-a81d-4e33-ae37-f9f955e5fccc';
 
 function fetchJSON(url, options) {
@@ -93,6 +95,28 @@ async function handleRequest(body) {
       return { error: 'Failed to update record', detail: updateData };
     }
     return { success: true, record_id: recordId };
+  }
+
+  if (body.action === 'log_event') {
+    const { event, channel, ref } = body;
+    const statsFields = {
+      '事件': event,
+      '渠道': channel || '',
+      '来源员工': ref || '',
+      '时间戳': new Date().toISOString(),
+    };
+    const statsResp = await fetchJSON(
+      `https://open.feishu.cn/open-apis/bitable/v1/apps/${STATS_APP_TOKEN}/tables/${STATS_TABLE_ID}/records`,
+      {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fields: statsFields }),
+      }
+    );
+    if (statsResp.code !== 0) {
+      return { error: 'Failed to log event', detail: statsResp };
+    }
+    return { ok: true };
   }
 
   // 默认：写入新记录

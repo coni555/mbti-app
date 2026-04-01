@@ -3,6 +3,8 @@ export async function onRequestPost(context) {
   const APP_SECRET = 'xG0gGodEldcqrPUOII8WWcZOppVjLspq';
   const APP_TOKEN = 'MjSQwHVPwiyWPxkU4oocQWeZnRe';
   const TABLE_ID = 'tbl1pugZQqoieCKr';
+  const STATS_APP_TOKEN = 'NzRqbDeruanLWjsLNzhcyfU0nJf';
+  const STATS_TABLE_ID = 'tblkNnC12bDALi0F';
 
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
@@ -96,6 +98,31 @@ export async function onRequestPost(context) {
       }
 
       return new Response(JSON.stringify({ success: true, record_id: recordId }), { headers: corsHeaders });
+    }
+
+    if (body.action === 'log_event') {
+      const { event, channel, ref } = body;
+      const statsFields = {
+        '事件': event,
+        '渠道': channel || '',
+        '来源员工': ref || '',
+        '时间戳': new Date().toISOString(),
+      };
+      const statsRes = await fetch(
+        `https://open.feishu.cn/open-apis/bitable/v1/apps/${STATS_APP_TOKEN}/tables/${STATS_TABLE_ID}/records`,
+        {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fields: statsFields }),
+        }
+      );
+      const statsData = await statsRes.json();
+
+      if (statsData.code !== 0) {
+        return new Response(JSON.stringify({ error: 'Failed to log event', detail: statsData }), { status: 500, headers: corsHeaders });
+      }
+
+      return new Response(JSON.stringify({ ok: true }), { headers: corsHeaders });
     }
 
     // 默认操作：写入新记录
