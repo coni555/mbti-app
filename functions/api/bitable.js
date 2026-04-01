@@ -118,7 +118,7 @@ export async function onRequestPost(context) {
     }
 
     // 飞书群通知（best-effort）
-    const WEBHOOK_URL = 'https://open.feishu.cn/open-apis/bot/v2/hook/104820c9-2175-4482-b4e4-ea4620d7685e';
+    const WEBHOOK_URL = 'https://open.feishu.cn/open-apis/bot/v2/hook/e9fe8f0e-a81d-4e33-ae37-f9f955e5fccc';
     const lines = Object.entries(fields)
       .filter(([k]) => k !== '来源')
       .map(([k, v]) => `**${k}：** ${v}`);
