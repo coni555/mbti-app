@@ -3519,11 +3519,6 @@ function displayCodeInOverlay(code, mbti) {
   // 在 lock overlay 中显示情报码
   document.getElementById('lock-code-value').textContent = code;
   document.getElementById('lock-code-section').style.display = 'block';
-  // 员工专属二维码
-  if (activeRef) {
-    const refQr = document.getElementById('lock-qr-img');
-    if (refQr) refQr.src = '../employee-qrcodes/' + activeRef + '.png';
-  }
 }
 
 // ============ 查询模式 ============
