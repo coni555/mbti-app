@@ -3332,6 +3332,7 @@ function generateReport() {
     setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
     // 通知飞书（含情报码）
     sendToFeishu('report');
+    logEvent('测试完成');
   }
 }
 
@@ -3571,6 +3572,7 @@ function queryReport() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'mark_queried', code: code, phone: phone }),
       }).catch(() => {});
+      logEvent('查询报告');
       return;
     }
   }
@@ -3616,6 +3618,7 @@ function queryReport() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'mark_queried', code: data.code, phone: phone }),
     }).catch(() => {});
+    logEvent('查询报告');
   })
   .catch(() => {
     errEl.textContent = '查询失败，请稍后重试';
