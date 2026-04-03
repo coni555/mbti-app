@@ -331,12 +331,18 @@
       </div>
     </div>
     <div class="field-group">
-      <label class="field-label">现在大几？*</label>
+      <label class="field-label">目前所处阶段？*</label>
       <div class="chip-row" id="grade-chips">
+        <button class="chip" onclick="selectChip('grade',this,'高一')">高一</button>
+        <button class="chip" onclick="selectChip('grade',this,'高二')">高二</button>
+        <button class="chip" onclick="selectChip('grade',this,'高三')">高三</button>
         <button class="chip" onclick="selectChip('grade',this,'大一')">大一</button>
         <button class="chip" onclick="selectChip('grade',this,'大二')">大二</button>
         <button class="chip" onclick="selectChip('grade',this,'大三')">大三</button>
         <button class="chip" onclick="selectChip('grade',this,'大四')">大四</button>
+        <button class="chip" onclick="selectChip('grade',this,'已毕业')">已毕业</button>
+        <button class="chip" onclick="selectChip('grade',this,'在职')">在职</button>
+        <button class="chip" onclick="selectChip('grade',this,'自由职业')">自由职业</button>
       </div>
     </div>
     <div class="field-group" style="margin-bottom:28px">
@@ -642,20 +648,32 @@ const questions = [
 // ============ 时间线辅助函数 ============
 function getTimeline(grade) {
   const map = {
+    '高一': '你现在高一，距离本科申请还有充足时间，是打好基础、探索方向的黄金阶段',
+    '高二': '你现在高二，距离本科申请还有约1-2年，现在开始规划标化和活动正当时',
+    '高三': '你现在高三，本科申请迫在眉睫，需要集中精力冲刺标化和文书',
     '大一': '你现在大一，距离主申请季还有约2-3年，这是最好的布局时机',
     '大二': '你现在大二，距离主申请季还有约12-18个月，时间刚好够系统准备',
     '大三': '你现在大三，距离申请窗口只剩6-10个月，需要尽快明确方向',
-    '大四': '你现在大四，申请时间窗口非常紧迫，每一步都需要精准推进'
+    '大四': '你现在大四，申请时间窗口非常紧迫，每一步都需要精准推进',
+    '已毕业': '你已经毕业，有了完整的学术背景，现在可以更有针对性地规划留学方向',
+    '在职': '你目前在职，工作经验会成为申请中的独特优势，尤其是MBA和专业硕士项目',
+    '自由职业': '你目前自由职业，灵活的时间安排是备考和准备材料的天然优势'
   };
   return map[grade] || '现在开始准备正当时';
 }
 
 function getUrgency(grade) {
   const map = {
+    '高一': '高一是最从容的阶段——现在开始了解留学方向，后面每一步都会更主动',
+    '高二': '高二是关键转折点——标化备考、活动规划、学校研究，现在并行推进效率最高',
+    '高三': '高三的你时间非常紧张——每一天都要用在刀刃上，精准执行比犹豫选择更重要',
     '大一': '你现在大一，时间是你最大的优势，早布局意味着有更多容错空间',
     '大二': `大二是"黄金启动期"——既不太早（方向还能调整），也不太晚（还有足够时间备考和积累）`,
     '大三': '大三再不动，到大四就只能仓促应战了——现在每拖一个月，都是在压缩自己的选择空间',
-    '大四': '大四的你已经没有"等等再说"的余地——需要立刻确定方向、启动材料准备'
+    '大四': '大四的你已经没有"等等再说"的余地——需要立刻确定方向、启动材料准备',
+    '已毕业': '已毕业的你有完整学历背景加持——关键是尽快明确方向，避免gap太长影响申请竞争力',
+    '在职': '在职申请最大的挑战是时间管理——但你的工作经验是很多应届生羡慕不来的申请筹码',
+    '自由职业': '自由职业的你时间灵活，这在备考和材料准备上是巨大优势——关键是制定清晰的时间线并执行'
   };
   return map[grade] || '现在开始还来得及，但不能再等了';
 }
@@ -3461,7 +3479,7 @@ function restart() {
 // ============ 情报码系统 ============
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 30 chars, no I/O/0/1
 const CODE_COUNTRIES = ['美国','英国','澳大利亚','加拿大','日本','韩国','新加坡','马来西亚','欧洲','香港','其他','还没想好'];
-const CODE_GRADES = ['大一','大二','大三','大四'];
+const CODE_GRADES = ['大一','大二','大三','大四','高一','高二','高三','已毕业','在职','自由职业'];
 const CODE_GENDERS = ['男','女'];
 let currentCode = '';
 let queryMode = false;
