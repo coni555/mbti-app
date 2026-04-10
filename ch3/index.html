@@ -406,6 +406,8 @@
 </head>
 <body>
 
+<button class="theme-toggle" onclick="toggleTheme()" title="切换明暗主题">🌙</button>
+
 <div class="header">
   <div class="header-label">▸ CLASSIFIED INTELLIGENCE ◂</div>
   <h1>🔍 MBTI留学情报局</h1>
@@ -720,6 +722,29 @@
 <div class="footer">MBTI留学情报局 · V4.0</div>
 
 <script>
+// ============ 主题切换 ============
+function toggleTheme() {
+  const html = document.documentElement;
+  const btn = document.querySelector('.theme-toggle');
+  if (html.getAttribute('data-theme') === 'dark') {
+    html.removeAttribute('data-theme');
+    btn.textContent = '🌙';
+    localStorage.setItem('mbti-theme', 'light');
+  } else {
+    html.setAttribute('data-theme', 'dark');
+    btn.textContent = '☀️';
+    localStorage.setItem('mbti-theme', 'dark');
+  }
+}
+// 读取用户上次选择的主题
+(function() {
+  const saved = localStorage.getItem('mbti-theme');
+  if (saved === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.querySelector('.theme-toggle').textContent = '☀️';
+  }
+})();
+
 // ============ 来源追踪 ============
 const _urlParams = new URLSearchParams(window.location.search);
 const _refFromUrl = _urlParams.get('ref') || '';
